@@ -1,11 +1,7 @@
 # README
 
-This application is one for The Enterprise Gym at The University of Dundee.
-However, you can modify it to use for your own website reasonably easily.
-
-This application allows the creation of static pages, pages with feeds, registering, logging in, and administration panel.
-Non-administrator users are allowed to attend events and complete quizzes for which they earn points and awards.
-Administrators can oversee everything, making changes where necessary, and mark users as attended or un-attended to events manually.
+This application is a back-end API for a language learning project using Python.
+Mobile and desktop apps are coming soon!
 
 # Install Instructions
 
@@ -79,7 +75,7 @@ server {
 
     location / {
         include uwsgi_params;
-        uwsgi_pass unix:/var/www/html/ac41004/socket.sock;
+        uwsgi_pass unix:/var/www/html/lang/socket.sock;
         include uwsgi_params;
         uwsgi_modifier1 30;
      }
@@ -111,8 +107,8 @@ sudo usermod -a -G student nginx
 ### Then we must create the necessary directories
 
 ```
-sudo mkdir /var/www && sudo mkdir /var/www/html && sudo mkdir /var/www/html/ac41004
-sudo chown student:student /var/www/html/ac41004/
+sudo mkdir /var/www && sudo mkdir /var/www/html && sudo mkdir /var/www/html/lang
+sudo chown student:student /var/www/html/lang/
 ```
 
 ### Then we must create the appropriate symlinks
@@ -123,11 +119,11 @@ sudo ln -s /var/www/html /home/student/html
 
 ## Installing the application
 
-Navigate to the `/var/www/html/ac41004` folder and clone the git repository (you may need to make a fork beforehand).
+Navigate to the `/var/www/html/lang` folder and clone the git repository (you may need to make a fork beforehand).
 
 ```
-cd /var/www/html/ac41004/
-git clone https://github.com/jslvtr/AC41004-Team-2.git .
+cd /var/www/html/lang/
+git clone git@gitlab.com:jslvtr/lang-gamification-api.git .
 ```
 
 ## Running the application
@@ -136,7 +132,7 @@ The only thing that should be necessary are the following:
 
 ```
 sudo service nginx restart
-sudo start uwsgi_ac41004
+sudo start uwsgi_lang
 ```
 
 ## Installing MongoDB (if wanting to run MongoDB locally alongside the application)
@@ -158,11 +154,11 @@ enabled=1
 
 ## Creating the uWSGI config file
 
-1. Create a file `/etc/init/uwsgi_ac41004.conf`.
+1. Create a file `/etc/init/uwsgi_lang.conf`.
 2. In this file, put the appropriate code, remembering to use the appropriate service environment variables:
 
 ```
-description "uWSGI_ac41004"
+description "uWSGI_lang"
 start on runlevel [2345]
 stop on runlevel [06]
 respawn
@@ -172,21 +168,21 @@ env MONGODB_DATABASE=<>
 env MONGODB_PASSWORD=<>
 env MONGODB_URL=<>
 env MONGODB_PORT=<>
-env UWSGI_ALIVE=/var/www/html/ac41004/venv/bin/uwsgi
-env LOGTO_ALIVE=/var/www/html/ac41004/log/emperor.log
+env UWSGI_ALIVE=/var/www/html/lang/venv/bin/uwsgi
+env LOGTO_ALIVE=/var/www/html/lang/log/emperor.log
 
-exec $UWSGI_ALIVE --master --emperor /var/www/html/ac41004/uwsgi.ini --die-on-term --uid student --gid student --logto $LOGTO_ALIVE
+exec $UWSGI_ALIVE --master --emperor /var/www/html/lang/uwsgi.ini --die-on-term --uid student --gid student --logto $LOGTO_ALIVE
 ```
 
-3. You can then start the uWSGI service by using `sudo start uwsgi_ac41004`.
-4. You can also stop the uWSGI service by using `sudo stop uwsgi_ac41004`.
+3. You can then start the uWSGI service by using `sudo start uwsgi_lang`.
+4. You can also stop the uWSGI service by using `sudo stop uwsgi_lang`.
 
 ## Creating the uwsgi socket config file
 
-In the `/var/www/html/ac41004/` folder modify the `uwsgi.ini` file.
+In the `/var/www/html/lang/` folder modify the `uwsgi.ini` file.
 
 ```
-vi /var/www/html/ac41004/uwsgi.ini
+vi /var/www/html/lang/uwsgi.ini
 ```
 
 Then write the following file contents:
@@ -194,7 +190,7 @@ Then write the following file contents:
 ```
 [uwsgi]
 #application's base folder
-base = /var/www/html/ac41004
+base = /var/www/html/lang
 
 #python module to import
 app = src.app
@@ -204,7 +200,7 @@ home = %(base)/venv
 pythonpath = %(base)
 
 #socket file's location
-socket = /var/www/html/ac41004/socket.sock
+socket = /var/www/html/lang/socket.sock
 
 #permissions for the socket file
 chmod-socket = 777
@@ -222,7 +218,7 @@ harakiri = 15
 callable = app
 
 #location of log files
-logto = /var/www/html/ac41004/log/%n.log
+logto = /var/www/html/lang/log/%n.log
 ```
 
 ## Modifying SELinux permissions (if SELinux installed, which it usually is)

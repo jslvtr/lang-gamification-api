@@ -1,7 +1,7 @@
 import pymongo
 import pymongo.errors
 
-__author__ = 'jamiekerr'
+__author__ = 'jslvtr'
 
 
 class Database(object):

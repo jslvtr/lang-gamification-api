@@ -1,6 +1,5 @@
 test:
   script:
-  - export MONGODB_URL=mongodb://postgres:@postgres:5432/python-test-app
   - apt-get update -qy
   - apt-get install -y python-dev python-pip
   - pip install -r requirements.txt

@@ -9,10 +9,9 @@ class Database(object):
     DATABASE = None
 
     @staticmethod
-    def initialize(user, password, url, port, database):
-        client = pymongo.MongoClient(host=url,
-                                     port=port)
-        Database.DATABASE = client[database]
+    def initialize(user, password, uri):
+        client = pymongo.MongoClient(host=uri)
+        Database.DATABASE = client.get_default_database()
         Database.DATABASE.authenticate(user, password)
 
     @staticmethod

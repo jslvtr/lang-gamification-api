@@ -5,15 +5,11 @@ from common.database import Database
 
 mongodb_user = os.environ.get("MONGODB_USER")
 mongodb_password = os.environ.get("MONGODB_PASSWORD")
-mongo_url = os.environ.get("MONGODB_URL")
-mongo_port = os.environ.get("MONGODB_PORT")
-mongo_database = os.environ.get("MONGODB_DATABASE")
+mongo_uri = os.environ.get("MONGODB_URI")
 
 assert mongodb_user is not None, "The MongoDB user was not set. Create an environment variable MONGODB_USER"
 assert mongodb_password is not None, "The MongoDB password was not set. Create an environment variable MONGODB_PASSWORD"
-assert mongo_url is not None, "The MongoDB url was not set. Create an environment variable MONGODB_URL"
-assert mongo_port is not None, "The MongoDB port was not set. Create an environment variable MONGODB_PORT"
-assert mongo_database is not None, "The MongoDB database was not set. Create an environment variable MONGODB_DATABASE"
+assert mongo_uri is not None, "The MongoDB URI was not set. Create an environment variable MONGODB_URI"
 
 app = Flask(__name__)
 assert app.session_interface is not None, "The app session interface was None even though we tried to set it!"
@@ -30,7 +26,7 @@ pwd_context = CryptContext(
 
 
 def get_db():
-    Database.initialize(mongodb_user, mongodb_password, mongo_url, int(mongo_port), mongo_database)
+    Database.initialize(mongodb_user, mongodb_password, mongo_uri)
 
 
 @app.before_first_request

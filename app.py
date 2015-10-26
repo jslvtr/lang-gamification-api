@@ -28,6 +28,7 @@ pwd_context = CryptContext(
     pbkdf2_sha256__default_rounds=8000
 )
 
+
 def get_db():
     Database.initialize(mongodb_user, mongodb_password, mongo_url, int(mongo_port), mongo_database)
 

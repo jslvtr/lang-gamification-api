@@ -1,7 +1,5 @@
 import uuid
-from flask import session
 from common.database import Database
-from models.permissions.permissions import Permissions
 import models.users.errors as UserErrors
 import common.utils as Utils
 import models.users.constants as UserConstants
@@ -11,10 +9,10 @@ __author__ = 'jslvtr'
 
 class User(object):
 
-    def __init__(self, email, password, access_level, _id=None):
+    def __init__(self, email, password, courses, _id=None):
         self.email = email
         self.password = password
-        self.access_level = access_level
+        self.courses = courses
         self._id = uuid.uuid4().hex if _id is None else _id
 
     def __repr__(self):
@@ -25,16 +23,18 @@ class User(object):
 
     @classmethod
     def find_by_id(cls, id_):
-        return cls(**Database.find_one(UserConstants.COLLECTION, {"_id": id_}))
+        user_data = Database.find_one(UserConstants.COLLECTION, {"_id": id_})
+        return cls(**user_data) if user_data else None
 
     @classmethod
     def find_by_email(cls, email):
-        return cls(**Database.find_one(UserConstants.COLLECTION, {"email": email}))
+        user_data = Database.find_one(UserConstants.COLLECTION, {"email": email})
+        return cls(**user_data) if user_data else None
 
     def json(self, private=True):
         data = {
             "email": self.email,
-            "access_level": self.access_level,
+            "courses": self.courses,
             "_id": self._id
         }
         if private:
@@ -49,13 +49,14 @@ class User(object):
         if not user:
             raise UserErrors.UserNotFoundException("A user with this e-mail could not be found.")
 
-        return user.password == password
+        if Utils.check_hashed_password(password, user.password):
+            return user
 
     @staticmethod
     def login(email, password):
-        if User._check_login(email, password):
-            session['email'] = email
-            return True
+        user = User._check_login(email, password)
+        if user:
+            return user
         raise UserErrors.IncorrectPasswordException("Your password or e-mail were incorrect.")
 
     @staticmethod
@@ -66,14 +67,16 @@ class User(object):
             raise UserErrors.UserAlreadyExistsException("An user already exists with that e-mail.")
 
         user = User(email=email,
-                    password=password,
-                    access_level=Permissions.default().name)
+                    password=Utils.hash_password(password),
+                    courses=[])
 
         user.save_to_db()
-        return True
+        return user
 
     def save_to_db(self):
-        Database.insert(UserConstants.COLLECTION, self.json(private=False))
+        Database.insert(UserConstants.COLLECTION, self.json(private=True))
 
-    def allowed(self, access_level):
-        return Permissions.find_by_name(self.access_level).allowed(Permissions.access_to(access_level))
+    def allowed(self, course=None):
+        if course is not None:
+            return course in self.courses
+        return True

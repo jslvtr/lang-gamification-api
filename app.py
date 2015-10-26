@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 import os
+from passlib.context import CryptContext
 from common.database import Database
 
 mongodb_user = os.environ.get("MONGODB_USER")
@@ -20,6 +21,12 @@ assert app.session_interface is not None, "The app session interface was None ev
 app.secret_key = os.urandom(32)
 assert app.secret_key is not None, "The app secret key was None even though we tried to set it!"
 
+pwd_context = CryptContext(
+    schemes=["pbkdf2_sha256"],
+    default="pbkdf2_sha256",
+    all__vary_rounds=0.1,
+    pbkdf2_sha256__default_rounds=8000
+)
 
 def get_db():
     Database.initialize(mongodb_user, mongodb_password, mongo_url, int(mongo_port), mongo_database)

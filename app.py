@@ -3,12 +3,8 @@ import os
 from passlib.context import CryptContext
 from common.database import Database
 
-mongodb_user = os.environ.get("MONGODB_USER")
-mongodb_password = os.environ.get("MONGODB_PASSWORD")
 mongo_uri = os.environ.get("MONGODB_URI")
 
-assert mongodb_user is not None, "The MongoDB user was not set. Create an environment variable MONGODB_USER"
-assert mongodb_password is not None, "The MongoDB password was not set. Create an environment variable MONGODB_PASSWORD"
 assert mongo_uri is not None, "The MongoDB URI was not set. Create an environment variable MONGODB_URI"
 
 app = Flask(__name__)
@@ -26,7 +22,7 @@ pwd_context = CryptContext(
 
 
 def get_db():
-    Database.initialize(mongodb_user, mongodb_password, mongo_uri)
+    Database.initialize(mongo_uri)
 
 
 @app.before_first_request

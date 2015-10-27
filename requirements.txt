@@ -4,3 +4,5 @@ uwsgi
 werkzeug
 nose
 passlib
+sphinx
+cloud_sptheme

@@ -1,7 +1,3 @@
-image: python:3.5
-services:
-  - mongo
-
 stages:
   - unit
   - staging-deploy

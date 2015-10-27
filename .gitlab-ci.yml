@@ -2,6 +2,10 @@ test:
   script:
   - apt-get update -qy
   - apt-get install -y python-dev python-pip
+  - curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -
+  - apt-get install nodejs
+  - npm install newman
+  - newman -u https://www.getpostman.com/collections/923ee38bcbb3ce825318 -e ./lang-gamification-api.postman_environment -s
   - pip install -r requirements.txt
   - nosetests tests/
 

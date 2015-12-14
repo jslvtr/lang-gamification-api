@@ -26,7 +26,7 @@ Requirements
 	passlib==1.6.5
 	cloud_sptheme==1.7
 
-Also needs ``nginx`` and ``MongoDB``.
+The app should be wrapped with something like uWSGI or gnunicorn, and then would also need ``nginx``, and ``MongoDB``.
 
 Install
 ^^^^^^^

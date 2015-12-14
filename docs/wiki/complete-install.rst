@@ -1,3 +1,5 @@
+.. highlight:: bash
+
 .. _complete-install:
 
 Complete install guide on CentOS 6.5
@@ -52,14 +54,14 @@ Then we must install nginx::
 Then we must add the appropriate nginx config at ``/etc/nginx/conf.d/default.conf``::
 
 	server {
-	    listen       80;
+	    listen 80;
 	    real_ip_header X-Forwarded-For;
 	    set_real_ip_from 127.0.0.1;
-	    server_name  localhost;
+	    server_name localhost;
 
-	    #charset koi8-r;
+	    # charset koi8-r;
 
-	    #access_log  logs/host.access.log  main;
+	    # access_log logs/host.access.log  main;
 
 	    # Load configuration files for the default server block.
 	    include /etc/nginx/default.d/*.conf;
@@ -144,7 +146,7 @@ In this file, put the appropriate code, remembering to use the appropriate servi
 	stop on runlevel [06]
 	respawn
 	
-	env MONGODB_URI=<>  # In format mongodb://user:password@host:port/default_database
+	env MONGODB_URI=mongodb://user:password@host:port/default_database
 	env UWSGI_ALIVE=/var/www/html/lang/venv/bin/uwsgi
 	env LOGTO_ALIVE=/var/www/html/lang/log/emperor.log
 

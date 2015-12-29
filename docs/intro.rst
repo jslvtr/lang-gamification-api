@@ -8,6 +8,8 @@ What is lang-gamification-api?
 
 This is a project to explore the benefit of using gamification in language learning. It provides a back-end API, and a website served via Flask. Mobile apps are coming soon too.
 
+Development version available at: http://lang-gamification-api.herokuapp.com
+
 Installation instructions
 -------------------------
 

@@ -1,5 +1,5 @@
 import re
-from app import pwd_context
+from common.security import pwd_context
 
 __author__ = 'jslvtr'
 

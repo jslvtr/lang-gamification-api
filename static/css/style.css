@@ -1,0 +1,55 @@
+.content {
+    max-width: 720px;
+    margin: 90px auto;
+}
+#custom-nav {
+    background-color: #7aaab6;
+    margin-top: 0;
+}
+
+.navbar .nav > li > a, .navbar .nav > li > a:visited, .navbar .nav > li > a:active, .navbar .nav > li > a:hover{
+    color: white;
+    text-shadow: none;
+}
+.navbar .nav > li > a:active, .navbar .nav > li > a:hover{
+    color: #222;
+    text-shadow: none;
+}
+#logo-container {
+    width: 100%;
+    height: 50px;
+    margin: 0;
+    margin-left: -20px;
+
+    background-color: #7aaab6;
+}
+@media only screen and (max-width: 480px) {
+    #logo-container {
+        margin-left: 0;
+}}
+@media only screen and (max-width: 767px) {
+    #logo-container {
+        margin-left: 0;
+}}
+#logo-container > a {
+    margin-left: 20px;
+    padding-top: 5px;
+}
+
+.dropdown-toggle:active, .open .dropdown-toggle {background:#FFF !important; color:#000 !important;}
+
+
+.content {
+    max-width: 720px;
+    margin: 90px auto;
+}
+.navbar-brand > img {
+    margin-left: 5px;
+    vertical-align: middle;
+}
+.navbar-brand {
+    padding-top: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+    padding-right: 16px;
+}

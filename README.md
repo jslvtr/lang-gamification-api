@@ -3,6 +3,8 @@
 This application is a back-end API for a language learning project using Python.
 Mobile and desktop apps are coming soon!
 
+Development version available at: http://lang-gamification-api.herokuapp.com
+
 # Install Instructions
 
 ## Python and Nginx

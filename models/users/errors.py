@@ -1,17 +1,22 @@
 __author__ = 'jslvtr'
 
 
-class UserNotFoundException(Exception):
+class UserError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
+class UserNotFoundException(UserError):
     pass
 
 
-class IncorrectPasswordException(Exception):
+class IncorrectPasswordException(UserError):
     pass
 
 
-class InvalidEmailException(Exception):
+class InvalidEmailException(UserError):
     pass
 
 
-class UserAlreadyExistsException(Exception):
+class UserAlreadyExistsException(UserError):
     pass

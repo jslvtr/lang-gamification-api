@@ -73,6 +73,12 @@ class User(object):
         user.save_to_db()
         return user
 
+    @staticmethod
+    def is_course_creator(email):
+        if email is not None:
+            user = User.find_by_email(email)
+            return len(user.courses) > 0
+
     def save_to_db(self):
         Database.insert(UserConstants.COLLECTION, self.json(private=True))
 

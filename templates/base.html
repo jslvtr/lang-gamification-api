@@ -28,9 +28,9 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/" title="Home">Home</a></li>
-                <li><a href="/blog" title="Blog">Blog</a></li>
+                <li><a href="https://medium.com/language-gamification" title="Blog">Blog</a></li>
 
-                {% if user %}
+                {% if user_email %}
                     {% if is_course_creator %}
                         <li><a href="/courses"><span class="glyphicon glyphicon-briefcase"></span> Your Courses</a></li>
                     {% endif %}
@@ -47,6 +47,9 @@
 </nav>
 
 <div class="content container">
+    {% if request.args.get("message") %}
+        <div class="alert alert-danger" role="alert">{{ request.args.get("message") }}</div>
+    {% endif %}
     {{ data | safe }}
 </div>
 

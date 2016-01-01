@@ -11,13 +11,16 @@ assert mongo_uri is not None, "The MongoDB URI was not set. Create an environmen
 
 app = Flask(__name__)
 app.session_interface = MongoSessionInterface(mongo_uri)
+app.config.from_object('config')
 assert app.session_interface is not None, "The app session interface was None even though we tried to set it!"
 
-app.secret_key = os.urandom(32)
+app.config['SECRET_KEY'] = os.urandom(32)
 assert app.secret_key is not None, "The app secret key was None even though we tried to set it!"
 
 
 def get_db():
+    if app.debug:
+        mongo_uri = "mongodb://127.0.0.1:27017/language"
     Database.initialize(mongo_uri)
 
 
@@ -28,6 +31,8 @@ def init_db():
 
 @app.errorhandler(Exception)
 def handle_internal_exception(ex):
+    if app.debug:
+        raise ex
     return render_template("error.html", message=str(ex))
 
 
@@ -54,4 +59,4 @@ def index():
 app.register_blueprint(bp)
 
 if __name__ == '__main__':
-    app.run(port=4995)
+    app.run(debug=True, port=4995)

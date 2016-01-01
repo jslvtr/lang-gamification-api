@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+{% from "forms/macros.html" import render_field %}
+<form method="POST" class="form">
+    {{ form.csrf_token }}
+    {{ render_field(form.email, class="input text form-control") }}
+    {{ render_field(form.password, class="input text form-control") }}
+    {{ render_field(form.confirm, class="input text form-control") }}
+    {{ render_field(form.accept_tos, class="input checkbox form-control",
+    help="Check this box to accept the terms and conditions.") }}
+    <!-- <label>ReCaptcha</label>
+    {# {{ form.recaptcha }} #} -->
+    <input type="submit" value="Register" class="btn btn-success">
+</form>
+<a href="{{ url_for('user.login') }}">Login</a>

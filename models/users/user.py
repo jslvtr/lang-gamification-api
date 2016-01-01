@@ -47,7 +47,7 @@ class User(object):
         user = User.find_by_email(email)
 
         if not user:
-            raise UserErrors.UserNotFoundException("A user with this e-mail could not be found.")
+            raise UserErrors.UserNotFoundException("An user with this e-mail could not be found.")
 
         if Utils.check_hashed_password(password, user.password):
             return user

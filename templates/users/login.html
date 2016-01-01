@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+{% from "forms/macros.html" import render_field %}
+<form method="POST" class="form">
+    {{ form.csrf_token }}
+    {{ render_field(form.email, class="input text form-control") }}
+    {{ render_field(form.password, class="input text form-control") }}
+    <input type="submit" value="Login" class="btn btn-success">
+</form>
+<a href="{{ url_for('user.register') }}">Register</a>

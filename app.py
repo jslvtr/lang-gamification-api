@@ -35,6 +35,7 @@ def get_db():
 def init_db():
     log.info("This is the first request, so initializing database before dealing with request.")
     get_db()
+    log.info("Database initialized.")
 
 
 @app.errorhandler(Exception)

@@ -7,11 +7,12 @@ __author__ = 'jslvtr'
 class Database(object):
 
     DATABASE = None
+    CLIENT = None
 
     @staticmethod
     def initialize(uri):
-        client = pymongo.MongoClient(host=uri, connect=False)
-        Database.DATABASE = client.get_default_database()
+        Database.CLIENT = pymongo.MongoClient(host=uri, connect=False)
+        Database.DATABASE = Database.CLIENT.get_default_database()
 
     @staticmethod
     def find(collection, query, sort=None, direction=pymongo.ASCENDING, limit=None):

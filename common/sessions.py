@@ -23,8 +23,7 @@ class MongoSession(CallbackDict, SessionMixin):
 
 
 class MongoSessionInterface(SessionInterface):
-    def __init__(self, uri, collection="sessions"):
-        client = MongoClient(uri)
+    def __init__(self, client, collection="sessions"):
         db = client.get_default_database()
         self.store = db[collection]
 

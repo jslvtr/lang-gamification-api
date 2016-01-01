@@ -54,11 +54,13 @@ def serve_layout(response):
         data = data.decode('utf-8')
         user_email = session['email'] if 'email' in session.keys() and session['email'] is not None else None
         if user_email:
-            log.info("Request part of a session with valid e-mail.  ")
+            log.info("Request part of a session with valid e-mail.")
         else:
             log.info("Not a valid e-mail in the current request's session.")
+        log.info("Rendering base.html template.")
         data = render_template('base.html', is_course_creator=User.is_course_creator(user_email), data=data,
                                user_email=user_email)
+        log.info("base.html template rendered, setting data of response and returning.")
         response.set_data(data)
         response.direct_passthrough = False
 

@@ -20,8 +20,9 @@ assert app.secret_key is not None, "The app secret key was None even though we t
 
 def get_db():
     if app.debug:
-        mongo_uri = "mongodb://127.0.0.1:27017/language"
-    Database.initialize(mongo_uri)
+        Database.initialize("mongodb://127.0.0.1:27017/language")
+    else:
+        Database.initialize(mongo_uri)
 
 
 @app.before_first_request

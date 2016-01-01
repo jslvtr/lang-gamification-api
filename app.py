@@ -4,6 +4,10 @@ from common.database import Database
 from common.sessions import MongoSessionInterface
 from models.users.user import User
 from models.users.views import bp
+import logging
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 mongo_uri = os.environ.get("MONGODB_URI")
 
@@ -20,20 +24,26 @@ assert app.secret_key is not None, "The app secret key was None even though we t
 
 def get_db():
     if app.debug:
-        Database.initialize("mongodb://127.0.0.1:27017/language")
+        local_uri = "mongodb://127.0.0.1:27017/language"
+        log.info("Initializing database with uri {}.".format(local_uri))
+        Database.initialize(local_uri)
     else:
+        log.info("Initializing database with uri {}.".format(mongo_uri))
         Database.initialize(mongo_uri)
 
 
 @app.before_first_request
 def init_db():
+    log.info("This is the first request, so initializing database before dealing with request.")
     get_db()
 
 
 @app.errorhandler(Exception)
 def handle_internal_exception(ex):
     if app.debug:
+        log.warn("App in DEBUG mode, raising exception.")
         raise ex
+    log.error("An exception occurred with message {}".format(str(ex)))
     return render_template("error.html", message=str(ex))
 
 
@@ -43,6 +53,10 @@ def serve_layout(response):
         data = response.get_data()
         data = data.decode('utf-8')
         user_email = session['email'] if 'email' in session.keys() and session['email'] is not None else None
+        if user_email:
+            log.info("Request part of a session with valid e-mail.")
+        else:
+            log.info("Not a valid e-mail in the current request's session.")
         data = render_template('base.html', is_course_creator=User.is_course_creator(user_email), data=data,
                                user_email=user_email)
         response.set_data(data)

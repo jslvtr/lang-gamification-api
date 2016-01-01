@@ -10,7 +10,7 @@ class Database(object):
 
     @staticmethod
     def initialize(uri):
-        client = pymongo.MongoClient(host=uri)
+        client = pymongo.MongoClient(host=uri, connect=False)
         Database.DATABASE = client.get_default_database()
 
     @staticmethod

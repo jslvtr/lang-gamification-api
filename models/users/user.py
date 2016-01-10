@@ -1,6 +1,8 @@
 import models.users.errors as UserErrors
 import common.utils as Utils
 import models.users.constants as UserConstants
+import sys
+print(sys.path)
 from app import db
 
 __author__ = 'jslvtr'

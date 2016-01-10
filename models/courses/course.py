@@ -2,6 +2,11 @@ import datetime
 import models.courses.constants as CourseConstants
 import models.courses.errors as CourseErrors
 from models.courses.errors import NotOwnerException
+import logging
+import sys
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
+log.warn(sys.path)
 from app import db
 
 __author__ = 'jslvtr'

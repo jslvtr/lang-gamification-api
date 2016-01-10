@@ -1,4 +1,9 @@
 from unittest import TestCase
+import logging
+import sys
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
+log.warn(sys.path)
 from app import get_db, db
 from models.users.user import User
 import models.users.errors as UserErrors

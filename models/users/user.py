@@ -1,50 +1,28 @@
-import uuid
-from common.database import Database
 import models.users.errors as UserErrors
 import common.utils as Utils
 import models.users.constants as UserConstants
+from app import db
 
 __author__ = 'jslvtr'
 
 
-class User(object):
+class User(db.Model):
 
-    def __init__(self, email, password, courses, _id=None):
+    __tablename__ = UserConstants.TABLE_NAME
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True)
+    password = db.Column(db.String(255), unique=False)
+
+    def __init__(self, email, password):
         self.email = email
         self.password = password
-        self.courses = courses
-        self._id = uuid.uuid4().hex if _id is None else _id
 
     def __repr__(self):
-        return "<User {}, {}>".format(self.email, self._id)
-
-    def get_id(self):
-        return self._id
-
-    @classmethod
-    def find_by_id(cls, id_):
-        user_data = Database.find_one(UserConstants.COLLECTION, {"_id": id_})
-        return cls(**user_data) if user_data else None
-
-    @classmethod
-    def find_by_email(cls, email):
-        user_data = Database.find_one(UserConstants.COLLECTION, {"email": email})
-        return cls(**user_data) if user_data else None
-
-    def json(self, private=True):
-        data = {
-            "email": self.email,
-            "courses": self.courses,
-            "_id": self._id
-        }
-        if private:
-            data.update({"password": self.password})
-
-        return data
+        return "<User {}>".format(self.email)
 
     @staticmethod
     def _check_login(email, password):
-        user = User.find_by_email(email)
+        user = User.query.filter_by(email=email).first()
 
         if not user:
             raise UserErrors.UserNotFoundException("An user with this e-mail could not be found.")
@@ -63,26 +41,28 @@ class User(object):
     def register(email, password):
         if not Utils.email_is_valid(email):
             raise UserErrors.InvalidEmailException("The e-mail you used to register was invalid.")
-        if User.find_by_email(email) is not None:
+        if User.query.filter_by(email=email).first() is not None:
             raise UserErrors.UserAlreadyExistsException("An user already exists with that e-mail.")
 
         user = User(email=email,
-                    password=Utils.hash_password(password),
-                    courses=[])
+                    password=Utils.hash_password(password))
 
-        user.save_to_db()
+        db.session.add(user)
+        db.session.commit()
         return user
 
-    @staticmethod
-    def is_course_creator(email):
-        if email is not None:
-            user = User.find_by_email(email)
-            return len(user.courses) > 0
-
-    def save_to_db(self):
-        Database.insert(UserConstants.COLLECTION, self.json(private=True))
+    def is_course_creator(self):
+        return len(self.courses.all()) > 0
 
     def allowed(self, course=None):
         if course is not None:
             return course in self.courses
         return True
+
+    def remove_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()

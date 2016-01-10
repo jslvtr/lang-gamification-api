@@ -1,3 +1,3 @@
 __author__ = 'jslvtr'
 
-COLLECTION = "users"
+TABLE_NAME = "user"

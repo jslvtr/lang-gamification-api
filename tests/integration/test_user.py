@@ -1,9 +1,7 @@
 from unittest import TestCase
-from app import get_db
-from common.database import Database
+from app import get_db, db
 from models.users.user import User
 import models.users.errors as UserErrors
-import models.users.constants as UserConstants
 
 __author__ = 'jslvtr'
 
@@ -14,19 +12,21 @@ class TestUserIntegration(TestCase):
         get_db()
 
     def tearDown(self):
-        Database.remove(UserConstants.COLLECTION, {"email": {"$regex": ".*@example.com"}})
+        for user in User.query.filter(User.email.endswith('@example.com')).all():
+            db.session.delete(user)
+        db.session.commit()
 
     def test_find_by_id(self):
         # Register user first
         user = User.register("findbyid@example.com", "123")
 
         # Find by id
-        self.assertIsNotNone(User.find_by_id(user.get_id()))
+        self.assertIsNotNone(User.query.filter_by(id=user.id).first())
 
     def test_find_by_email(self):
         user = User.register("findbyemail@example.com", "123")
 
-        self.assertIsNotNone(User.find_by_email(user.email))
+        self.assertIsNotNone(User.query.filter_by(email=user.email).first())
 
     def test_register_user(self):
         user = User.register("register@example.com", "123")

@@ -1,3 +1,3 @@
 __author__ = 'jslvtr'
 
-COLLECTION = "modules"
+COLLECTION = "course"

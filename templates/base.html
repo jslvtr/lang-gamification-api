@@ -30,7 +30,7 @@
                 <li><a href="/" title="Home">Home</a></li>
                 <li><a href="https://medium.com/language-gamification" title="Blog">Blog</a></li>
 
-                {% if user_email %}
+                {% if user %}
                     {% if is_course_creator %}
                         <li><a href="/courses"><span class="glyphicon glyphicon-briefcase"></span> Your Courses</a></li>
                     {% endif %}

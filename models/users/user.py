@@ -1,11 +1,6 @@
 import models.users.errors as UserErrors
 import common.utils as Utils
 import models.users.constants as UserConstants
-import logging
-import sys
-logging.basicConfig(level=logging.INFO)
-log = logging.getLogger(__name__)
-log.warn(sys.path)
 from app import db
 
 __author__ = 'jslvtr'
@@ -17,10 +12,12 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(255), unique=False)
+    access = db.Column(db.Integer)
 
-    def __init__(self, email, password):
+    def __init__(self, email, password, access=UserConstants.USER_TYPES['USER']):
         self.email = email
         self.password = password
+        self.access = access
 
     def __repr__(self):
         return "<User {}>".format(self.email)
@@ -57,12 +54,20 @@ class User(db.Model):
         return user
 
     def is_course_creator(self):
-        return len(self.courses.all()) > 0
+        return self.access > UserConstants.USER_TYPES['USER']
 
-    def allowed(self, course=None):
-        if course is not None:
+    def is_admin(self):
+        return self.access == UserConstants.USER_TYPES['ADMIN']
+
+    def allowed(self, access, course=None):
+        if self.is_admin():
+            return True
+        elif self.access >= access and course is not None:
             return course in self.courses
-        return True
+        return self.access >= access
+
+    def allowed_course(self, course):
+        return self.allowed(1, course)
 
     def remove_from_db(self):
         db.session.delete(self)

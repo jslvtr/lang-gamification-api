@@ -32,7 +32,7 @@ class TestUser(TestCase):
         pass
 
     def test_allowed_no_course(self):
-        self.assertTrue(TestUser.user.allowed())
+        self.assertTrue(TestUser.user.allowed(0))
 
     def test_repr(self):
         self.assertEqual("<User {}>".format(TestUser.user.email),

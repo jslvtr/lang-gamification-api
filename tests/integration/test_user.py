@@ -1,12 +1,9 @@
 from unittest import TestCase
-import logging
-import sys
-logging.basicConfig(level=logging.INFO)
-log = logging.getLogger(__name__)
-log.warn(sys.path)
 from app import get_db, db
+from models.courses.course import Course
 from models.users.user import User
 import models.users.errors as UserErrors
+import models.users.constants as UserConstants
 
 __author__ = 'jslvtr'
 
@@ -19,6 +16,8 @@ class TestUserIntegration(TestCase):
     def tearDown(self):
         for user in User.query.filter(User.email.endswith('@example.com')).all():
             db.session.delete(user)
+        for course in Course.query.filter(Course.name.endswith("_test")).all():
+            db.session.delete(course)
         db.session.commit()
 
     def test_find_by_id(self):
@@ -32,6 +31,39 @@ class TestUserIntegration(TestCase):
         user = User.register("findbyemail@example.com", "123")
 
         self.assertIsNotNone(User.query.filter_by(email=user.email).first())
+
+    def test_allowed_creator(self):
+        user = User.register("testallowed@example.com", "123")
+        course = Course("testallowed_test", user)
+
+        user.save_to_db()
+        course.save_to_db()
+        user.access = 1
+
+        self.assertTrue(user.allowed_course(course))
+
+    def test_not_allowed_creator(self):
+        user = User.register("testnotallowed@example.com", "123")
+        course = Course("testnotallowed_test", None)
+
+        user.save_to_db()
+        course.save_to_db()
+
+        self.assertFalse(user.allowed_course(course))
+
+    def test_allowed_admin(self):
+        user = User.register("testallowed@example.com", "123")
+        course = Course("testallowed_test", user)
+        course2 = Course("testnotallowed_test", None)
+
+        user.save_to_db()
+        course.save_to_db()
+        course2.save_to_db()
+
+        user.access = UserConstants.USER_TYPES['ADMIN']
+
+        self.assertTrue(user.allowed_course(course))
+        self.assertTrue(user.allowed_course(course2))
 
     def test_register_user(self):
         user = User.register("register@example.com", "123")

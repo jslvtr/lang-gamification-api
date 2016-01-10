@@ -1,9 +1,4 @@
 from unittest import TestCase
-import logging
-import sys
-logging.basicConfig(level=logging.INFO)
-log = logging.getLogger(__name__)
-log.warn(sys.path)
 from app import get_db, db
 from models.courses.course import Course
 from models.users.user import User
@@ -47,30 +42,13 @@ class TestCourseIntegration(TestCase):
         with self.assertRaises(CourseErrors.CourseNotFoundException):
             Course.find(name="test_not_found")
 
-    def test_allowed(self):
-        user = User.register("testallowed@testcourse.com", "123")
-        course = Course("testallowed_test", user)
-
-        user.save_to_db()
-        course.save_to_db()
-
-        self.assertTrue(Course.allowed(course.id, user))
-
-    def test_not_allowed(self):
-        user = User.register("testnotallowed@testcourse.com", "123")
-        course = Course("testnotallowed_test", None)
-
-        user.save_to_db()
-        course.save_to_db()
-
-        self.assertFalse(Course.allowed(course.id, user))
-
     def test_delete(self):
         user = User.register("testdelete@testcourse.com", "123")
         course = Course("testdelete_test", user)
 
         user.save_to_db()
         course.save_to_db()
+        user.access = 1
 
         Course.delete(course.id, user)
         self.assertEqual(len(Course.query.filter_by(id=course.id).all()), 0)

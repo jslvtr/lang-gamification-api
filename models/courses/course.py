@@ -2,11 +2,6 @@ import datetime
 import models.courses.constants as CourseConstants
 import models.courses.errors as CourseErrors
 from models.courses.errors import NotOwnerException
-import logging
-import sys
-logging.basicConfig(level=logging.INFO)
-log = logging.getLogger(__name__)
-log.warn(sys.path)
 from app import db
 
 __author__ = 'jslvtr'
@@ -41,14 +36,10 @@ class Course(db.Model):
         return query
 
     @staticmethod
-    def allowed(course_id, user):
-        return course_id in [course.id for course in user.courses.all()]
-
-    @staticmethod
     def delete(course_id, user):
         course = Course.query.filter_by(id=course_id).first()
 
-        if Course.allowed(course_id, user):
+        if user.allowed_course(course):
             course.remove_from_db()
         else:
             raise NotOwnerException("You are not the owner of this Course, so you cannot delete it.")

@@ -10,6 +10,8 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'data.db')
 DATABASE_CONNECT_OPTIONS = {}
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
+WEBPACK_MANIFEST_PATH = os.path.join(_basedir, 'build', 'manifest.json')
+
 THREADS_PER_PAGE = 8
 
 WTF_CSRF_ENABLED = True

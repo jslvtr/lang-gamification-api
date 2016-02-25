@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, g, session
+from flask import Flask, render_template, g, session
 import os
 
 from flask.ext.sqlalchemy import SQLAlchemy
+from werkzeug.serving import run_simple
 
 import logging
 
@@ -35,30 +36,19 @@ def get_db():
     db.create_all()
 
 
-@app.after_request
-def serve_layout(response):
-    if response.content_type == 'text/html; charset=utf-8' and 'static/' not in request.base_url:
-        data = response.get_data()
-        data = data.decode('utf-8')
-        if g.user:
-            log.info("Request part of a session with valid user object.")
-        else:
-            log.info("Not a valid user object in the current request.")
-        log.info("Rendering base.html template.")
-        data = render_template('base.html', is_course_creator=g.user.is_course_creator() if g.user else False,
-                               data=data,
-                               user=g.user)
-        log.info("base.html template rendered, setting data of response and returning.")
-        response.set_data(data)
-        response.direct_passthrough = False
-
-        return response
-    return response
-
-
 @app.route('/')
 def index():
-    return 'Hello World!'
+    return render_template('home.html')
+
+
+@app.before_request
+def before_request():
+    """
+    pull user's profile from the database before every request are treated
+    """
+    g.user = None
+    if 'user_id' in session:
+        g.user = User.query.get(session['user_id'])
 
 
 from models.users.views import bp as userViews
@@ -72,15 +62,5 @@ app.register_blueprint(userViews)
 from models.users.user import User
 from models.courses.course import Course
 
-
-@app.before_request
-def before_request():
-    """
-    pull user's profile from the database before every request are treated
-    """
-    g.user = None
-    if 'user_id' in session:
-        g.user = User.query.get(session['user_id'])
-
 if __name__ == '__main__':
-    app.run(port=4995)
+    run_simple('localhost', 4995, app)

@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 __author__ = 'jslvtr'
 
-bp = Blueprint('user', __name__, url_prefix='/users')
+bp = Blueprint('users', __name__, url_prefix='/users')
 
 
 @bp.route('/login', methods=['POST', 'GET'])
@@ -32,7 +32,7 @@ def login():
         log.info("User logged in, redirecting to profile.")
         return redirect(url_for('.profile'))
     log.info("Form not valid or this is GET request, presenting users/login.html template")
-    return render_template('users/login.html', form=form)
+    return render_template('users/login.html', form=form, bg="#3498DB")
 
 
 @bp.route('/register', methods=['POST', 'GET'])
@@ -54,7 +54,7 @@ def register():
         log.info("User logged in, redirecting to profile.")
         return redirect(url_for('.profile'))
     log.info("Form not valid or this is GET request, presenting users/register.html template")
-    return render_template('users/register.html', form=form)
+    return render_template('users/register.html', form=form, bg="#3498DB")
 
 
 @bp.route('/profile')

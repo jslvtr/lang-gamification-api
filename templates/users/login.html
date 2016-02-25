@@ -1,8 +1,25 @@
+{% extends 'base.html' %}
 {% from "forms/macros.html" import render_field %}
-<form method="POST" class="form">
-    {{ form.csrf_token }}
-    {{ render_field(form.email, class="input text form-control") }}
-    {{ render_field(form.password, class="input text form-control") }}
-    <input type="submit" value="Login" class="btn btn-success">
-</form>
-<a href="{{ url_for('user.register') }}">Register</a>
+{% block content %}
+    <div class="background">
+        <div class="container">
+            <div class="form">
+                <h1 class="sign-up-title">Sign in</h1>
+
+                <form method="POST" class="form-horizontal">
+                    {{ form.csrf_token }}
+                    {{ render_field(form.email, True, class="input text form-control") }}
+                    {{ render_field(form.password, True, class="input text form-control") }}
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">SIGN IN</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <a href="{{ url_for('users.register') }}">Register instead</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

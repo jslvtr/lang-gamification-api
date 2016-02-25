@@ -1,55 +1,114 @@
-.content {
-    max-width: 720px;
-    margin: 90px auto;
-}
-#custom-nav {
-    background-color: #7aaab6;
-    margin-top: 0;
-}
-
-.navbar .nav > li > a, .navbar .nav > li > a:visited, .navbar .nav > li > a:active, .navbar .nav > li > a:hover{
-    color: white;
-    text-shadow: none;
-}
-.navbar .nav > li > a:active, .navbar .nav > li > a:hover{
-    color: #222;
-    text-shadow: none;
-}
-#logo-container {
-    width: 100%;
-    height: 50px;
-    margin: 0;
-    margin-left: -20px;
-
-    background-color: #7aaab6;
-}
-@media only screen and (max-width: 480px) {
-    #logo-container {
-        margin-left: 0;
-}}
-@media only screen and (max-width: 767px) {
-    #logo-container {
-        margin-left: 0;
-}}
-#logo-container > a {
-    margin-left: 20px;
-    padding-top: 10px;
+.navbar {
+    background-color: #3498DB;
+    height: 70px;
+    border: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    margin-bottom: 0;
 }
 
-.dropdown-toggle:active, .open .dropdown-toggle {background:#FFF !important; color:#000 !important;}
-
-
-.content {
-    max-width: 720px;
-    margin: 90px auto;
+.navbar-header {
+    height: 62px;
 }
-.navbar-brand > img {
-    margin-left: 5px;
-    vertical-align: middle;
+
+.navbar-header .navbar-brand {
+    color: #ebebeb;
 }
-.navbar-brand {
-    padding-top: 0;
-    padding-left: 0;
-    padding-bottom: 0;
-    padding-right: 16px;
+
+.navbar-collapse.collapse.in {
+    background-color: #3498DB;
+}
+
+.navbar-collapse.collapsing {
+    background-color: #3498DB;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ebebeb;
+}
+
+.navbar .container {
+    padding-top: 8px;
+    padding-bottom: 10px;
+}
+
+.navbar-nav.nav li a {
+    text-transform: uppercase;
+    color: #ebebeb;
+}
+
+.background {
+    background-color: #3498DB;
+}
+
+.center-vertical {
+    margin: auto;
+}
+
+.jumbotron {
+    text-align: center;
+    min-height: 560px;
+    display: flex;
+    align-items: center;
+}
+
+.jumbotron h1 {
+    color: #ebebeb;
+    font-size: 2em;
+    font-weight: 300;
+}
+
+.jumbotron .btn {
+    border-radius: 25px;
+    font-size: 12px;
+    background-color: #ebebeb;
+    border: 0;
+    padding: 15px 50px;
+    margin-top: 10px;
+}
+
+.jumbotron .btn:hover {
+    background-color: #dfdfdf;
+}
+
+.jumbotron .btn{
+    color: #000000;
+}
+
+.form {
+    max-width: 480px;
+    margin: 80px auto;
+}
+
+form label {
+    color: #ebebeb;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
+.form a {
+    color: #ebebeb;
+    text-decoration: underline;
+}
+
+.form .btn {
+    border-radius: 25px;
+    background-color: #ebebeb;
+    border: 0;
+    color: #000000;
+    padding: 10px 35px;
+    margin-top: 10px;
+}
+
+.form .btn:hover {
+    background-color: #dfdfdf;
+}
+
+.sign-up-title {
+    color: #ebebeb;
+    font-size: 2.5em;
+    font-weight: 300;
+    margin: 0 auto 50px auto;
+    width: 113px;
 }

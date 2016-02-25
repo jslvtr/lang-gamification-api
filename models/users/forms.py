@@ -6,14 +6,14 @@ __author__ = 'josesalvatierra'
 
 
 class LoginForm(Form):
-    email = StringField('Email address', [DataRequired(), Email()])
+    email = StringField('Email', [DataRequired(), Email()])
     password = PasswordField('Password', [DataRequired()])
 
 
 class RegisterForm(Form):
-    email = StringField('Email address', [DataRequired(), Email()])
+    email = StringField('Email', [DataRequired(), Email()])
     password = PasswordField('Password', [DataRequired()])
-    confirm = PasswordField('Repeat Password', [
+    confirm = PasswordField('Confirm', [
       DataRequired(),
       EqualTo('password', message='The passwords do not match.')
       ])

@@ -1,1 +1,8 @@
-<p>Hi {{ user.email }}!</p>
+{% extends 'base.html' %}
+{% block content %}
+    <div class="background">
+        <div class="container">
+            <h4>Hi {{ user.email }}</h4>
+        </div>
+    </div>
+{% endblock %}

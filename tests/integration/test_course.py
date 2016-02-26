@@ -1,8 +1,8 @@
 from unittest import TestCase
 from app import get_db, db
-from models.courses.course import Course
+from models.modules.module import Module
 from models.users.user import User
-import models.courses.errors as CourseErrors
+import models.modules.errors as CourseErrors
 
 __author__ = 'jslvtr'
 
@@ -15,7 +15,7 @@ class TestCourseIntegration(TestCase):
     def tearDown(self):
         for user in User.query.filter(User.email.endswith('@testcourse.com')).all():
             db.session.delete(user)
-        for course in Course.query.filter(Course.name.endswith("_test")).all():
+        for course in Module.query.filter(Module.name.endswith("_test")).all():
             db.session.delete(course)
         db.session.commit()
 
@@ -23,59 +23,59 @@ class TestCourseIntegration(TestCase):
         # Register user first
         user = User.register("findbyid@testcourse.com", "123")
         # Create the course to test
-        course = Course("findbyid_test", user)
+        course = Module("findbyid_test", user)
         course.save_to_db()
 
         # Find by id
-        self.assertIsNotNone(Course.query.filter_by(id=course.id).first())
+        self.assertIsNotNone(Module.query.filter_by(id=course.id).first())
 
     def test_find_by_name(self):
         # Register user first
         user = User.register("findbyname@testcourse.com", "123")
         # Create the course to test
-        course = Course("findbyname_test", user)
+        course = Module("findbyname_test", user)
 
         # Find by id
-        self.assertIsNotNone(Course.query.filter_by(name=course.name).first())
+        self.assertIsNotNone(Module.query.filter_by(name=course.name).first())
 
     def test_course_not_found(self):
         with self.assertRaises(CourseErrors.CourseNotFoundException):
-            Course.find(name="test_not_found")
+            Module.find(name="test_not_found")
 
     def test_delete(self):
         user = User.register("testdelete@testcourse.com", "123")
-        course = Course("testdelete_test", user)
+        course = Module("testdelete_test", user)
 
         user.save_to_db()
         course.save_to_db()
         user.access = 1
 
-        Course.delete(course.id, user)
-        self.assertEqual(len(Course.query.filter_by(id=course.id).all()), 0)
+        Module.delete(course.id, user)
+        self.assertEqual(len(Module.query.filter_by(id=course.id).all()), 0)
 
     def test_delete_not_allowed(self):
         user = User.register("testdelete_notallowed@testcourse.com", "123")
-        course = Course("testdelete_notallowed_test", None)
+        course = Module("testdelete_notallowed_test", None)
 
         with self.assertRaises(CourseErrors.NotOwnerException):
-            Course.delete(course.id, user)
+            Module.delete(course.id, user)
 
     def test_save_to_db(self):
         user = User.register("savedb@testcourse.com", "123")
-        course = Course("savedb_test", user)
+        course = Module("savedb_test", user)
 
         course.save_to_db()
 
-        self.assertIsNotNone(Course.query.filter_by(name=course.name).first())
+        self.assertIsNotNone(Module.query.filter_by(name=course.name).first())
 
     def test_remove_from_db(self):
         user = User.register("removedb@testcourse.com", "123")
-        course = Course("removedb_test", user)
+        course = Module("removedb_test", user)
 
         course.save_to_db()
 
-        self.assertIsNotNone(Course.query.filter_by(name=course.name).first())
+        self.assertIsNotNone(Module.query.filter_by(name=course.name).first())
 
         course.remove_from_db()
 
-        self.assertEqual(len(Course.query.filter_by(id=course.id).all()), 0)
+        self.assertEqual(len(Module.query.filter_by(id=course.id).all()), 0)

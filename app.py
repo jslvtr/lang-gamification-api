@@ -55,12 +55,12 @@ from models.users.views import bp as userViews
 
 app.register_blueprint(userViews)
 
-# from models.courses.views import courseViews
+# from models.modules.views import courseViews
 # app.register_blueprint(courseViews)
 
 # Have to import these at the bottom so SQLAlchamy sees them and can create the tables associated with the models.
 from models.users.user import User
-from models.courses.course import Course
+from models.modules.module import Module
 
 if __name__ == '__main__':
     run_simple('localhost', 4995, app)

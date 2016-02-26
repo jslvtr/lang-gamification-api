@@ -1,6 +1,6 @@
 from unittest import TestCase
 from app import get_db, db
-from models.courses.course import Course
+from models.modules.module import Module
 from models.users.user import User
 import models.users.errors as UserErrors
 import models.users.constants as UserConstants
@@ -16,7 +16,7 @@ class TestUserIntegration(TestCase):
     def tearDown(self):
         for user in User.query.filter(User.email.endswith('@example.com')).all():
             db.session.delete(user)
-        for course in Course.query.filter(Course.name.endswith("_test")).all():
+        for course in Module.query.filter(Module.name.endswith("_test")).all():
             db.session.delete(course)
         db.session.commit()
 
@@ -34,7 +34,7 @@ class TestUserIntegration(TestCase):
 
     def test_allowed_creator(self):
         user = User.register("testallowed@example.com", "123")
-        course = Course("testallowed_test", user)
+        course = Module("testallowed_test", user)
 
         user.save_to_db()
         course.save_to_db()
@@ -44,7 +44,7 @@ class TestUserIntegration(TestCase):
 
     def test_not_allowed_creator(self):
         user = User.register("testnotallowed@example.com", "123")
-        course = Course("testnotallowed_test", None)
+        course = Module("testnotallowed_test", None)
 
         user.save_to_db()
         course.save_to_db()
@@ -53,8 +53,8 @@ class TestUserIntegration(TestCase):
 
     def test_allowed_admin(self):
         user = User.register("testallowed@example.com", "123")
-        course = Course("testallowed_test", user)
-        course2 = Course("testnotallowed_test", None)
+        course = Module("testallowed_test", user)
+        course2 = Module("testnotallowed_test", None)
 
         user.save_to_db()
         course.save_to_db()

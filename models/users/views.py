@@ -1,8 +1,9 @@
 from flask import Blueprint, request, session, render_template, redirect, url_for, g
 import models.users.errors as UserErrors
-from models.users.forms import LoginForm, RegisterForm
+from models.users.forms import LoginForm, RegisterForm, CreateCourseForm
 import logging
 from models.users.user import User
+from models.users.decorators import requires_login
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -15,6 +16,8 @@ bp = Blueprint('users', __name__, url_prefix='/users')
 
 @bp.route('/login', methods=['POST', 'GET'])
 def login():
+    if g.user:
+        return redirect(url_for('.profile'))
     log.info("Called /login endpoint, creating form")
     form = LoginForm(request.form)
     log.info("Form created, validating...")
@@ -37,6 +40,8 @@ def login():
 
 @bp.route('/register', methods=['POST', 'GET'])
 def register():
+    if g.user:
+        return redirect(url_for('.profile'))
     log.info("Called /register endpoint, creating form")
     form = RegisterForm(request.form)
     log.info("Form created, validating...")
@@ -58,11 +63,9 @@ def register():
 
 
 @bp.route('/profile')
+@requires_login
 def profile():
-    user = User.query.filter_by(id=session['user_id']).first() if 'user_id' in session.keys() else None
-    if not user:
-        return redirect(url_for('.login', message="You need to be logged in to access that!"))
-    return render_template('users/profile.html', user=user)
+    return render_template('users/profile.html')
 
 
 @bp.route('/logout')

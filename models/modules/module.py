@@ -1,26 +1,28 @@
 import datetime
-import models.courses.constants as CourseConstants
-import models.courses.errors as CourseErrors
-from models.courses.errors import NotOwnerException
+import models.modules.constants as CourseConstants
+import models.modules.errors as CourseErrors
+from models.modules.errors import NotOwnerException
 from app import db
 
 __author__ = 'jslvtr'
 
 
-class Course(db.Model):
+class Module(db.Model):
 
     __tablename__ = CourseConstants.COLLECTION
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
     created_date = db.Column(db.DateTime)
+    public = db.Column(db.Boolean)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     owner = db.relationship('User',
-                            backref=db.backref('courses', lazy='dynamic'))
+                            backref=db.backref('modules', lazy='dynamic'))
 
-    def __init__(self, name, user_owner, created_date=None):
+    def __init__(self, name, user_owner, public=False, created_date=None):
         self.name = name
         self.owner = user_owner
+        self.public = public
         self.created_date = created_date or datetime.datetime.utcnow()
 
     def __repr__(self):
@@ -29,15 +31,21 @@ class Course(db.Model):
     @classmethod
     def find(cls, **kwargs):
         query = cls.query.filter_by(**kwargs)
-        if not query.first():
+        elems = query.all()
+        if len(elems) < 1:
             raise CourseErrors.CourseNotFoundException("The course to be found with kwargs {} cannot be found.".format(
                 kwargs
             ))
-        return query
+        return elems
+
+    @classmethod
+    def find_public(cls, **kwargs):
+        kwargs.update({'public': True})
+        return cls.find(**kwargs)
 
     @staticmethod
     def delete(course_id, user):
-        course = Course.query.filter_by(id=course_id).first()
+        course = Module.query.filter_by(id=course_id).first()
 
         if user.allowed_course(course):
             course.remove_from_db()

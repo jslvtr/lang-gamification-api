@@ -31,6 +31,7 @@ def teach():
                             g.user,
                             form.public.data)
             course.save_to_db()
+            g.user.make_module_creator()
             log.info("Module created.")
         except ModuleErrors.CourseError as e:
             log.warn("Module error with message '{}', redirecting to teach".format(e.message))
@@ -44,4 +45,12 @@ def teach():
 @bp.route('/dashboard')
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def dashboard():
-    return "This is the teaching dashboard"
+    if not g.user.is_course_creator():
+        return redirect(url_for('.teach'))
+    return render_template('modules/dashboard.html', modules=g.user.modules.all())
+
+
+@bp.route('/module/<string:id>')
+@requires_access_level(UserConstants.USER_TYPES['CREATOR'])
+def module(id):
+    return "The module page for module {}.".format(id)

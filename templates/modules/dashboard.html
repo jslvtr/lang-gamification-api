@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% from "forms/macros.html" import render_field, render_checkbox %}
+{% block content %}
+    <div class="container">
+        <h1>You are a module creator!</h1>
+        {% for module in modules %}
+            <div class="list-group">
+                <a href="{{ url_for('modules.module', id=module.id) }}" class="list-group-item">
+                    <h4 class="list-group-item-heading">{{ module.name }}</h4>
+                    <p class="list-group-item-text">This course is {{ 'public' if module.public else 'private' }}.</p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

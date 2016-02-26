@@ -76,3 +76,8 @@ class User(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+    def make_module_creator(self):
+        if not self.is_course_creator():
+            self.access = UserConstants.USER_TYPES['CREATOR']
+        self.save_to_db()

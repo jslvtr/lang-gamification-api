@@ -20,4 +20,4 @@ class TestCourse(TestCase):
     def test_repr(self):
         course = Module("test_course", None)
 
-        self.assertEqual(str(course), "<Course test_course>")
+        self.assertEqual(str(course), "<Module test_course>")

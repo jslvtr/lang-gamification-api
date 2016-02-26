@@ -63,7 +63,7 @@ class User(db.Model):
         if self.is_admin():
             return True
         elif self.access >= access and course is not None:
-            return course in self.courses
+            return course in self.modules
         return self.access >= access
 
     def allowed_course(self, course):

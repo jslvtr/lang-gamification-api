@@ -34,22 +34,22 @@ class TestUserIntegration(TestCase):
 
     def test_allowed_creator(self):
         user = User.register("testallowed@example.com", "123")
-        course = Module("testallowed_test", user)
+        module = Module("testallowed_test", user)
 
         user.save_to_db()
-        course.save_to_db()
+        module.save_to_db()
         user.access = 1
 
-        self.assertTrue(user.allowed_course(course))
+        self.assertTrue(user.allowed_course(module))
 
     def test_not_allowed_creator(self):
         user = User.register("testnotallowed@example.com", "123")
-        course = Module("testnotallowed_test", None)
+        module = Module("testnotallowed_test", None)
 
         user.save_to_db()
-        course.save_to_db()
+        module.save_to_db()
 
-        self.assertFalse(user.allowed_course(course))
+        self.assertFalse(user.allowed_course(module))
 
     def test_allowed_admin(self):
         user = User.register("testallowed@example.com", "123")

@@ -26,14 +26,14 @@ class Module(db.Model):
         self.created_date = created_date or datetime.datetime.utcnow()
 
     def __repr__(self):
-        return "<Course {}>".format(self.name)
+        return "<Module {}>".format(self.name)
 
     @classmethod
     def find(cls, **kwargs):
         query = cls.query.filter_by(**kwargs)
         elems = query.all()
         if len(elems) < 1:
-            raise CourseErrors.CourseNotFoundException("The course to be found with kwargs {} cannot be found.".format(
+            raise CourseErrors.CourseNotFoundException("The module to be found with kwargs {} cannot be found.".format(
                 kwargs
             ))
         return elems
@@ -50,7 +50,7 @@ class Module(db.Model):
         if user.allowed_course(course):
             course.remove_from_db()
         else:
-            raise NotOwnerException("You are not the owner of this Course, so you cannot delete it.")
+            raise NotOwnerException("You are not the owner of this Module, so you cannot delete it.")
 
     def save_to_db(self):
         db.session.add(self)

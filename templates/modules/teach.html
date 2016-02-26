@@ -4,22 +4,17 @@
     <div>
         <div class="container">
             <div class="form">
-                <h1 class="sign-up-title">Welcome</h1>
+                <h1 class="sign-up-title">Create course</h1>
 
                 <form method="POST" class="form-horizontal">
                     {{ form.csrf_token }}
-                    {{ render_field(form.email, True, class="input text form-control") }}
-                    {{ render_field(form.password, True, class="input text form-control") }}
-                    {{ render_field(form.confirm, True, class="input text form-control") }}
-                    {{ render_checkbox(form.accept_tos, True,
+                    {{ render_field(form.course_name, True, class="input text form-control") }}
+                    {{ render_checkbox(form.public, True,
     help="Check this box to accept the terms and conditions.") }}
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-default">SIGN UP</button>
+                            <button type="submit" class="btn btn-default">CREATE COURSE</button>
                         </div>
-                    </div>
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <a href="{{ url_for('users.login') }}">Already have an account?</a>
                     </div>
                 </form>
             </div>

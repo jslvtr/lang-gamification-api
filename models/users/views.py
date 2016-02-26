@@ -1,9 +1,10 @@
 from flask import Blueprint, request, session, render_template, redirect, url_for, g
 import models.users.errors as UserErrors
-from models.users.forms import LoginForm, RegisterForm, CreateCourseForm
+from models.users.forms import LoginForm, RegisterForm
 import logging
 from models.users.user import User
-from models.users.decorators import requires_login
+from models.users.decorators import requires_access_level
+import models.users.constants as UserConstants
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -63,7 +64,7 @@ def register():
 
 
 @bp.route('/profile')
-@requires_login
+@requires_access_level(UserConstants.USER_TYPES['USER'])
 def profile():
     return render_template('users/profile.html')
 

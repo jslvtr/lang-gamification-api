@@ -4,7 +4,7 @@ from flask import make_response, g, url_for, request, redirect
 __author__ = 'jslvtr'
 
 
-def requires_login(access_level):
+def requires_access_level(access_level):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):

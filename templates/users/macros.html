@@ -1,0 +1,29 @@
+{% macro render_resource(name, quantity, color, increase=None) %}
+    <div class="gray-background">
+        <div class="resource">
+            <div class="row">
+                <div class="col-xs-1 col-md-1 col-lg-2">
+                    <i class="fa fa-circle fa-lg" style="color: {{ color }}"></i>
+                </div>
+                <div class="col-xs-8 col-md-8 col-lg-9">
+                    <div>{{ quantity }} {{ render_increase(increase) }}</div>
+                    <div><strong>{{ name }}</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_increase(quantity) %}
+    {% if quantity %}
+        {% if quantity > 0 %}
+            <span style="color: #00B27C">
+                {{ '(+{})'.format(quantity) }}
+            </span>
+        {% elif quantity < 0 %}
+            <span style="color: #AC1A0D">
+                {{ '({})'.format(quantity) }}
+            </span>
+        {% endif %}
+    {% endif %}
+{% endmacro %}

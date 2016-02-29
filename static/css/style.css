@@ -111,3 +111,26 @@ form label {
     font-weight: 300;
     margin: 0 auto 50px auto;
 }
+
+.gray-background {
+    background-color: #EBEBEB;
+}
+
+.resource {
+    padding: 25px;
+    font-weight: 300;
+    font-size: 100%;
+    line-height: 1.1em;
+}
+
+@media (max-width: 640px) {
+    .resource {
+        font-size: 85%;
+        line-height: 1em;
+    }
+
+    .resource i {
+        font-size: 150%;
+    }
+}
+

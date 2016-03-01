@@ -6,7 +6,7 @@ from models.words.tag import Tag
 from models.words.word import Word
 from models.modules.module import Module
 from models.users.decorators import requires_access_level
-from models.words.forms import CreateWordForm
+from models.words.forms import CreateWordForm, WordSearchForm
 import models.words.errors as WordErrors
 import models.users.constants as UserConstants
 
@@ -49,9 +49,14 @@ def new(module_id):
     return render_template('words/new.html', form=form, bg="#3498DB", module=module)
 
 
-@bp.route('/module/<string:module_id>')
+@bp.route('/module/<string:module_id>', methods=['GET', 'POST'])
 @requires_access_level(UserConstants.USER_TYPES['CREATOR'])
 def word_list(module_id):
     if not g.user.is_course_creator():
         return redirect(url_for('.teach'))
-    return render_template('words/list.html', module=Module.query.get(module_id))
+    form = WordSearchForm(request.form)
+    if form.validate_on_submit():
+        search_term = form.term.data
+        words = Word.search_by_tag_or_name(search_term)
+        return render_template('words/list.html', module=Module.query.get(module_id), words=words, form=form)
+    return render_template('words/list.html', module=Module.query.get(module_id), form=form)

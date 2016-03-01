@@ -1,6 +1,7 @@
 from app import db
 import models.words.constants as WordConstants
 import common.helper_tables as HelperTables
+from models.words.tag import Tag
 
 
 class Word(db.Model):
@@ -31,3 +32,7 @@ class Word(db.Model):
     def remove_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+    @staticmethod
+    def search_by_tag_or_name(search_term):
+        return Word.query.filter(Word.tags.any(Tag.name.contains(search_term)) | Word.name.contains(search_term)).all()

@@ -27,3 +27,11 @@ class CreateWordForm(Form):
     tags = StringField('Tags',
                        [Regexp(r"[a-zA-Z]{0,}",
                                message="The tags may only contain letters.")])
+
+
+class WordSearchForm(Form):
+    term = StringField('Search',
+                       [Regexp(r"[a-zA-Z]*",
+                               message="The search may only contain letters."),
+                        Length(max=80,
+                            message="The search can be up to 80 characters long.")])

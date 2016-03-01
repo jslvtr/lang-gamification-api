@@ -44,7 +44,8 @@ class TestUserIntegration(TestCase):
 
     def test_not_allowed_creator(self):
         user = User.register("testnotallowed@example.com", "123")
-        module = Module("testnotallowed_test", None)
+        user2 = User.register("sampleuser_testnotallowed@example.com", "123")
+        module = Module("testnotallowed_test", user2)
 
         user.save_to_db()
         module.save_to_db()
@@ -53,10 +54,12 @@ class TestUserIntegration(TestCase):
 
     def test_allowed_admin(self):
         user = User.register("testallowed@example.com", "123")
+        user2 = User.register("testnotallowed_admin@example.com", "123")
         course = Module("testallowed_test", user)
-        course2 = Module("testnotallowed_test", None, students=[])
+        course2 = Module("testnotallowed_test", user2, students=[])
 
         user.save_to_db()
+        user2.save_to_db()
         course.save_to_db()
         course2.save_to_db()
 

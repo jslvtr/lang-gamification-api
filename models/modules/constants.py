@@ -1,3 +1,3 @@
 __author__ = 'jslvtr'
 
-COLLECTION = "course"
+TABLE_NAME = "module"

@@ -27,9 +27,9 @@ def teach():
     if form.validate_on_submit():
         log.info("Form validated, attempting to create module.")
         try:
-            course = Module(form.course_name.data,
-                            g.user,
-                            form.public.data)
+            course = Module(name=form.course_name.data,
+                            user_owner=g.user,
+                            public=form.public.data)
             course.save_to_db()
             g.user.make_module_creator()
             log.info("Module created.")

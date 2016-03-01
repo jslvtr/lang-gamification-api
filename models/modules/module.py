@@ -2,14 +2,14 @@ import datetime
 import models.modules.constants as CourseConstants
 import models.modules.errors as CourseErrors
 from models.modules.errors import NotOwnerException
+import common.helper_tables as HelperTables
 from app import db
 
 __author__ = 'jslvtr'
 
 
 class Module(db.Model):
-
-    __tablename__ = CourseConstants.COLLECTION
+    __tablename__ = CourseConstants.TABLE_NAME
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
     created_date = db.Column(db.DateTime)
@@ -18,11 +18,14 @@ class Module(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     owner = db.relationship('User',
                             backref=db.backref('modules', lazy='dynamic'))
+    students = db.relationship('User', secondary=HelperTables.students,
+                               backref=db.backref('studying', lazy='dynamic'))
 
-    def __init__(self, name, user_owner, public=False, created_date=None):
+    def __init__(self, name, user_owner, students=None, public=False, created_date=None):
         self.name = name
         self.owner = user_owner
         self.public = public
+        self.students = students or [user_owner]
         self.created_date = created_date or datetime.datetime.utcnow()
 
     def __repr__(self):
@@ -51,6 +54,11 @@ class Module(db.Model):
             course.remove_from_db()
         else:
             raise NotOwnerException("You are not the owner of this Module, so you cannot delete it.")
+
+    def add_student(self, user):
+        self.students.append(user)
+        db.session.add(self)
+        db.session.commit()
 
     def save_to_db(self):
         db.session.add(self)

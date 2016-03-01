@@ -1,0 +1,31 @@
+from app import db
+import models.cities.constants as CityConstants
+
+
+class City(db.Model):
+    __tablename__ = CityConstants.TABLE_NAME
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    gold = db.Column(db.Integer, unique=False)
+    dialog = db.Column(db.Integer, unique=False)
+    experience = db.Column(db.Integer, unique=False)
+    level = db.Column(db.Integer, unique=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    owner = db.relationship('User',
+                            backref=db.backref('cities', lazy='dynamic'))
+
+    def __init__(self, name, user_owner, gold=100, dialog=0, experience=0, level=1):
+        self.name = name
+        self.owner = user_owner
+        self.gold = gold
+        self.dialog = dialog
+        self.experience = experience
+        self.level = level
+
+    def next_level_experience(self):
+        return self.level * 50 + max(0, (self.level - 199) * 450)
+
+    def experience_required_to_level_up(self):
+        return self.next_level_experience() - self.experience

@@ -66,7 +66,7 @@ def register():
 @bp.route('/profile')
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def profile():
-    return render_template('users/profile.html')
+    return render_template('users/profile.html', next_suggested_investment=None)
 
 
 @bp.route('/logout')

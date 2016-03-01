@@ -1,9 +1,10 @@
-import math
+from flask import session
 
 import models.users.errors as UserErrors
 import common.utils as Utils
 import models.users.constants as UserConstants
 from app import db
+from models.cities.city import City
 
 __author__ = 'jslvtr'
 
@@ -83,3 +84,7 @@ class User(db.Model):
         if not self.is_course_creator():
             self.access = UserConstants.USER_TYPES['CREATOR']
         self.save_to_db()
+
+    def get_current_city(self):
+        return self.cities[0]
+        # return City.query.get(session['city_id'])

@@ -55,8 +55,9 @@ def word_list(module_id):
     if not g.user.is_course_creator():
         return redirect(url_for('.teach'))
     form = WordSearchForm(request.form)
+    module = Module.query.get(module_id)
     if form.validate_on_submit():
         search_term = form.term.data
-        words = Word.search_by_tag_or_name(search_term)
-        return render_template('words/list.html', module=Module.query.get(module_id), words=words, form=form)
-    return render_template('words/list.html', module=Module.query.get(module_id), form=form)
+        words = Word.search_by_tag_or_name(module_id, search_term)
+        return render_template('words/list.html', module=module, words=words, form=form)
+    return render_template('words/list.html', module=module, form=form)

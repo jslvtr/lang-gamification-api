@@ -1,5 +1,6 @@
 from flask import Blueprint, request, session, render_template, redirect, url_for, g
 import models.users.errors as UserErrors
+from models.cities.city import City
 from models.users.forms import LoginForm, RegisterForm
 import logging
 from models.users.user import User
@@ -66,7 +67,7 @@ def register():
 @bp.route('/profile')
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def profile():
-    return render_template('users/profile.html', next_suggested_investment=None)
+    return render_template('users/profile.html', city=g.user.get_current_city(), next_suggested_investment=None)
 
 
 @bp.route('/logout')

@@ -1,3 +1,5 @@
+from sqlalchemy import and_
+
 from app import db
 import models.words.constants as WordConstants
 import common.helper_tables as HelperTables
@@ -34,5 +36,5 @@ class Word(db.Model):
         db.session.commit()
 
     @staticmethod
-    def search_by_tag_or_name(search_term):
-        return Word.query.filter(Word.tags.any(Tag.name.contains(search_term)) | Word.name.contains(search_term)).all()
+    def search_by_tag_or_name(module_id, search_term):
+        return Word.query.filter(and_(Word.module_id == module_id, Word.tags.any(Tag.name.contains(search_term)) | Word.name.contains(search_term))).all()

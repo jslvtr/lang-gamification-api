@@ -4,7 +4,6 @@ from models.modules.module import Module
 from models.users.user import User
 from models.words.word import Word
 from models.words.tag import Tag
-import models.words.errors as WordErrors
 
 __author__ = 'jslvtr'
 
@@ -73,7 +72,7 @@ class TestWordIntegration(TestCase):
         for tag_from_db in tags_from_db:
             self.assertIn(tag_from_db.name, [t.name for t in tags])
 
-    def test_filter_words_with_tag(self):
+    def test_filter_words_in_module_with_tag(self):
         user = User.register("testfilterbytag@testcourse.com", "123")
         module = Module("testfilterbytag_test", user)
         tag_name = "testtagnameintegration"
@@ -93,19 +92,19 @@ class TestWordIntegration(TestCase):
         word.save_to_db()
         word2.save_to_db()
 
-        words_from_db = Word.search_by_tag_or_name(tag_name)
+        words_from_db = Word.search_by_tag_or_name(module.id, tag_name)
         self.assertEqual(len(words_from_db), 1)
 
-    def test_filter_words_by_name(self):
+    def test_filter_words_in_module_by_name(self):
         user = User.register("testfilterbyname@testcourse.com", "123")
         module = Module("testfilterbyname_test", user)
         module_name = "testfilterbynametestcoursexyz"
         word = Word(name=module_name,
-                     meaning="prueba",
-                     difficulty=3,
-                     module=module)
+                    meaning="prueba",
+                    difficulty=3,
+                    module=module)
 
         word.save_to_db()
 
-        words_from_db = Word.search_by_tag_or_name(module_name)
+        words_from_db = Word.search_by_tag_or_name(module.id, module_name)
         self.assertEqual(len(words_from_db), 1)

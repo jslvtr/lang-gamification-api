@@ -54,7 +54,7 @@ class TestUserIntegration(TestCase):
     def test_allowed_admin(self):
         user = User.register("testallowed@example.com", "123")
         course = Module("testallowed_test", user)
-        course2 = Module("testnotallowed_test", None)
+        course2 = Module("testnotallowed_test", None, students=[])
 
         user.save_to_db()
         course.save_to_db()

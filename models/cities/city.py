@@ -1,5 +1,6 @@
 from app import db
 import models.cities.constants as CityConstants
+import common.helper_tables as HelperTables
 
 
 class City(db.Model):
@@ -15,10 +16,13 @@ class City(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     owner = db.relationship('User',
                             backref=db.backref('cities', lazy='dynamic'))
+    modules = db.relationship('Module', secondary=HelperTables.cities_modules,
+                              backref=db.backref('cities', lazy='dynamic'))
 
-    def __init__(self, name, user_owner, gold=100, dialog=0, experience=0, level=1):
+    def __init__(self, name, user_owner, module, gold=100, dialog=0, experience=0, level=1):
         self.name = name
         self.owner = user_owner
+        self.modules = [module]
         self.gold = gold
         self.dialog = dialog
         self.experience = experience
@@ -29,3 +33,11 @@ class City(db.Model):
 
     def experience_required_to_level_up(self):
         return self.next_level_experience() - self.experience
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def remove_from_db(self):
+        db.session.delete(self)
+        db.session.commit()

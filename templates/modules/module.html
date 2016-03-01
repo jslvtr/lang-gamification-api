@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <h1>Module '{{ module.name }}'</h1>
+        <p>There are {{ module.students | length }} students registered for this course.</p>
+        <p>You have added {{ module.words.all() | length }} words to this module.</p>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <a href="{{ url_for('words.word_list', module_id=module.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-th-list"></span> View words
+                </a>
+                <a href="{{ url_for('words.new', module_id=module.id) }}" class="btn btn-success">
+                    <span class="glyphicon glyphicon-plus"></span> Add word
+                </a>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

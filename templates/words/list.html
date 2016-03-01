@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <h1>Word list for '{{ module.name }}'</h1>
+        <div class="list-group">
+            {% for word in module.words %}
+
+                <a href="#" class="list-group-item">
+                    <h4 class="list-group-item-heading">{{ word.name }}{% for tag in word.tags %}
+                        <span class="label label-default">{{ tag.name }}</span>{% endfor %}</h4>
+                    <p class="list-group-item-text">Meaning: <strong>{{ word.meaning }}</strong></p>
+                </a>
+
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('words.new', module_id=module.id) }}" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> Add new
+        </a>
+    </div>
+{% endblock %}

@@ -2,6 +2,7 @@ import logging
 
 from flask import Blueprint, redirect, url_for, request, g, render_template
 
+from models.cities.city import City
 from models.modules.module import Module
 from models.users.decorators import requires_access_level
 from models.modules.forms import CreateCourseForm
@@ -31,6 +32,10 @@ def teach():
                             user_owner=g.user,
                             public=form.public.data)
             course.save_to_db()
+            city = City(name=form.course_name.data,
+                        user_owner=g.user,
+                        module=course)
+            city.save_to_db()
             g.user.make_module_creator()
             log.info("Module created.")
         except ModuleErrors.CourseError as e:
@@ -53,4 +58,4 @@ def dashboard():
 @bp.route('/module/<string:id>')
 @requires_access_level(UserConstants.USER_TYPES['CREATOR'])
 def module(id):
-    return "The module page for module {}.".format(id)
+    return render_template('modules/module.html', module=Module.query.get(id))

@@ -1,1 +1,1 @@
-TABLE_NAME = 'cities'
+TABLE_NAME = 'city'

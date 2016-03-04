@@ -1,4 +1,5 @@
 from flask import session
+from sqlalchemy import and_
 
 import models.users.errors as UserErrors
 import common.utils as Utils
@@ -85,12 +86,20 @@ class User(db.Model):
         self.save_to_db()
 
     def get_current_city(self):
-        return self.cities[0] if len(self.cities.all()) > 0 else None
-        # return City.query.get(session['city_id'])
+        if session.get('city_id'):
+            return City.query.get(session['city_id'])
+        else:
+            return self.cities[0] if len(self.cities.all()) > 0 else None
+
+    def set_city(self, module):
+        city = City.query.filter(and_(City.module_id == module.id, City.owner_id >= self.id)).first()
+        session['city_id'] = city.id
 
     def enroll_in(self, module):
         module.students.append(self)
         module.save_to_db()
-        City(name=module.name,
-             user_owner=self,
-             module=module).save_to_db()
+        city = City(name=module.name,
+                    user_owner=self,
+                    module=module)
+        city.save_to_db()
+        session['city_id'] = city.id

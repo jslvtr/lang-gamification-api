@@ -38,7 +38,7 @@
             {% else %}
                 <p>There are {{ module.lectures.all() | length }} lectures in this module.</p>
 
-                <a href="{{ url_for('modules.join', module_id=module.id) }}" class="btn btn-success">
+                <a href="{{ url_for('modules.activate', module_id=module.id) }}" class="btn btn-success">
                     <span class="glyphicon glyphicon-log-in"></span> Join {{ module.students | length }} other students!
                 </a>
             {% endif %}

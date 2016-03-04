@@ -74,11 +74,16 @@ def public_modules():
     return render_template('modules/list.html', modules=Module.find_public(), form=form)
 
 
-@bp.route('/join/<string:module_id>')
+@bp.route('/activate/<string:module_id>')
 @requires_access_level(UserConstants.USER_TYPES['USER'])
-def join(module_id):
-    g.user.enroll_in(Module.query.get(module_id))
-    return redirect(url_for('.enrolled_in', module_id=module_id))
+def activate(module_id):
+    module_to_join = Module.query.get(module_id)
+    if g.user not in module_to_join.students:
+        g.user.enroll_in(module_to_join)
+        return redirect(url_for('.enrolled_in', module_id=module_id))
+    else:
+        g.user.set_city(module_to_join)
+        return redirect(url_for('users.profile'))
 
 
 @bp.route('/enrolled/<string:module_id>')

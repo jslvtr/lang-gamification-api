@@ -5,7 +5,7 @@ import models.lectures.constants as LectureConstants
 from models.searchable import SearchableModel
 
 
-class Lecture(db.Model):
+class Lecture(db.Model, SearchableModel):
     __tablename__ = LectureConstants.TABLE_NAME
 
     id = db.Column(db.Integer, primary_key=True)

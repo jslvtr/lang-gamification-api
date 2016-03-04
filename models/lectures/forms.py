@@ -14,6 +14,6 @@ class CreateLectureForm(Form):
                                max=80,
                                message="The lecture topic must be between 4 and 80 characters long.")])
     order = SelectField(label='Position',
-                        validators=[DataRequired()],
+                        validators=[],
                         coerce=int,
                         choices=[])

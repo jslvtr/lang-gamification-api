@@ -26,6 +26,8 @@ def new(module_id):
     form = CreateLectureForm(request.form)
     log.info("Form created, validating...")
     module = Module.query.get(module_id)
+    form.order.choices = [(len(module.lectures.all()), 'Last')] + [(x, str(x)) for x in range(0, len(module.lectures.all()))]
+
     if form.validate_on_submit():
         log.info("Form validated, attempting to create lecture.")
         try:
@@ -39,7 +41,6 @@ def new(module_id):
         log.info("Word created, redirecting to word list for this module.")
         return redirect(url_for('.lecture_list', module_id=module_id))
     log.info("Form not valid or this is GET request, presenting words/new.html template")
-    form.order.choices = [(0, 'Last')] + [(x, str(x)) for x in range(1, len(module.lectures.all()) + 1)]
     return render_template('lectures/new.html', form=form, bg="#3498DB", module=module)
 
 
@@ -52,6 +53,7 @@ def lecture_list(module_id):
     module = Module.query.get(module_id)
     if form.validate_on_submit():
         search_term = form.term.data
-        lectures = Lecture.search_by_name(module_id=module_id, search_term=search_term)
+        lectures = Lecture.search_by_name(module_id=module_id, search_term=search_term, order_by=Lecture.order, direction=1)
         return render_template('lectures/list.html', module=module, lectures=lectures, form=form)
-    return render_template('lectures/list.html', module=module, form=form)
+    lectures = Lecture.search_by_name(module_id=module_id, search_term="", order_by=Lecture.order, direction=1)
+    return render_template('lectures/list.html', module=module, lectures=lectures, form=form)

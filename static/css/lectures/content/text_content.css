@@ -1,0 +1,28 @@
+#editable {
+    font-size: 1.2em;
+    color: #5f5f5f;
+}
+
+button {
+    padding: 10px 20px;
+    color: #ffffff;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    font-size: 1.3em;
+    background: #3498DB;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+textarea {
+    border: 1px solid #d5d5d5;
+    padding: 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.active {
+    background: #256c9c;
+}

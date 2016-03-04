@@ -42,6 +42,9 @@
                     <span class="glyphicon glyphicon-log-in"></span> Join {{ module.students | length }} other students!
                 </a>
             {% endif %}
+            <a href="{{ url_for('lectures.lecture_list', module_id=module.id) }}" class="btn btn-default">
+                <span class="glyphicon glyphicon-th-list"></span> View lectures
+            </a>
         {% endif %}
     </div>
 {% endblock %}

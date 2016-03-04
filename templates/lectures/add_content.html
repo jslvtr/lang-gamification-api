@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <h1>Add content to lecture</h1>
+        <p>Choose from the options below to add content to the lecture.</p>
+        <div class="panel panel-default">
+            <div class="panel-heading">Content options</div>
+            <div class="panel-body">
+                <a href="{{ url_for('lectures.add_text_content', lecture_id=lecture.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-italic"></span> Add text content
+                </a>
+                <a href="#" class="btn btn-success">
+                    <span class="glyphicon glyphicon-play"></span> Add video content
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

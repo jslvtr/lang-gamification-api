@@ -13,6 +13,8 @@ class CreateLectureForm(Form):
                         Length(min=1,
                                max=80,
                                message="The lecture topic must be between 4 and 80 characters long.")])
+    description = StringField('Description',
+                              validators=[DataRequired(), Length(min=10, max=140)])
     order = SelectField(label='Position',
                         validators=[],
                         coerce=int,

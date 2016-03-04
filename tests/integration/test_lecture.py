@@ -28,7 +28,7 @@ class TestLecture(TestCase):
         module = Module(name="Spanish_test", user_owner=user, public=True)
         module.save_to_db()
 
-        lecture = Lecture(name="Fruits_test", order=1, module=module)
+        lecture = Lecture(name="Fruits_test", order=1, description="test", module=module)
         lecture.save_to_db()
 
         self.assertEqual(lecture.name, "Fruits_test")
@@ -42,10 +42,10 @@ class TestLecture(TestCase):
         module = Module(name="Spanish_test", user_owner=user, public=True)
         module.save_to_db()
 
-        lecture = Lecture(name="LectureInOrder_test", module=module)
+        lecture = Lecture(name="LectureInOrder_test", description="test", module=module)
         lecture.save_to_db()
 
-        lecture2 = Lecture(name="LectureInOrder2_test", module=module)
+        lecture2 = Lecture(name="LectureInOrder2_test", description="test", module=module)
         lecture2.save_to_db()
 
         self.assertEqual(lecture.order, 1)
@@ -58,10 +58,10 @@ class TestLecture(TestCase):
         module = Module(name="Spanish_test", user_owner=user, public=True)
         module.save_to_db()
 
-        lecture = Lecture(name="LectureInOrder_test", module=module)
+        lecture = Lecture(name="LectureInOrder_test", description="test", module=module)
         lecture.save_to_db()
 
-        lecture2 = Lecture(name="LectureInOrder2_test", module=module)
+        lecture2 = Lecture(name="LectureInOrder2_test", description="test", module=module)
         lecture2.save_to_db()
 
         lecture2.reorder(new_position=1)

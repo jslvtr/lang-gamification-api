@@ -1,10 +1,10 @@
 {% macro render_field(field, horizontal=False) %}
     <div class="form-group">
-        {{ field.label(class='col-sm-2 control-label') }}
+        {{ field.label(class='col-sm-3 control-label') }}
         {% if field.errors %}
             {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
             {% if horizontal %}
-                <div class="col-sm-10">
+                <div class="col-sm-9">
                     {{ field(class=css_class, **kwargs) }}
                 </div>
             {% else %}
@@ -14,7 +14,7 @@
                 <li>{{ error|e }}</li>{% endfor %}</ul>
         {% else %}
             {% if horizontal %}
-                <div class="col-sm-10">
+                <div class="col-sm-9">
                     {{ field(**kwargs) }}
                 </div>
             {% else %}

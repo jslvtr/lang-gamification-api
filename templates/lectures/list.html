@@ -20,9 +20,11 @@
             {% endfor %}
         </div>
 
-        <a href="{{ url_for('lectures.new', module_id=module.id) }}" class="btn btn-success">
-            <span class="glyphicon glyphicon-plus"></span> Add lecture
-        </a>
+        {% if is_owner %}
+            <a href="{{ url_for('lectures.new', module_id=module.id) }}" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus"></span> Add lecture
+            </a>
+        {% endif %}
     </div>
     {% if reorder %}
         <script type="application/javascript">

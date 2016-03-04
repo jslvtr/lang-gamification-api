@@ -10,15 +10,17 @@ class Lecture(db.Model, SearchableModel):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
+    description = db.Column(db.String(140))
     order = db.Column(db.Integer)
 
     module_id = db.Column(db.Integer, db.ForeignKey('module.id'))
     module = db.relationship('Module',
                              backref=db.backref('lectures', lazy='dynamic'))
 
-    def __init__(self, name, module, order=None):
+    def __init__(self, name, module, description, order=None):
         self.name = name
         self.order = order or len(module.lectures.all()) + 1
+        self.description = description
         self.module = module
 
     def __repr__(self):

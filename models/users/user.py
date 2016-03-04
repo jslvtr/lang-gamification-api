@@ -56,17 +56,19 @@ class User(db.Model):
         db.session.commit()
         return user
 
-    def is_course_creator(self):
+    def is_course_creator(self, module=None):
+        if module:
+            return self.access > UserConstants.USER_TYPES['USER'] and module in self.modules
         return self.access > UserConstants.USER_TYPES['USER']
 
     def is_admin(self):
         return self.access == UserConstants.USER_TYPES['ADMIN']
 
-    def allowed(self, access, course=None):
+    def allowed(self, access, module=None):
         if self.is_admin():
             return True
-        elif self.access >= access and course is not None:
-            return course in self.modules
+        elif self.access >= access and module is not None:
+            return module in self.modules
         return self.access >= access
 
     def allowed_course(self, course):

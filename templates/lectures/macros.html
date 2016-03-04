@@ -1,0 +1,11 @@
+{% macro render_lecture(lecture, reorder=False) %}
+    <a href="#" id="{{ lecture.id }}" class="list-group-item">
+        <h4 class="list-group-item-heading">
+            {% if reorder %}
+                <span class="glyphicon glyphicon-move" aria-hidden="true"></span>
+            {% endif %}
+            {{ lecture.name }}
+        </h4>
+        <p class="list-group-item-text">Nothing here yet!</p>
+    </a>
+{% endmacro %}

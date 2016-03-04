@@ -21,6 +21,9 @@ class Lecture(db.Model, SearchableModel):
         self.order = order or len(module.lectures.all()) + 1
         self.module = module
 
+    def __repr__(self):
+        return "<Lecture ID:{}, ORDER:{}, MODULE_ID:{}>".format(self.id, self.order, self.module_id)
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
@@ -33,13 +36,27 @@ class Lecture(db.Model, SearchableModel):
     def change_order(lecture_id, module_id, new_position):
         # Get every lecture in 'new_order' and over and shift them down by one.
         # Move 'lecture_id' into 'new_order' as you get to it.
-        lectures = Lecture.query.filter(and_(Lecture.module_id == module_id, Lecture.order >= new_position)).order_by(Lecture.order.asc()).all()
-        for lecture in lectures:
-            if lecture.id == lecture_id:
-                lecture.order = new_position
-            else:
-                lecture.order += 1
-            db.session.add(lecture)
+        changed_lecture = Lecture.query.get(lecture_id)
+        if changed_lecture.order == new_position:
+            return
+        elif changed_lecture.order < new_position:
+            # The lecture has moved from low position to high (later) position
+            lectures = Lecture.query.filter(and_(Lecture.module_id == module_id, Lecture.order <= new_position, Lecture.order >= changed_lecture.order)).order_by(Lecture.order.asc()).all()
+            for lecture in lectures:
+                if lecture.id == lecture_id:
+                    lecture.order = new_position
+                else:
+                    lecture.order -= 1
+                db.session.add(lecture)
+        else:
+            # The lecture has been moved from a high position to a low (earlier) position
+            lectures = Lecture.query.filter(and_(Lecture.module_id == module_id, Lecture.order >= new_position, Lecture.order <= changed_lecture.order)).order_by(Lecture.order.asc()).all()
+            for lecture in lectures:
+                if lecture.id == lecture_id:
+                    lecture.order = new_position
+                else:
+                    lecture.order += 1
+                db.session.add(lecture)
         db.session.commit()
 
     def reorder(self, new_position):

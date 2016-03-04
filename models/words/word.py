@@ -3,10 +3,11 @@ from sqlalchemy import and_
 from app import db
 import models.words.constants as WordConstants
 import common.helper_tables as HelperTables
+from models.searchable import SearchableModel
 from models.words.tag import Tag
 
 
-class Word(db.Model):
+class Word(db.Model, SearchableModel):
     __tablename__ = WordConstants.TABLE_NAME
 
     id = db.Column(db.Integer, primary_key=True)
@@ -35,6 +36,6 @@ class Word(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    @staticmethod
-    def search_by_tag_or_name(module_id, search_term):
-        return Word.query.filter(and_(Word.module_id == module_id, Word.tags.any(Tag.name.contains(search_term)) | Word.name.contains(search_term))).all()
+    @classmethod
+    def search_by_tag_or_name(cls, search_term, module_id=None):
+        return cls.query.filter(and_(cls.module_id == module_id, cls.tags.any(Tag.name.contains(search_term)) | cls.name.contains(search_term))).all()

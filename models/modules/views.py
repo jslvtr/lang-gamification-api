@@ -6,6 +6,7 @@ from models.cities.city import City
 from models.modules.module import Module
 from models.users.decorators import requires_access_level
 from models.modules.forms import CreateCourseForm
+from common.forms import SearchForm
 import models.modules.errors as ModuleErrors
 import models.users.constants as UserConstants
 
@@ -56,6 +57,31 @@ def dashboard():
 
 
 @bp.route('/module/<string:id>')
-@requires_access_level(UserConstants.USER_TYPES['CREATOR'])
+@requires_access_level(UserConstants.USER_TYPES['USER'])
 def module(id):
-    return render_template('modules/module.html', module=Module.query.get(id))
+    module = Module.query.get(id)
+    return render_template('modules/module.html', module=module, user_already_enrolled=g.user in module.students)
+
+
+@bp.route('/public', methods=['GET', 'POST'])
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def public_modules():
+    form = SearchForm(request.form)
+    if form.validate_on_submit():
+        search_term = form.term.data
+        modules = Module.search_by_name(search_term)
+        return render_template('modules/list.html', modules=modules, form=form)
+    return render_template('modules/list.html', modules=Module.find_public(), form=form)
+
+
+@bp.route('/join/<string:module_id>')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def join(module_id):
+    g.user.enroll_in(Module.query.get(module_id))
+    return redirect(url_for('.enrolled_in', module_id=module_id))
+
+
+@bp.route('/enrolled/<string:module_id>')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def enrolled_in(module_id):
+    return render_template('modules/enrolled_in.html', module=Module.query.get(module_id))

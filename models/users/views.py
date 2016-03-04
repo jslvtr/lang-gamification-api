@@ -67,10 +67,15 @@ def register():
 @bp.route('/profile')
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def profile():
-    return render_template('users/profile.html', city=g.user.get_current_city(), next_suggested_investment=None)
+    city = g.user.get_current_city()
+    if city:
+        return render_template('users/profile.html', city=g.user.get_current_city(), next_suggested_investment=None)
+    else:
+        return redirect(url_for('modules.public_modules'))
 
 
 @bp.route('/logout')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
 def logout():
     if 'user_id' in session.keys() and session['user_id']:
         session.pop('user_id')

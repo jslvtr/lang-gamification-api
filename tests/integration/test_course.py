@@ -39,8 +39,7 @@ class TestCourseIntegration(TestCase):
         self.assertIsNotNone(Module.query.filter_by(name=course.name).first())
 
     def test_course_not_found(self):
-        with self.assertRaises(CourseErrors.CourseNotFoundException):
-            Module.find(name="test_not_found")
+        self.assertEqual(Module.find(name="test_not_found"), [])
 
     def test_delete(self):
         user = User.register("testdelete@testcourse.com", "123")

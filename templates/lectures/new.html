@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% from "forms/macros.html" import render_field %}
+{% block content %}
+    <div class="background">
+        <div class="container">
+            <div class="form">
+                <h1 class="sign-up-title">Create lecture</h1>
+
+                <form method="POST" class="form-horizontal">
+                    {{ form.csrf_token }}
+                    {{ render_field(form.name, True, class="input text form-control") }}
+                    {{ render_field(form.order, True, class="form-control") }}
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">Create</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <a href="{{ url_for('lectures.lecture_list', module_id=module.id) }}">Back to lecture list</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -4,11 +4,12 @@ import models.modules.errors as CourseErrors
 from models.modules.errors import NotOwnerException
 import common.helper_tables as HelperTables
 from app import db
+from models.searchable import SearchableModel
 
 __author__ = 'jslvtr'
 
 
-class Module(db.Model):
+class Module(db.Model, SearchableModel):
     __tablename__ = CourseConstants.TABLE_NAME
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
@@ -34,12 +35,7 @@ class Module(db.Model):
     @classmethod
     def find(cls, **kwargs):
         query = cls.query.filter_by(**kwargs)
-        elems = query.all()
-        if len(elems) < 1:
-            raise CourseErrors.CourseNotFoundException("The module to be found with kwargs {} cannot be found.".format(
-                kwargs
-            ))
-        return elems
+        return query.all()
 
     @classmethod
     def find_public(cls, **kwargs):
@@ -67,3 +63,4 @@ class Module(db.Model):
     def remove_from_db(self):
         db.session.delete(self)
         db.session.commit()
+

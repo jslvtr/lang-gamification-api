@@ -1,21 +1,11 @@
 {% extends 'base.html' %}
+{% from "modules/macros.html" import render_module %}
 {% block content %}
     <div class="container">
         <h1>You are a module creator!</h1>
         <div class="list-group">
             {% for module in modules %}
-
-                <a href="{{ url_for('modules.module', id=module.id) }}" class="list-group-item">
-                    <h4 class="list-group-item-heading">{{ module.name }}</h4>
-                    {% set students = module.students | length %}
-                    <p class="list-group-item-text">This course is <strong>{{ 'public' if module.public else 'private' }}</strong>.
-                        {% if students > 1 %}
-                            There are {{ students }} registered students.
-                        {% else %}
-                            There is {{ students }} registered student.
-                        {% endif %}</p>
-                </a>
-
+                {{ render_module(module) }}
             {% endfor %}
         </div>
     </div>

@@ -10,7 +10,6 @@ __author__ = 'jslvtr'
 
 
 class User(db.Model):
-
     __tablename__ = UserConstants.TABLE_NAME
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True)
@@ -86,5 +85,12 @@ class User(db.Model):
         self.save_to_db()
 
     def get_current_city(self):
-        return self.cities[0]
+        return self.cities[0] if len(self.cities.all()) > 0 else None
         # return City.query.get(session['city_id'])
+
+    def enroll_in(self, module):
+        module.students.append(self)
+        module.save_to_db()
+        City(name=module.name,
+             user_owner=self,
+             module=module).save_to_db()

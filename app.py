@@ -54,10 +54,12 @@ def before_request():
 from models.users.views import bp as userViews
 from models.modules.views import bp as moduleViews
 from models.words.views import bp as wordViews
+from models.lectures.views import bp as lectureViews
 
 app.register_blueprint(userViews)
 app.register_blueprint(moduleViews)
 app.register_blueprint(wordViews)
+app.register_blueprint(lectureViews)
 
 # Have to import these at the bottom so SQLAlchamy sees them and can create the tables associated with the models.
 from models.users.user import User
@@ -65,6 +67,7 @@ from models.modules.module import Module
 from models.cities.city import City
 from models.words.word import Word
 from models.words.tag import Tag
+from models.lectures.lecture import Lecture
 
 if __name__ == '__main__':
     run_simple('localhost', 4995, app)

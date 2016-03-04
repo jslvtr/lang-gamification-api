@@ -1,3 +1,20 @@
 {% macro render_section_display(investment) %}
 
 {% endmacro %}
+
+{% macro render_module(module) %}
+    <a href="{{ url_for('modules.module', id=module.id) }}" class="list-group-item">
+        <h4 class="list-group-item-heading">{{ module.name }}</h4>
+        <p class="list-group-item-text">This module is <strong>{{ 'public' if module.public else 'private' }}</strong>.
+        {{ render_students_registered(module.students | length) }}
+        </p>
+    </a>
+{% endmacro %}
+
+{% macro render_students_registered(students) %}
+    {% if students > 1 %}
+        There are {{ students }} registered students in this module.
+    {% else %}
+        There is {{ students }} registered student in this module.
+    {% endif %}
+{% endmacro %}

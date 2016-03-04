@@ -92,19 +92,21 @@ class TestWordIntegration(TestCase):
         word.save_to_db()
         word2.save_to_db()
 
-        words_from_db = Word.search_by_tag_or_name(module.id, tag_name)
+        words_from_db = Word.search_by_tag_or_name(search_term=tag_name,
+                                                   module_id=module.id)
         self.assertEqual(len(words_from_db), 1)
 
     def test_filter_words_in_module_by_name(self):
         user = User.register("testfilterbyname@testcourse.com", "123")
         module = Module("testfilterbyname_test", user)
-        module_name = "testfilterbynametestcoursexyz"
-        word = Word(name=module_name,
+        word_name = "testfilterbynametestcoursexyz"
+        word = Word(name=word_name,
                     meaning="prueba",
                     difficulty=3,
                     module=module)
 
         word.save_to_db()
 
-        words_from_db = Word.search_by_tag_or_name(module.id, module_name)
+        words_from_db = Word.search_by_tag_or_name(search_term=word_name,
+                                                   module_id=module.id)
         self.assertEqual(len(words_from_db), 1)

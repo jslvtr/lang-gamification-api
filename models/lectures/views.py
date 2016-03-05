@@ -90,17 +90,18 @@ def lecture(lecture_id):
 @bp.route('/<string:lecture_id>/text', methods=['GET', 'POST'])
 @requires_access_level(UserConstants.USER_TYPES['CREATOR'])
 def add_text_content(lecture_id):
-
     lecture = Lecture.query.get(lecture_id)
     module = lecture.module
     if not g.user.is_course_creator(module):
         return redirect(url_for('modules.dashboard'))
     if request.method == 'POST':
-        request_json = request.get_json(force=True)
+        content = request.form.get('editable') or None
+        if not content:
+            return jsonify({"message": "No changes sent!"})
         lecture_content = LectureContent.query.filter_by(lecture_id=lecture_id).first()
         if lecture_content:
-            lecture_content.update_text_content(request_json['content'])
+            lecture_content.update_text_content(content)
         else:
-            LectureContent(lecture, type="html", text=request_json['content']).save_to_db()
+            LectureContent(lecture, type="html", text=content).save_to_db()
         return jsonify({"message": "Content saved successfully"}), 201
     return render_template('lectures/content/text.html', lecture=lecture, module=module)

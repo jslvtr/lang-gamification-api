@@ -1,16 +1,14 @@
 {% extends "base.html" %}
 {% block dependencies %}
-    <script src="http://www.alohaeditor.org/download/aloha.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/content-tools.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/lectures/content/text_content.css') }}">
 {% endblock %}
 {% block content %}
     <div class="container">
         <h1>{{ 'Adding' if not lecture.content else 'Editing' }} text content</h1>
-        <button class="action-bold">Bold</button>
-        <button class="action-italic">Italic</button>
-        <button class="action-pre">Code</button>
-        <button class="action-unformat">Clear styles</button>
-        <p id="editable">{{ lecture.content.text | safe if lecture.content else "You can select and edit this text!" }}</p>
+        <div id="editable" data-editable data-name="main-content">
+            <p>{{ lecture.content.text | safe if lecture.content else "Press the pencil icon at the top left of this page to start editing!" }}</p>
+        </div>
 
         <div class="panel panel-default margin-top">
             <div class="panel-heading">Actions</div>
@@ -23,46 +21,6 @@
         </div>
 
     </div>
-    <script type="application/javascript">
-        aloha(document.getElementById('editable'));
-        for (var command in aloha.ui.commands) {
-            $('.action-' + command).on(
-                    'click',
-                    aloha.ui.command(aloha.ui.commands[command])
-            );
-        }
-
-        $('#submit').on(
-                'click',
-                function (evt) {
-                    $.ajax({
-                        url: '{{ url_for('lectures.add_text_content', lecture_id=lecture.id) }}',
-                        type: 'POST',
-                        data: JSON.stringify({
-                            content: $('#editable').html()
-                        }),
-                        dataType: "json",
-                        success: function (result) {
-                            console.log("Saved content successfully.");
-                        },
-                        error: function () {
-                            console.log("There was an error.");
-                        }
-                    })
-                }
-        );
-
-        function middleware(event) {
-            $('.active').removeClass('active');
-            if ('leave' !== event.type) {
-                var states = aloha.ui.states(aloha.ui.commands, event);
-                for (var selector in states) {
-                    $('.action-' + selector).toggleClass('active', states[selector]);
-                }
-            }
-            return event;
-        }
-
-        aloha.editor.stack.unshift(middleware);
-    </script>
+    <script src="{{ url_for('static', filename='js/content-tools/content-tools.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/content-tools/editor.js') }}"></script>
 {% endblock %}

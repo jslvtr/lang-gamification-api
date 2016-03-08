@@ -9,3 +9,15 @@
         <p class="list-group-item-text">{{ lecture.description }}</p>
     </a>
 {% endmacro %}
+
+{% macro render_lecture_content(lecture) %}
+    <div id="lectureContent">
+        {% if lecture.content.type == 'html' %}
+            {{ lecture.content.text | safe }}
+        {% elif lecture.content.type == 'video' %}
+            <p>This lecture is a video, but we don't support video yet!</p>
+        {% else %}
+            <p>Lecture content not supported</p>
+        {% endif %}
+    </div>
+{% endmacro %}

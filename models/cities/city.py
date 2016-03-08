@@ -16,13 +16,13 @@ class City(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     owner = db.relationship('User',
                             backref=db.backref('cities', lazy='dynamic'))
-    modules = db.relationship('Module', secondary=HelperTables.cities_modules,
-                              backref=db.backref('cities', lazy='dynamic'))
+    module = db.relationship('Module', secondary=HelperTables.cities_modules,
+                             backref=db.backref('city', uselist=False), uselist=False)
 
     def __init__(self, name, user_owner, module, gold=100, dialog=0, experience=0, level=1):
         self.name = name
         self.owner = user_owner
-        self.modules = [module]
+        self.module = module
         self.gold = gold
         self.dialog = dialog
         self.experience = experience

@@ -1,5 +1,3 @@
-from sqlalchemy import and_
-
 from app import db
 import models.contents.constants as ContentConstants
 

@@ -12,6 +12,7 @@ class Lecture(db.Model, SearchableModel):
     name = db.Column(db.String(80))
     description = db.Column(db.String(140))
     order = db.Column(db.Integer)
+    completed = db.Column(db.Boolean)
 
     module_id = db.Column(db.Integer, db.ForeignKey('module.id'))
     module = db.relationship('Module',
@@ -22,6 +23,7 @@ class Lecture(db.Model, SearchableModel):
         self.order = order or len(module.lectures.all()) + 1
         self.description = description
         self.module = module
+        self.completed = False
 
     def __repr__(self):
         return "<Lecture ID:{}, ORDER:{}, MODULE_ID:{}>".format(self.id, self.order, self.module_id)
@@ -63,3 +65,7 @@ class Lecture(db.Model, SearchableModel):
 
     def reorder(self, new_position):
         Lecture.change_order(self.id, self.module_id, new_position)
+
+    def complete(self):
+        self.completed = True
+        self.save_to_db()

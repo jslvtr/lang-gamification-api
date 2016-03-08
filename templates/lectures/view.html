@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% from "lectures/macros.html" import render_lecture_content %}
+{% block content %}
+    <div>
+        <div class="container">
+            <h2 class="margin-bottom">Lecture {{ lecture.name }}</h2>
+            <article>
+                {{ render_lecture_content(lecture) }}
+            </article>
+        </div>
+    </div>
+{% endblock %}

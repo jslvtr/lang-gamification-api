@@ -87,6 +87,20 @@ def lecture(lecture_id):
     return render_template('lectures/add_content.html', lecture=lecture)
 
 
+@bp.route('/view/<string:lecture_id>')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def study_lecture(lecture_id):
+    lecture = Lecture.query.get(lecture_id)
+    return render_template('lectures/view.html', lecture=lecture)
+
+
+@bp.route('/complete/<string:lecture_id>')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def complete(lecture_id):
+    Lecture.query.get(lecture_id).complete()
+    return render_template('lectures/view.html', lecture=g.user.get_current_city().module.first_uncompleted())
+
+
 @bp.route('/<string:lecture_id>/text', methods=['GET', 'POST'])
 @requires_access_level(UserConstants.USER_TYPES['CREATOR'])
 def add_text_content(lecture_id):

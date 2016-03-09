@@ -3,10 +3,18 @@
 {% block content %}
     <div>
         <div class="container">
-            <h2 class="margin-bottom">Lecture {{ lecture.name }}</h2>
+            <h1 class="page-header margin-bottom">Lecture {{ lecture.name }}</h1>
             <article>
                 {{ render_lecture_content(lecture) }}
             </article>
+
+            <div class="panel panel-default margin-top">
+            <div class="panel-heading">Actions</div>
+            <div class="panel-body">
+                <a href="{{ url_for('lectures.complete', lecture_id=lecture.id) }}" class="btn btn-success"><span
+                        class="glyphicon glyphicon-arrow-right"></span> Complete lecture</a>
+            </div>
+        </div>
         </div>
     </div>
 {% endblock %}

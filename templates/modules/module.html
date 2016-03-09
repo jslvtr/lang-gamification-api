@@ -3,7 +3,7 @@
 
 {% block content %}
     <div class="container">
-        <h1>Module '{{ module.name }}'</h1>
+        <h1 class="page-header">Module '{{ module.name }}'</h1>
         {% if module.owner.email == g.user.email %}
             <p>{{ render_students_registered(module.students | length) }}</p>
 

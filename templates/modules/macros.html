@@ -15,6 +15,19 @@
     {% endif %}
 {% endmacro %}
 
+{% macro render_section(lecture, gamified=True) %}
+    {% if lecture %}
+        {{ render_next_lecture_title(gamified) }}
+        {{ render_section_display(lecture, gamified) }}
+    {% else %}
+        {% if gamified %}
+            <h3 class="margin-top margin-bottom text-center">There's no next investment available for this city!</h3>
+        {% else %}
+            <h3 class="margin-top margin-bottom text-center">There's no next lecture available in this module!</h3>
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+
 {% macro render_section_display(lecture, gamified=True) %}
     {% if gamified %}
         {{ render_gamified_section(lecture.investment) }}
@@ -51,7 +64,7 @@
                     Next lecture
                 </div>
                 <div class="row text-center">
-                    <strong>{{ lecture.order }}</strong>
+                    <strong>{{ lecture.order + 1 }}</strong>
                 </div>
             </div>
         </div>
@@ -67,4 +80,12 @@
             </div>
         </div>
     </div>
+{% endmacro %}
+
+{% macro render_next_lecture_title(gamified=True) %}
+    {% if gamified %}
+        <h3 class="margin-bottom margin-top">Next suggested investment</h3>
+    {% else %}
+        <h3 class="margin-bottom margin-top">Next lecture</h3>
+    {% endif %}
 {% endmacro %}

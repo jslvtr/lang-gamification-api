@@ -1,18 +1,17 @@
 {% extends 'base.html' %}
 {% from "users/macros.html" import render_resource %}
-{% from "modules/macros.html" import render_section_display %}
+{% from "modules/macros.html" import render_section %}
 {% block content %}
     <div>
         <div class="container">
-            <h2 class="margin-bottom">Welcome back, chief!</h2>
+            <h2 class="page-header margin-bottom">Welcome back, chief!</h2>
             <div class="row">
                 <div class="col-xs-offset-0 col-md-offset-2 col-lg-offset-2 col-xs-4 col-md-3 col-lg-3">{{ render_resource('GOLD', city.gold, '#FFD409', 6) }}</div>
                 <div class="col-xs-offset-0 col-md-offset-0 col-lg-offset-0 col-xs-4 col-md-3 col-lg-3">{{ render_resource('DIALOG', city.dialog, '#00B27C', -3) }}</div>
                 <div class="col-xs-offset-0 col-md-offset-0 col-lg-offset-0 col-xs-4 col-md-3 col-lg-3">{{ render_resource('EXPERIENCE', city.experience, '#3498DB') }}</div>
             </div>
 
-            <h3 class="margin-bottom margin-top">Next suggested investment</h3>
-            {{ render_section_display(next_lecture, g.user.gamified) }}
+            {{ render_section(next_lecture, g.user.gamified) }}
         </div>
     </div>
 {% endblock %}

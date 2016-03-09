@@ -2,7 +2,7 @@
 {% from "modules/macros.html" import render_module %}
 {% block content %}
     <div class="container">
-        <h1>You are a module creator!</h1>
+        <h1 class="page-header">You are a module creator!</h1>
         <div class="list-group">
             {% for module in modules %}
                 {{ render_module(module) }}

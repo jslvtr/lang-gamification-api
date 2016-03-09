@@ -12,6 +12,7 @@
 
 {% macro render_lecture_content(lecture) %}
     <div id="lectureContent">
+    {% if lecture.content %}
         {% if lecture.content.type == 'html' %}
             {{ lecture.content.text | safe }}
         {% elif lecture.content.type == 'video' %}
@@ -19,5 +20,8 @@
         {% else %}
             <p>Lecture content not supported</p>
         {% endif %}
+    {% else %}
+        <p>This lecture has no content yet!</p>
+    {% endif %}
     </div>
 {% endmacro %}

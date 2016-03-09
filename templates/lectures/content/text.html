@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
     <div class="container">
-        <h1>{{ 'Adding' if not lecture.content else 'Editing' }} text content</h1>
+        <h1 class="page-header">{{ 'Adding' if not lecture.content else 'Editing' }} text content</h1>
         <div id="editable" data-editable data-name="main-content">
             <p>{{ lecture.content.text | safe if lecture.content else "Press the pencil icon at the top left of this page to start editing!" }}</p>
         </div>
@@ -13,8 +13,6 @@
         <div class="panel panel-default margin-top">
             <div class="panel-heading">Actions</div>
             <div class="panel-body">
-                <button id="submit" class="btn btn-success"><span class="glyphicon glyphicon-save"></span> Save content
-                </button>
                 <a href="{{ url_for('lectures.lecture_list', module_id=module.id) }}" class="btn btn-warning"><span
                         class="glyphicon glyphicon-arrow-left"></span> Back to lecture list</a>
             </div>

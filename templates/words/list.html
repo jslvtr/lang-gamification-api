@@ -2,7 +2,7 @@
 {% from "forms/macros.html" import render_search_field %}
 {% block content %}
     <div class="container">
-        <h1>Word list for '{{ module.name }}'</h1>
+        <h1 class="page-header">Word list for '{{ module.name }}'</h1>
         <form method="POST" class="form-inline margin-bottom" role="search">
             {{ form.csrf_token }}
             {{ render_search_field(form.term, placeholder="Search", class="input text form-control") }}

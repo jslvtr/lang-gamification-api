@@ -98,7 +98,7 @@ def study_lecture(lecture_id):
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def complete(lecture_id):
     Lecture.query.get(lecture_id).complete()
-    return render_template('lectures/view.html', lecture=g.user.get_current_city().module.first_uncompleted())
+    return redirect(url_for('.study_lecture', lecture_d=g.user.get_current_city().module.first_uncompleted().id))
 
 
 @bp.route('/<string:lecture_id>/text', methods=['GET', 'POST'])

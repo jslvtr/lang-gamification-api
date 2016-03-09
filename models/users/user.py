@@ -16,11 +16,13 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(255), unique=False)
     access = db.Column(db.Integer)
+    gamified = db.Column(db.Boolean)
 
-    def __init__(self, email, password, access=UserConstants.USER_TYPES['USER']):
+    def __init__(self, email, password, access=UserConstants.USER_TYPES['USER'], gamified=True):
         self.email = email
         self.password = password
         self.access = access
+        self.gamified = gamified
 
     def __repr__(self):
         return "<User {}>".format(self.email)

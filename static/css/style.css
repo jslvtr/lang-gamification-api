@@ -150,3 +150,72 @@ h3 {
 .label {
     font-size: 0.65em;
 }
+
+.profession-image {
+    max-height: 100%;
+    width: auto;
+    padding: 0;
+    margin-left: 15px;
+}
+
+.investment {
+    margin: 0;
+    padding: 10px;
+    height: 150px;
+}
+
+.dialog-amount {
+    color: #00B27C;
+}
+
+span.cost {
+    font-size: 80%;
+    margin-left: 15px;
+}
+
+span.profession {
+    font-size: 110%;
+}
+
+span.generates {
+    margin-top: 5px;
+}
+
+.gold-amount {
+    color: #FFD409;
+    font-weight: bold;
+}
+
+div.train-button {
+    margin-top: 50px;
+}
+
+a.train-button {
+    background-color: #00B27C;
+    padding: 4px 25px;
+    color: #000000;
+    border-radius: 5px;
+    box-shadow: 1px 2px 1px #c5c5c5;
+    text-decoration: none;
+}
+
+a.train-button:hover {
+    background-color: #00a372;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.lecture-section-order-container {
+    display: flex;
+    align-items: center;
+    height: 125px;
+    justify-content: center;
+    padding-left: 5px;
+    padding-right: 15px;
+}
+
+.lecture-section-order {
+    font-size: 125%;
+}

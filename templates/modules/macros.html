@@ -1,12 +1,8 @@
-{% macro render_section_display(investment) %}
-
-{% endmacro %}
-
 {% macro render_module(module) %}
     <a href="{{ url_for('modules.module', id=module.id) }}" class="list-group-item">
         <h4 class="list-group-item-heading">{{ module.name }}</h4>
         <p class="list-group-item-text">This module is <strong>{{ 'public' if module.public else 'private' }}</strong>.
-        {{ render_students_registered(module.students | length) }}
+            {{ render_students_registered(module.students | length) }}
         </p>
     </a>
 {% endmacro %}
@@ -17,4 +13,58 @@
     {% else %}
         There is {{ students }} registered student in this module.
     {% endif %}
+{% endmacro %}
+
+{% macro render_section_display(lecture, gamified=True) %}
+    {% if gamified %}
+        {{ render_gamified_section(lecture.investment) }}
+    {% else %}
+        {{ render_lecture(lecture) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro render_gamified_section(investment) %}
+    <div class="row gray-background investment">
+        <div class="col-xs-3 col-md-2 col-lg-2"><img class="profession-image"
+                                                     src="{{ url_for('static', filename='images/professions/sample.jpeg') }}"/>
+        </div>
+        <div class="col-xs-9 col-md-10 col-lg-10">
+            <div class="row">
+                <span class="profession">INHABITANT PROFESSION</span><span class="cost">COST: <span
+                    class="dialog-amount">4 dialog</span></span>
+            </div>
+            <div class="row">
+                <span class="generates">Generates <span class="gold-amount">4 gold</span> per hour</span>
+            </div>
+            <div class="train-button row">
+                <a class="train-button" href="#">train</a>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_lecture(lecture) %}
+    <div class="row gray-background investment">
+        <div class="col-xs-3 col-md-2 col-lg-2 lecture-section-order-container">
+            <div class="lecture-section-order">
+                <div class="row text-center">
+                    Next lecture
+                </div>
+                <div class="row text-center">
+                    <strong>{{ lecture.order }}</strong>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-9 col-md-10 col-lg-10">
+            <div class="row">
+                <span class="profession">{{ lecture.name }}</span>
+            </div>
+            <div class="row">
+                <span class="generates">{{ lecture.description }}</span>
+            </div>
+            <div class="train-button row">
+                <a class="train-button" href="{{ url_for('lectures.study_lecture', lecture_id=lecture.id) }}">review</a>
+            </div>
+        </div>
+    </div>
 {% endmacro %}

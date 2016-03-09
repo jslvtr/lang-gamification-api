@@ -12,7 +12,7 @@
             </div>
 
             <h3 class="margin-bottom margin-top">Next suggested investment</h3>
-            {{ render_section_display(next_suggested_investment) }}
+            {{ render_section_display(next_lecture, g.user.gamified) }}
         </div>
     </div>
 {% endblock %}

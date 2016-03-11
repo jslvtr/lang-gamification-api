@@ -16,7 +16,7 @@
         </form>
         <div id="listWithHandle" class="list-group">
             {% for lecture in lectures %}
-                {{ render_lecture(lecture, reorder) }}
+                {{ render_lecture(lecture, reorder, lecture in completed_lectures) }}
             {% endfor %}
         </div>
 

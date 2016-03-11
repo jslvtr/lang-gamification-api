@@ -14,3 +14,8 @@ words_tags = db.Table('words_tags',
                       db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
                       db.Column('word_id', db.Integer, db.ForeignKey('word.id'))
                       )
+
+completed_lectures = db.Table('completed_lectures',
+                              db.Column('lecture_id', db.Integer, db.ForeignKey('lecture.id')),
+                              db.Column('city_id', db.Integer, db.ForeignKey('city.id'))
+                              )

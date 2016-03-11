@@ -12,6 +12,7 @@
             </div>
 
             {{ render_section(next_lecture, g.user.gamified) }}
+            <div class="text-center"><a href="{{ url_for('lectures.lecture_list', module_id=city.module.id) }}" id="all-investments">View all {{ "investments" if g.user.gamified else "lectures" }}</a></div>
         </div>
     </div>
 {% endblock %}

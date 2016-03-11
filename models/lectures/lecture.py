@@ -3,6 +3,7 @@ from sqlalchemy import and_
 from app import db
 import models.lectures.constants as LectureConstants
 from models.searchable import SearchableModel
+import common.helper_tables as HelperTables
 
 
 class Lecture(db.Model, SearchableModel):
@@ -12,18 +13,18 @@ class Lecture(db.Model, SearchableModel):
     name = db.Column(db.String(80))
     description = db.Column(db.String(140))
     order = db.Column(db.Integer)
-    completed = db.Column(db.Boolean)
 
     module_id = db.Column(db.Integer, db.ForeignKey('module.id'))
     module = db.relationship('Module',
                              backref=db.backref('lectures', lazy='dynamic'))
+    completed_cities = db.relationship('City', secondary=HelperTables.completed_lectures, lazy='dynamic')
+
 
     def __init__(self, name, module, description, order=None):
         self.name = name
         self.order = order or len(module.lectures.all()) + 1
         self.description = description
         self.module = module
-        self.completed = False
 
     def __repr__(self):
         return "<Lecture ID:{}, ORDER:{}, MODULE_ID:{}>".format(self.id, self.order, self.module_id)
@@ -65,7 +66,3 @@ class Lecture(db.Model, SearchableModel):
 
     def reorder(self, new_position):
         Lecture.change_order(self.id, self.module_id, new_position)
-
-    def complete(self):
-        self.completed = True
-        self.save_to_db()

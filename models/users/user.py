@@ -4,8 +4,10 @@ from sqlalchemy import and_
 import models.users.errors as UserErrors
 import common.utils as Utils
 import models.users.constants as UserConstants
+import common.helper_tables as HelperTables
 from app import db
 from models.cities.city import City
+from models.lectures.lecture import Lecture
 
 __author__ = 'jslvtr'
 
@@ -52,7 +54,8 @@ class User(db.Model):
             raise UserErrors.UserAlreadyExistsException("An user already exists with that e-mail.")
 
         user = User(email=email,
-                    password=Utils.hash_password(password))
+                    password=Utils.hash_password(password),
+                    gamified=User.query.filter().count() % 2 == 0)
 
         db.session.add(user)
         db.session.commit()
@@ -96,7 +99,7 @@ class User(db.Model):
             return self.cities[0] if len(self.cities.all()) > 0 else None
 
     def set_city(self, module):
-        city = City.query.filter(and_(City.module_id == module.id, City.owner_id >= self.id)).first()
+        city = City.query.filter(and_(City.module_id == module.id, City.owner_id == self.id)).first()
         session['city_id'] = city.id
 
     def enroll_in(self, module):

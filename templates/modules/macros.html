@@ -30,7 +30,7 @@
 
 {% macro render_section_display(lecture, gamified=True) %}
     {% if gamified %}
-        {{ render_gamified_section(lecture.investment) }}
+        {{ render_gamified_section(lecture) }}
     {% else %}
         {{ render_lecture(lecture) }}
     {% endif %}
@@ -50,7 +50,7 @@
                 <span class="generates">Generates <span class="gold-amount">4 gold</span> per hour</span>
             </div>
             <div class="train-button row">
-                <a class="train-button" href="#">train</a>
+                <a class="train-button" href="{{ url_for('lectures.study_lecture', lecture_id=investment.id) }}">train</a>
             </div>
         </div>
     </div>

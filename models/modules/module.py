@@ -67,7 +67,3 @@ class Module(db.Model, SearchableModel):
     def remove_from_db(self):
         db.session.delete(self)
         db.session.commit()
-
-    def first_uncompleted(self):
-        first_uncompleted_lecture = Lecture.query.filter(and_(Lecture.module_id == self.id, Lecture.completed == False)).order_by(Lecture.order.asc()).first()
-        return first_uncompleted_lecture

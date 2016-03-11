@@ -69,7 +69,7 @@ def register():
 def profile():
     city = g.user.get_current_city()
     if city:
-        return render_template('users/profile.html', city=city, next_lecture=city.module.first_uncompleted())
+        return render_template('users/profile.html', city=city, next_lecture=city.next_uncompleted_lecture())
     else:
         return redirect(url_for('modules.public_modules'))
 

@@ -1,6 +1,9 @@
+from sqlalchemy import and_
+
 from app import db
 import models.cities.constants as CityConstants
 import common.helper_tables as HelperTables
+from models.lectures.lecture import Lecture
 
 
 class City(db.Model):
@@ -16,13 +19,16 @@ class City(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     owner = db.relationship('User',
                             backref=db.backref('cities', lazy='dynamic'))
+    module_id = db.Column(db.Integer, db.ForeignKey('module.id'))
     module = db.relationship('Module', secondary=HelperTables.cities_modules,
                              backref=db.backref('city', uselist=False), uselist=False)
+    completed_lectures = db.relationship('Lecture', secondary=HelperTables.completed_lectures, lazy='dynamic')
 
     def __init__(self, name, user_owner, module, gold=100, dialog=0, experience=0, level=1):
         self.name = name
         self.owner = user_owner
         self.module = module
+        self.module_id = module.id
         self.gold = gold
         self.dialog = dialog
         self.experience = experience
@@ -41,3 +47,11 @@ class City(db.Model):
     def remove_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+    def complete_lecture(self, lecture_id):
+        self.completed_lectures.append(Lecture.query.get(lecture_id))
+        self.save_to_db()
+
+    def next_uncompleted_lecture(self):
+        lecture = Lecture.query.filter(and_(Lecture.module_id == self.module.id, ~Lecture.completed_cities.contains(City.query.get(self.id)))).first()
+        return lecture

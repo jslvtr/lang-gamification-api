@@ -39,3 +39,7 @@ class Word(db.Model, SearchableModel):
     @classmethod
     def search_by_tag_or_name(cls, search_term, module_id=None):
         return cls.query.filter(and_(cls.module_id == module_id, cls.tags.any(Tag.name.contains(search_term)) | cls.name.contains(search_term))).all()
+
+    @classmethod
+    def search_by_tag_query(cls, tag, module_id):
+        return cls.query.filter(and_(cls.module_id == module_id, cls.tags.any(Tag.name.contains(tag))))

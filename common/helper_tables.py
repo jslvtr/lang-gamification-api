@@ -19,3 +19,8 @@ completed_lectures = db.Table('completed_lectures',
                               db.Column('lecture_id', db.Integer, db.ForeignKey('lecture.id')),
                               db.Column('city_id', db.Integer, db.ForeignKey('city.id'))
                               )
+
+quizzes_questions = db.Table('quizzes_to_questions',
+                             db.Column('quiz_id', db.Integer, db.ForeignKey('quiz.id')),
+                             db.Column('question_id', db.Integer, db.ForeignKey('question.id'))
+                             )

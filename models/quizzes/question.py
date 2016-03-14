@@ -1,13 +1,13 @@
 from sqlalchemy import and_
 
 from app import db
-import models.words.constants as WordConstants
+import models.quizzes.constants as QuizConstants
 from models.searchable import SearchableModel
 from models.words.word import Word
 
 
 class Question(db.Model, SearchableModel):
-    __tablename__ = WordConstants.TABLE_NAME
+    __tablename__ = QuizConstants.QUESTION_TABLE_NAME
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80))

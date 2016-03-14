@@ -68,6 +68,8 @@ from models.cities.city import City
 from models.words.word import Word
 from models.words.tag import Tag
 from models.lectures.lecture import Lecture
+from models.quizzes.quiz import Quiz
+from models.quizzes.question import Question
 
 if __name__ == '__main__':
     run_simple('localhost', 4995, app)

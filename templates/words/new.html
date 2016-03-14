@@ -12,13 +12,14 @@
                     {{ render_field(form.meaning, True, class="input text form-control") }}
                     {{ render_field(form.difficulty, True, class="form-control") }}
                     {{ render_field(form.tags, True, class="input text form-control") }}
+                    <div class="col-sm-offset-3 col-sm-9"><p class="help">You can use the following tags in this word: {% for tag in lecture.tags.all() %} <strong>{{ tag.name }}</strong>{% if not loop.last %}, {% else %}. {% endif %}{% endfor %}</p></div>
                     <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
+                        <div class="col-sm-offset-3 col-sm-9">
                             <button type="submit" class="btn btn-default">Create</button>
                         </div>
                     </div>
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <a href="{{ url_for('words.word_list', module_id=module.id) }}">Back to word list</a>
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <a href="{{ url_for('words.word_list', lecture_id=lecture.id) }}">Back to word list</a>
                     </div>
                 </form>
             </div>

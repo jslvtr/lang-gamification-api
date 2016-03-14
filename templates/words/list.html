@@ -2,7 +2,7 @@
 {% from "forms/macros.html" import render_search_field %}
 {% block content %}
     <div class="container">
-        <h1 class="page-header">Word list for '{{ module.name }}'</h1>
+        <h1 class="page-header">Word list for '{{ lecture.name }}'</h1>
         <form method="POST" class="form-inline margin-bottom" role="search">
             {{ form.csrf_token }}
             {{ render_search_field(form.term, placeholder="Search", class="input text form-control") }}
@@ -20,7 +20,7 @@
 
                 {% endfor %}
             {% else %}
-                {% for word in module.words %}
+                {% for word in lecture.words %}
 
                     <a href="#" class="list-group-item">
                         <h4 class="list-group-item-heading">{{ word.name }}{% for tag in word.tags %}
@@ -32,7 +32,7 @@
             {% endif %}
         </div>
 
-        <a href="{{ url_for('words.new', module_id=module.id) }}" class="btn btn-success">
+        <a href="{{ url_for('words.new', lecture_id=lecture.id) }}" class="btn btn-success">
             <span class="glyphicon glyphicon-plus"></span> Add word
         </a>
     </div>

@@ -30,6 +30,9 @@ class ActiveModule(db.Model):
         self.level = level
 
     def next_level_experience(self):
+        return (self.level+1) * 50 + max(0, ((self.level+1) - 199) * 450)
+
+    def starting_experience_for_current_level(self):
         return self.level * 50 + max(0, (self.level - 199) * 450)
 
     def experience_required_to_level_up(self):

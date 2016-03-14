@@ -3,6 +3,7 @@
     <div class="container">
         <h1>Add content to lecture</h1>
         <p>Choose from the options below to add content to the lecture.</p>
+        <p>The tag{{ 's' if lecture.tags.all() | length > 1 }} for this lecture {{ 'are' if lecture.tags.all() | length > 1 else 'is'}} {% for tag in lecture.tags.all() %} <strong>{{ tag.name }}</strong>{% if not loop.last %}, {% else %}. {% endif %}{% endfor %}</p>
         <div class="panel panel-default">
             <div class="panel-heading">Content options</div>
             <div class="panel-body">
@@ -11,6 +12,31 @@
                 </a>
                 <a href="#" class="btn btn-success">
                     <span class="glyphicon glyphicon-play"></span> Add video content
+                </a>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Words</div>
+            <div class="panel-body">
+                <p>You have added {{ lecture.words.all() | length }} words in this lecture.</p>
+                <a href="{{ url_for('words.word_list', lecture_id=lecture.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-th-list"></span> View words
+                </a>
+                <a href="{{ url_for('words.new', lecture_id=lecture.id) }}" class="btn btn-success">
+                    <span class="glyphicon glyphicon-plus"></span> Add word
+                </a>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Quizzes</div>
+            <div class="panel-body">
+                <p>You have added {{ lecture.quizzes.all() | length }} quizzes in this lecture.</p>
+
+                <a href="{{ url_for('quizzes.quiz_list', lecture_id=lecture.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-th-list"></span> View quizzes
+                </a>
+                <a href="{{ url_for('quizzes.new', lecture_id=lecture.id) }}" class="btn btn-success">
+                    <span class="glyphicon glyphicon-plus"></span> Add quiz
                 </a>
             </div>
         </div>

@@ -11,6 +11,7 @@ from models.lectures.forms import CreateLectureForm
 from common.forms import SearchForm
 import models.words.errors as WordErrors
 import models.users.constants as UserConstants
+from models.words.tag import Tag
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -33,10 +34,15 @@ def new(module_id):
     if form.validate_on_submit():
         log.info("Form validated, attempting to create lecture.")
         try:
+            log.info("Saving tags to database.")
+            tags = Tag.get_tags_from_csv(form.tags.data)
+            Tag.save_tags_to_db(tags)
+
             Lecture(name=form.name.data,
                     module=module,
                     description=form.description.data,
-                    order=form.order.data if form.order.data > 0 else None).save_to_db()
+                    order=form.order.data if form.order.data > 0 else None,
+                    tags=tags).save_to_db()
             log.info("Lecture created.")
         except WordErrors.WordError as e:
             log.warn("Word error with message '{}', redirecting to teach".format(e.message))
@@ -56,7 +62,7 @@ def lecture_list(module_id):
     search_term = ""
     if form.validate_on_submit():
         search_term = form.term.data
-    lectures = Lecture.search_by_name(module_id=module_id, search_term="", order_by=Lecture.order, direction=1)
+    lectures = Lecture.search_by_name(module_id=module_id, search_term=search_term, order_by=Lecture.order, direction=1)
     return render_template('lectures/list.html',
                            module=module,
                            lectures=lectures,

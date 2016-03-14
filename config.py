@@ -12,7 +12,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 THREADS_PER_PAGE = 8
 
-ADMINS = frozenset(['your@email.com'])
+ADMINS = frozenset(['jslvtr@gmail.com'])
 
 WTF_CSRF_ENABLED = True
 WTF_CSRF_SECRET_KEY = "somethingimpossibletoguess"

@@ -15,17 +15,17 @@ class Word(db.Model, SearchableModel):
     meaning = db.Column(db.String(80))
     difficulty = db.Column(db.Integer)
 
-    module_id = db.Column(db.Integer, db.ForeignKey('module.id'))
-    module = db.relationship('Module',
-                             backref=db.backref('words', lazy='dynamic'))
+    lecture_id = db.Column(db.Integer, db.ForeignKey('lecture.id'))
+    lecture = db.relationship('Lecture',
+                              backref=db.backref('words', lazy='dynamic'))
     tags = db.relationship('Tag', secondary=HelperTables.words_tags,
                            backref=db.backref('words', lazy='dynamic'))
 
-    def __init__(self, name, meaning, difficulty, module, tags=None):
+    def __init__(self, name, meaning, difficulty, lecture, tags=None):
         self.name = name
         self.meaning = meaning
         self.difficulty = difficulty
-        self.module = module
+        self.lecture = lecture
         self.tags = tags or []
 
     def save_to_db(self):
@@ -37,9 +37,9 @@ class Word(db.Model, SearchableModel):
         db.session.commit()
 
     @classmethod
-    def search_by_tag_or_name(cls, search_term, module_id=None):
-        return cls.query.filter(and_(cls.module_id == module_id, cls.tags.any(Tag.name.contains(search_term)) | cls.name.contains(search_term))).all()
+    def search_by_tag_or_name(cls, search_term, lecture_id=None):
+        return cls.query.filter(and_(cls.lecture_id == lecture_id, cls.tags.any(Tag.name.contains(search_term)) | cls.name.contains(search_term))).all()
 
     @classmethod
-    def search_by_tag_query(cls, tag, module_id):
-        return cls.query.filter(and_(cls.module_id == module_id, cls.tags.any(Tag.name.contains(tag))))
+    def search_by_tag_query(cls, tag, lecture_id):
+        return cls.query.filter(and_(cls.lecture_id == lecture_id, cls.tags.any(Tag.name.contains(tag))))

@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Regexp, Length
 __author__ = 'josesalvatierra'
 
 
-class CreateLectureForm(Form):
+class CreateQuizForm(Form):
     name = StringField('Topic',
                        [DataRequired(),
                         Regexp(r"[a-zA-Z]{1,}",

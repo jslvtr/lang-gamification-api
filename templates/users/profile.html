@@ -1,16 +1,28 @@
 {% extends 'base.html' %}
-{% from "users/macros.html" import render_resource %}
+{% from "users/macros.html" import render_progress_bar %}
 {% from "modules/macros.html" import render_section %}
 {% block content %}
     <div>
         <div class="container">
             <h2 class="page-header margin-bottom">Welcome back, chief!</h2>
             <div class="row">
-                <div class="col-xs-offset-0 col-md-offset-0 col-lg-offset-0 col-xs-4 col-md-3 col-lg-3">{{ render_resource('EXPERIENCE', active_module.experience, '#3498DB') }}</div>
+                <div class="col-xs-offset-2 col-md-offset-2 col-lg-offset-2 col-xs-7 col-md-7 col-lg-7 text-center">
+                    {{ active_module.experience }} \ {{ active_module.next_level_experience() }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-offset-2 col-md-offset-2 col-lg-offset-2 col-xs-7 col-md-7 col-lg-7">
+                    {{ render_progress_bar(active_module.starting_experience_for_current_level(), active_module.experience, active_module.next_level_experience(), '#3498DB') }}
+                </div>
+                <div class="col-xs-1 col-md-1 col-lg-1">
+                    To level {{ active_module.level + 1 }}
+                </div>
             </div>
 
             {{ render_section(next_lecture, g.user.gamified) }}
-            <div class="text-center"><a href="{{ url_for('lectures.lecture_list', module_id=active_module.module.id) }}" id="all-investments">View all {{ "investments" if g.user.gamified else "lectures" }}</a></div>
+            <div class="text-center"><a href="{{ url_for('lectures.lecture_list', module_id=active_module.module.id) }}"
+                                        id="all-investments">View
+                all {{ "investments" if g.user.gamified else "lectures" }}</a></div>
         </div>
     </div>
 {% endblock %}

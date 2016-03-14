@@ -1,15 +1,8 @@
-{% macro render_resource(name, quantity, color, increase=None) %}
-    <div class="gray-background">
-        <div class="resource">
-            <div class="row">
-                <div class="col-xs-1 col-md-1 col-lg-2">
-                    <i class="fa fa-circle fa-lg" style="color: {{ color }}"></i>
-                </div>
-                <div class="col-xs-8 col-md-8 col-lg-9">
-                    <div>{{ quantity }} {{ render_increase(increase) }}</div>
-                    <div><strong>{{ name }}</strong></div>
-                </div>
-            </div>
+{% macro render_progress_bar(start, current, end, color) %}
+    <div class="progress" style="height: 2em;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{ current }}" aria-valuemin="{{ start }}" aria-valuemax="{{ end }}"
+             style="width: {{ (current / end * 100) | int }}%; min-width: 2em; background-color: {{ color }};">
+            <span class="sr-only">{{ (current / end * 100) | int }}% Complete</span>
         </div>
     </div>
 {% endmacro %}

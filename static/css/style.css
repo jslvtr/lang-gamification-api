@@ -225,3 +225,7 @@ a.train-button:hover {
     color: #3498DB;
     margin-top: 10px;
 }
+
+p.help {
+    color: #d5d5d5;
+}

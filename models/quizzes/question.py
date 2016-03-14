@@ -15,6 +15,9 @@ class Question(db.Model, SearchableModel):
     answer_id = db.Column(db.Integer, db.ForeignKey('word.id'))
     answer = db.relationship('Word')
 
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'))
+    quiz = db.relationship("Quiz", back_populates="questions")
+
     def __init__(self, title, tag, answer):
         self.title = title
         self.tag = tag
@@ -31,5 +34,5 @@ class Question(db.Model, SearchableModel):
 
     @property
     def other_answers(self):
-        answers = Word.search_by_tag_query(self.tag, self.answer.module_id).filter(Word.id != self.answer_id).all()
+        answers = Word.search_by_tag_query(self.tag, self.quiz.lecture_id).filter(Word.id != self.answer_id).all()
         return answers[:5]

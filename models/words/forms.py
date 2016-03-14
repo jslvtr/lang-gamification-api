@@ -25,5 +25,5 @@ class CreateWordForm(Form):
                              coerce=int,
                              choices=[(x, str(x)) for x in range(1, 6)])
     tags = StringField('Tags',
-                       [Regexp(r"[a-zA-Z]{0,}",
-                               message="The tags may only contain letters.")])
+                       [Regexp(r"[a-zA-Z,]{0,}",
+                               message="The tags may only contain letters or commas.")])

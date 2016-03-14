@@ -64,7 +64,7 @@ app.register_blueprint(lectureViews)
 # Have to import these at the bottom so SQLAlchamy sees them and can create the tables associated with the models.
 from models.users.user import User
 from models.modules.module import Module
-from models.cities.city import City
+from models.active_modules.activemodule import ActiveModule
 from models.words.word import Word
 from models.words.tag import Tag
 from models.lectures.lecture import Lecture

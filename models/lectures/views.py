@@ -2,7 +2,7 @@ import logging
 
 from flask import Blueprint, redirect, url_for, request, g, render_template, jsonify
 
-from models.cities.city import City
+from models.active_modules.activemodule import ActiveModule
 from models.contents.lecture_content import LectureContent
 from models.lectures.lecture import Lecture
 from models.modules.module import Module
@@ -60,7 +60,7 @@ def lecture_list(module_id):
     return render_template('lectures/list.html',
                            module=module,
                            lectures=lectures,
-                           completed_lectures=City.query.filter(City.module_id == module.id).first().completed_lectures.all(),
+                           completed_lectures=ActiveModule.query.filter(ActiveModule.module_id == module.id).first().completed_lectures.all(),
                            reorder=search_term == "" and is_owner,
                            is_owner=is_owner,
                            form=form)
@@ -99,7 +99,7 @@ def study_lecture(lecture_id):
 @bp.route('/complete/<string:lecture_id>')
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def complete(lecture_id):
-    g.user.get_current_city().complete_lecture(lecture_id)
+    g.user.get_current_active_module().complete_lecture(lecture_id)
     return redirect(url_for('users.profile'))
 
 

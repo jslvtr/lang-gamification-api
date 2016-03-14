@@ -20,11 +20,7 @@
         {{ render_next_lecture_title(gamified) }}
         {{ render_section_display(lecture, gamified) }}
     {% else %}
-        {% if gamified %}
-            <h3 class="margin-top margin-bottom text-center">There's no next investment available for this city!</h3>
-        {% else %}
-            <h3 class="margin-top margin-bottom text-center">There's no next lecture available in this module!</h3>
-        {% endif %}
+        <h3 class="margin-top margin-bottom text-center">There's no next lecture available in this module!</h3>
     {% endif %}
 {% endmacro %}
 
@@ -50,7 +46,8 @@
                 <span class="generates">Generates <span class="gold-amount">4 gold</span> per hour</span>
             </div>
             <div class="train-button row">
-                <a class="train-button" href="{{ url_for('lectures.study_lecture', lecture_id=investment.id) }}">train</a>
+                <a class="train-button"
+                   href="{{ url_for('lectures.study_lecture', lecture_id=investment.id) }}">train</a>
             </div>
         </div>
     </div>

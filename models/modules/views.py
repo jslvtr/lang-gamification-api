@@ -2,7 +2,7 @@ import logging
 
 from flask import Blueprint, redirect, url_for, request, g, render_template
 
-from models.cities.city import City
+from models.active_modules.activemodule import ActiveModule
 from models.modules.module import Module
 from models.users.decorators import requires_access_level
 from models.modules.forms import CreateCourseForm
@@ -12,7 +12,6 @@ import models.users.constants as UserConstants
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
-
 
 __author__ = 'jslvtr'
 
@@ -33,10 +32,10 @@ def teach():
                             user_owner=g.user,
                             public=form.public.data)
             course.save_to_db()
-            city = City(name=form.course_name.data,
-                        user_owner=g.user,
-                        module=course)
-            city.save_to_db()
+            active_module = ActiveModule(name=form.course_name.data,
+                                         user_owner=g.user,
+                                         module=course)
+            active_module.save_to_db()
             g.user.make_module_creator()
             log.info("Module created.")
         except ModuleErrors.CourseError as e:
@@ -82,7 +81,7 @@ def activate(module_id):
         g.user.enroll_in(module_to_join)
         return redirect(url_for('.enrolled_in', module_id=module_id))
     else:
-        g.user.set_city(module_to_join)
+        g.user.set_active_module(module_to_join)
         return redirect(url_for('users.profile'))
 
 

@@ -1,36 +1,31 @@
 from sqlalchemy import and_
 
 from app import db
-import models.cities.constants as CityConstants
+import models.active_modules.constants as ActiveModuleConstants
 import common.helper_tables as HelperTables
 from models.lectures.lecture import Lecture
 
 
-class City(db.Model):
-    __tablename__ = CityConstants.TABLE_NAME
+class ActiveModule(db.Model):
+    __tablename__ = ActiveModuleConstants.TABLE_NAME
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
-    gold = db.Column(db.Integer, unique=False)
-    dialog = db.Column(db.Integer, unique=False)
     experience = db.Column(db.Integer, unique=False)
     level = db.Column(db.Integer, unique=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     owner = db.relationship('User',
-                            backref=db.backref('cities', lazy='dynamic'))
+                            backref=db.backref('active_modules', lazy='dynamic'))
     module_id = db.Column(db.Integer, db.ForeignKey('module.id'))
-    module = db.relationship('Module', secondary=HelperTables.cities_modules,
-                             backref=db.backref('city', uselist=False), uselist=False)
+    module = db.relationship('Module', secondary=HelperTables.active_to_modules, uselist=False)
     completed_lectures = db.relationship('Lecture', secondary=HelperTables.completed_lectures, lazy='dynamic')
 
-    def __init__(self, name, user_owner, module, gold=100, dialog=0, experience=0, level=1):
+    def __init__(self, name, user_owner, module, experience=0, level=1):
         self.name = name
         self.owner = user_owner
         self.module = module
         self.module_id = module.id
-        self.gold = gold
-        self.dialog = dialog
         self.experience = experience
         self.level = level
 
@@ -53,5 +48,5 @@ class City(db.Model):
         self.save_to_db()
 
     def next_uncompleted_lecture(self):
-        lecture = Lecture.query.filter(and_(Lecture.module_id == self.module.id, ~Lecture.completed_cities.contains(City.query.get(self.id)))).first()
+        lecture = Lecture.query.filter(and_(Lecture.module_id == self.module.id, ~Lecture.completed_cities.contains(ActiveModule.query.get(self.id)))).first()
         return lecture

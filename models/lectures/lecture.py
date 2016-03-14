@@ -17,8 +17,7 @@ class Lecture(db.Model, SearchableModel):
     module_id = db.Column(db.Integer, db.ForeignKey('module.id'))
     module = db.relationship('Module',
                              backref=db.backref('lectures', lazy='dynamic'))
-    completed_cities = db.relationship('City', secondary=HelperTables.completed_lectures, lazy='dynamic')
-
+    completed_cities = db.relationship('ActiveModule', secondary=HelperTables.completed_lectures, lazy='dynamic')
 
     def __init__(self, name, module, description, order=None):
         self.name = name

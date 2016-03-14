@@ -6,7 +6,7 @@ import common.utils as Utils
 import models.users.constants as UserConstants
 import common.helper_tables as HelperTables
 from app import db
-from models.cities.city import City
+from models.active_modules.activemodule import ActiveModule
 from models.lectures.lecture import Lecture
 
 __author__ = 'jslvtr'
@@ -17,6 +17,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(255), unique=False)
+    gold = db.Column(db.Integer)
     access = db.Column(db.Integer)
     gamified = db.Column(db.Boolean)
 
@@ -25,6 +26,7 @@ class User(db.Model):
         self.password = password
         self.access = access
         self.gamified = gamified
+        self.gold = 0
 
     def __repr__(self):
         return "<User {}>".format(self.email)
@@ -92,21 +94,21 @@ class User(db.Model):
             self.access = UserConstants.USER_TYPES['CREATOR']
         self.save_to_db()
 
-    def get_current_city(self):
-        if session.get('city_id'):
-            return City.query.get(session['city_id'])
+    def get_current_active_module(self):
+        if session.get('active_module'):
+            return ActiveModule.query.get(session['active_module'])
         else:
-            return self.cities[0] if len(self.cities.all()) > 0 else None
+            return self.active_modules[0] if len(self.active_modules.all()) > 0 else None
 
-    def set_city(self, module):
-        city = City.query.filter(and_(City.module_id == module.id, City.owner_id == self.id)).first()
-        session['city_id'] = city.id
+    def set_active_module(self, module):
+        active_module = ActiveModule.query.filter(and_(ActiveModule.module_id == module.id, ActiveModule.owner_id == self.id)).first()
+        session['active_module'] = active_module.id
 
     def enroll_in(self, module):
         module.students.append(self)
         module.save_to_db()
-        city = City(name=module.name,
-                    user_owner=self,
-                    module=module)
-        city.save_to_db()
-        session['city_id'] = city.id
+        active_module = ActiveModule(name=module.name,
+                            user_owner=self,
+                            module=module)
+        active_module.save_to_db()
+        session['active_module'] = active_module.id

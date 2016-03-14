@@ -15,11 +15,13 @@
 
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="nav navbar-nav navbar-right">
-                    {% if g.user.email in config.admins %}
+                    {% if g.user.email in config.ADMINS %}
                         <li><a href="{{ url_for('modules.dashboard') }}">Create Course</a></li>
                     {% endif %}
-                    <li><a href="{{ url_for('users.profile') }}">Keep earning</a></li>
-                    <li><a href="#">Visit your city</a></li>
+                    <li><a href="{{ url_for('users.profile') }}">Keep learning</a></li>
+                    <li><a href="#">Challenge</a></li>
+                    <li><a href="{{ url_for('users.profile') }}"><i class="fa fa-circle fa-lg" style="color: #FFD409"></i> {{ g.user.gold }} Gold</a></li>
+                    <li><a href="{{ url_for('users.logout') }}">Log out</a></li>
                 </ul>
             </div>
         </div>

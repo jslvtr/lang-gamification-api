@@ -4,7 +4,7 @@
             {% if reorder %}
                 <span class="glyphicon glyphicon-move" aria-hidden="true"></span>
             {% endif %}
-            {{ lecture.name }} <span id="small-text" class="label label-success">completed</span>
+            {{ lecture.name }} {% if completed %}<span id="small-text" class="label label-success">completed</span>{% endif %}
         </h4>
         <p class="list-group-item-text">{{ lecture.description }}</p>
     </a>

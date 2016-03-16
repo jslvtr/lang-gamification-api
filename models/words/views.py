@@ -1,6 +1,6 @@
 import logging
 
-from flask import Blueprint, redirect, url_for, request, g, render_template
+from flask import Blueprint, redirect, url_for, request, g, render_template, jsonify
 
 from models.lectures.lecture import Lecture
 from models.words.tag import Tag
@@ -28,7 +28,6 @@ def new(lecture_id):
     form = CreateWordForm(request.form)
     log.info("Form created, validating...")
     lecture = Lecture.query.get(lecture_id)
-    # make sure data are valid, but doesn't validate password is right
     if form.validate_on_submit():
         log.info("Form validated, attempting to create module.")
         try:
@@ -43,8 +42,8 @@ def new(lecture_id):
                  tags=tags).save_to_db()
             log.info("Word created.")
         except WordErrors.WordError as e:
-            log.warn("Word error with message '{}', redirecting to teach".format(e.message))
-            return redirect(url_for('.teach', message=e.message))
+            log.warn("Word error with message '{}', redirecting to lecture page".format(e.message))
+            return redirect(url_for('lectures.lecture', lecture_id=lecture_id, message=e.message))
         log.info("Word created, redirecting to word list for this module.")
         return redirect(url_for('.word_list', lecture_id=lecture_id))
     log.info("Form not valid or this is GET request, presenting words/new.html template")
@@ -63,3 +62,9 @@ def word_list(lecture_id):
         words = Word.search_by_tag_or_name(search_term=search_term, lecture_id=lecture_id)
         return render_template('words/list.html', lecture=lecture, words=words, form=form)
     return render_template('words/list.html', lecture=lecture, form=form)
+
+
+@bp.route('/lecture/<string:lecture_id>/tag/<string:tag_name>', methods=['GET'])
+@requires_access_level(UserConstants.USER_TYPES['CREATOR'])
+def get_word_by_tag(lecture_id, tag_name):
+    return jsonify({"answers": [word.name for word in Word.search_by_tag_query(tag=tag_name, lecture_id=lecture_id).all()]}), 200

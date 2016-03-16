@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% from "forms/macros.html" import render_field %}
+{% block content %}
+    <div class="background">
+        <div class="container">
+            <div class="form">
+                <h1 class="sign-up-title">Create quiz</h1>
+
+                <form method="POST" class="form-horizontal">
+                    {{ form.csrf_token }}
+                    {{ render_field(form.name, True, class="input text form-control") }}
+                    <div class="col-sm-offset-3 col-sm-9"><p class="help">You can add questions after this step.</p></div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9">
+                            <button type="submit" class="btn btn-default">Create</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <a href="{{ url_for('quizzes.quiz_list', lecture_id=lecture.id) }}">Back to quiz list</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

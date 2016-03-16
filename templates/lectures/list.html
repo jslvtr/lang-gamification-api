@@ -6,6 +6,15 @@
 {% endif %}
 {% from "forms/macros.html" import render_search_field %}
 {% from "lectures/macros.html" import render_lecture %}
+{% block breadcrumbs %}
+    <div class="container margin-top">
+        <ol class="breadcrumb margin-bottom">
+            <li><a href="{{ url_for('modules.dashboard') }}">Your Modules</a></li>
+            <li><a href="{{ url_for('modules.module', id=module.id) }}">Module <strong>{{ module.name }}</strong></a></li>
+            <li class="active">Lectures</li>
+        </ol>
+    </div>
+{% endblock %}
 {% block content %}
     <div class="container">
         <h1 class="page-header">Lecture list for '{{ module.name }}'</h1>

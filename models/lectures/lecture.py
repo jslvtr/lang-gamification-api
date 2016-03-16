@@ -22,6 +22,8 @@ class Lecture(db.Model, SearchableModel):
     tags = db.relationship('Tag', secondary=HelperTables.lectures_tags,
                            backref=db.backref('lectures', lazy='dynamic'), lazy='dynamic')
 
+    quizzes = db.relationship("Quiz", back_populates="lecture", lazy='dynamic')
+
     def __init__(self, name, module, description, order=None, tags=None):
         self.name = name
         self.order = order or len(module.lectures.all()) + 1

@@ -10,7 +10,6 @@ class Question(db.Model, SearchableModel):
     __tablename__ = QuizConstants.QUESTION_TABLE_NAME
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80))
     tag = db.Column(db.String)
     answer_id = db.Column(db.Integer, db.ForeignKey('word.id'))
     answer = db.relationship('Word')
@@ -18,11 +17,12 @@ class Question(db.Model, SearchableModel):
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'))
     quiz = db.relationship("Quiz", back_populates="questions")
 
-    def __init__(self, title, tag, answer):
-        self.title = title
+    def __init__(self, tag, answer, quiz):
         self.tag = tag
         self.answer = answer
         self.answer_id = answer.id
+        self.quiz = quiz
+        self.quiz_id = quiz.id
 
     def save_to_db(self):
         db.session.add(self)
@@ -36,3 +36,8 @@ class Question(db.Model, SearchableModel):
     def other_answers(self):
         answers = Word.search_by_tag_query(self.tag, self.quiz.lecture_id).filter(Word.id != self.answer_id).all()
         return answers[:5]
+
+    @property
+    def title(self):
+        # TODO: randomize title either asking in Spanish or English.
+        return "Title"

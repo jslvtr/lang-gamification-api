@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block dependencies %}
+    <script src="{{ url_for('static', filename='js/questions.js') }}"></script>
+{% endblock %}
+{% block breadcrumbs %}
+    <div class="container margin-top">
+        <ol class="breadcrumb margin-bottom">
+            <li><a href="{{ url_for('modules.dashboard') }}">Your Modules</a></li>
+            <li><a href="{{ url_for('modules.module', id=quiz.lecture.module.id) }}">Module <strong>{{ quiz.lecture.module.name }}</strong></a></li>
+            <li><a href="{{ url_for('lectures.lecture_list', module_id=quiz.lecture.module.id) }}">Lectures</a></li>
+            <li><a href="{{ url_for('lectures.lecture', lecture_id=quiz.lecture.id) }}">Lecture <strong>{{ quiz.lecture.name }}</strong></a></li>
+            <li><a href="{{ url_for('quizzes.quiz_list', lecture_id=quiz.lecture.id) }}">Quizzes</a></li>
+            <li class="active"><strong>{{ quiz.name }}</strong></li>
+        </ol>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1 class="page-header margin-top">Questions for quiz '{{ quiz.name }}'</h1>
+        <p>Add questions using the controls below.</p>
+        <p>Each question can have one tag from the lecture to which the quiz belongs.</p>
+        <p>Then you can choose the answer from the words that have that tag in the lecture, and the questions populate
+            alternative answers by using the tag.</p>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div id="questions">
+                    {% if quiz.questions | length > 0 %}
+                        {% for question in quiz.questions %}
+                            <a href="{{ url_for('quizzes.question', question_id=question.id) }}"
+                               class="list-group-item">
+                                <h4 class="list-group-item-heading">Question asking for meaning
+                                    of {{ question.answer.name }}</h4>
+                                <p class="list-group-item-text">Belongs to tag {{ question.tag }}</p>
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div id="addQuestion">
+                    {% if quiz.questions | length == 0 %}
+                        No questions yet! Add the first one with the button below.
+                    {% endif %}
+                </div>
+            </div>
+            <div class="panel-footer">
+                <button class="btn btn-sm btn-success"
+                        onclick="addQuestion({{ tag_names | safe }},
+                                '{{ url_for('words.get_word_by_tag', lecture_id=quiz.lecture.id, tag_name='{}') | safe }}',
+                                '{{ url_for('quizzes.add_question', quiz_id=quiz.id) | safe }}')">
+                    <span class="glyphicon glyphicon-plus"></span> Add question
+                </button>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

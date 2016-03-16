@@ -7,44 +7,42 @@
             <li><a href="{{ url_for('modules.module', id=lecture.module.id) }}">Module <strong>{{ lecture.module.name }}</strong></a></li>
             <li><a href="{{ url_for('lectures.lecture_list', module_id=lecture.module.id) }}">Lectures</a></li>
             <li><a href="{{ url_for('lectures.lecture', lecture_id=lecture.id) }}">Lecture <strong>{{ lecture.name }}</strong></a></li>
-            <li class="active"><strong>Words</strong></li>
+            <li class="active"><strong>Quizzes</strong></li>
         </ol>
     </div>
 {% endblock %}
 {% block content %}
     <div class="container">
-        <h1 class="page-header">Word list for '{{ lecture.name }}'</h1>
+        <h1 class="page-header">Quiz list for '{{ lecture.name }}'</h1>
         <form method="POST" class="form-inline margin-bottom" role="search">
             {{ form.csrf_token }}
             {{ render_search_field(form.term, placeholder="Search", class="input text form-control") }}
             <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
         </form>
         <div class="list-group">
-            {% if words %}
-                {% for word in words %}
+            {% if quizzes %}
+                {% for quiz in quizzes %}
 
-                    <a href="#" class="list-group-item">
-                        <h4 class="list-group-item-heading">{{ word.name }}{% for tag in word.tags %}
-                            <span class="label label-default">{{ tag.name }}</span>{% endfor %}</h4>
-                        <p class="list-group-item-text">Meaning: <strong>{{ word.meaning }}</strong></p>
+                    <a href="{{ url_for('quizzes.quiz', quiz_id=quiz.id) }}" class="list-group-item">
+                        <h4 class="list-group-item-heading">{{ quiz.name }}</h4>
+                        <p class="list-group-item-text">This quiz has {{ quiz.questions | length }} questions.</p>
                     </a>
 
                 {% endfor %}
             {% else %}
-                {% for word in lecture.words %}
+                {% for quiz in lecture.quizzes %}
 
-                    <a href="#" class="list-group-item">
-                        <h4 class="list-group-item-heading">{{ word.name }}{% for tag in word.tags %}
-                            <span class="label label-default">{{ tag.name }}</span>{% endfor %}</h4>
-                        <p class="list-group-item-text">Meaning: <strong>{{ word.meaning }}</strong></p>
+                    <a href="{{ url_for('quizzes.quiz', quiz_id=quiz.id) }}" class="list-group-item">
+                        <h4 class="list-group-item-heading">{{ quiz.name }}</h4>
+                        <p class="list-group-item-text">This quiz has {{ quiz.questions | length }} questions.</p>
                     </a>
 
                 {% endfor %}
             {% endif %}
         </div>
 
-        <a href="{{ url_for('words.new', lecture_id=lecture.id) }}" class="btn btn-success">
-            <span class="glyphicon glyphicon-plus"></span> Add word
+        <a href="{{ url_for('quizzes.new', lecture_id=lecture.id) }}" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> Add quiz
         </a>
     </div>
 {% endblock %}

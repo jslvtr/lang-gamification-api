@@ -16,7 +16,7 @@
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="nav navbar-nav navbar-right">
                     {% if g.user.email in config.ADMINS %}
-                        <li><a href="{{ url_for('modules.dashboard') }}">Create Course</a></li>
+                        <li><a href="{{ url_for('modules.dashboard') }}">Create Module</a></li>
                     {% endif %}
                     <li><a href="{{ url_for('users.profile') }}">Keep learning</a></li>
                     <li><a href="#">Challenge</a></li>

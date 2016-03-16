@@ -229,3 +229,8 @@ a.train-button:hover {
 p.help {
     color: #d5d5d5;
 }
+
+.question-form {
+    min-width: 120px;
+    max-width: 360px;
+}

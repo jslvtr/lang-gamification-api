@@ -2,7 +2,6 @@ from sqlalchemy import and_
 
 from app import db
 import models.quizzes.constants as QuizConstants
-import common.helper_tables as HelperTables
 
 
 class Quiz(db.Model):
@@ -12,13 +11,13 @@ class Quiz(db.Model):
     name = db.Column(db.String(80))
 
     lecture_id = db.Column(db.Integer, db.ForeignKey('lecture.id'))
-    lecture = db.relationship('Lecture', secondary=HelperTables.quizzes_lectures,
-                              backref=db.backref('quizzes', lazy='dynamic'))
+    lecture = db.relationship("Lecture", back_populates="quizzes")
+
     questions = db.relationship("Question", back_populates="quiz")
 
-    def __init__(self, name, lectures):
+    def __init__(self, name, lecture):
         self.name = name
-        self.lecture = lectures
+        self.lecture = lecture
 
     def save_to_db(self):
         db.session.add(self)
@@ -27,3 +26,8 @@ class Quiz(db.Model):
     def remove_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+    @classmethod
+    def search_by_name(cls, search_term, lecture_id):
+        result = Quiz.query.filter(and_(Quiz.lecture_id == lecture_id, Quiz.name.contains(search_term)))
+        return result

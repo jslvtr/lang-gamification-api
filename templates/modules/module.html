@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% from "modules/macros.html" import render_students_registered %}
-
+{% block breadcrumbs %}
+    <div class="container margin-top">
+        <ol class="breadcrumb margin-bottom">
+            <li><a href="{{ url_for('modules.dashboard') }}">Your Modules</a></li>
+            <li class="active">Module <strong>{{ module.name }}</strong></li>
+        </ol>
+    </div>
+{% endblock %}
 {% block content %}
     <div class="container">
         <h1 class="page-header">Module '{{ module.name }}'</h1>

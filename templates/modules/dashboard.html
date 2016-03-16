@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% from "modules/macros.html" import render_module %}
+{% block breadcrumbs %}
+    <div class="container margin-top">
+        <ol class="breadcrumb margin-bottom">
+            <li class="active">Your Modules</li>
+        </ol>
+    </div>
+{% endblock %}
 {% block content %}
     <div class="container">
         <h1 class="page-header">Your created modules</h1>

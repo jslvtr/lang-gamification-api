@@ -1,7 +1,17 @@
 {% extends "base.html" %}
+{% block breadcrumbs %}
+    <div class="container margin-top">
+        <ol class="breadcrumb margin-bottom">
+            <li><a href="{{ url_for('modules.dashboard') }}">Your Modules</a></li>
+            <li><a href="{{ url_for('modules.module', id=lecture.module.id) }}">Module <strong>{{ lecture.module.name }}</strong></a></li>
+            <li><a href="{{ url_for('lectures.lecture_list', module_id=lecture.module.id) }}">Lectures</a></li>
+            <li class="active">Lecture <strong>{{ lecture.name }}</strong></li>
+        </ol>
+    </div>
+{% endblock %}
 {% block content %}
     <div class="container">
-        <h1>Add content to lecture</h1>
+        <h1 class="page-header margin-top">Add content to lecture</h1>
         <p>Choose from the options below to add content to the lecture.</p>
         <p>The tag{{ 's' if lecture.tags.all() | length > 1 }} for this lecture {{ 'are' if lecture.tags.all() | length > 1 else 'is'}} {% for tag in lecture.tags.all() %} <strong>{{ tag.name }}</strong>{% if not loop.last %}, {% else %}. {% endif %}{% endfor %}</p>
         <div class="panel panel-default">

@@ -1,9 +1,9 @@
-from sqlalchemy import and_
-
 from app import db
 import models.quizzes.constants as QuizConstants
 from models.searchable import SearchableModel
 from models.words.word import Word
+
+import random
 
 
 class Question(db.Model, SearchableModel):
@@ -33,11 +33,16 @@ class Question(db.Model, SearchableModel):
         db.session.commit()
 
     @property
-    def other_answers(self):
-        answers = Word.search_by_tag_query(self.tag, self.quiz.lecture_id).filter(Word.id != self.answer_id).all()
-        return answers[:5]
+    def gen(self):
+        target = QuizConstants.QUESTIONS[random.randint(0, 1)]
+        answers = [answer.meaning if target['replace'] == 'name' else answer.name for answer in Word.search_by_tag_query(self.tag, self.quiz.lecture_id).filter(Word.id != self.answer_id).all()]
+        answers = answers[:4]
+        answers.append(self.answer.meaning if target['replace'] == 'name' else self.answer.name)
+        random.shuffle(answers)
 
-    @property
-    def title(self):
-        # TODO: randomize title either asking in Spanish or English.
-        return "Title"
+        return {'answers': answers,
+                'title': target['question'].format(self.answer.name if target['replace'] == 'name' else self.answer.meaning),
+                'replace': target['replace']}
+
+    def correct_answer(self, meaning):
+        return self.answer.meaning if meaning else self.answer.name

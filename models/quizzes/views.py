@@ -102,3 +102,13 @@ def question(question_id):
     if not g.user.is_course_creator(module):
         return redirect(url_for('modules.dashboard'))
     return "question view page"
+
+
+@bp.route('/question/check', methods=['POST'])
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def check_question():
+    request_json = request.get_json(force=True, silent=True)
+    if request_json is None:
+        return jsonify({"message": "The request was invalid."}), 400
+    question = Question.query.get(request_json['question_id'])
+    return jsonify({"value": question.correct_answer(request_json['meaning'] == "name") == request_json['answer']})

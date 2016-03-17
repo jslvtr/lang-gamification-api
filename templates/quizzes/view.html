@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block dependencies %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
+    <script src="{{ url_for('static', filename='js/quizzes.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="quiz">
+            <h1>Challenge</h1>
+            <div class="question">
+            </div>
+            <a id="quitButton">Quit</a>
+            <button class="btn btn-success" id="continueButton"
+                    onclick="checkSelectedAnswer('{{ url_for('quizzes.check_question') }}');">Check
+            </button>
+
+            <button class="btn btn-default" id="skipButton">Skip</button>
+        </div>
+    </div>
+
+    <script type="application/javascript">
+        function quizQuestionGenerator() {
+            var questions = [];
+            {% for question in quiz.questions %}
+                {% set question_data = question.gen %}
+                questions.push({
+                    id: "{{ question.id }}",
+                    meaning: "{{ question_data.replace }}",
+                    title: "{{question_data.title}}",
+                    answers: [
+                        {% for answer in question_data.answers %} '{{ answer }}'{{ ',' if not loop.last }} {% endfor %}]
+                });
+            {% endfor %}
+
+            var index = 0;
+            return {
+                next: function () {
+                    return index < questions.length ?
+                    {value: questions[index++], done: false} :
+                    {done: true, value: undefined}
+                }
+            }
+        }
+    </script>
+{% endblock %}

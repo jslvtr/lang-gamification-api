@@ -1,4 +1,5 @@
 TABLE_NAME = "quiz"
+ATTEMPTS_TABLE_NAME = "quiz_attempt"
 QUESTION_TABLE_NAME = "question"
 
 QUESTIONS = [

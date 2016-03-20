@@ -34,7 +34,7 @@ class Question(db.Model, SearchableModel):
 
     @property
     def gen(self):
-        target = QuizConstants.QUESTIONS[random.randint(0, 1)]
+        target = QuizConstants.QUESTIONS[random.randint(0, len(QuizConstants.QUESTIONS) - 1)]
         answers = [answer.meaning if target['replace'] == 'name' else answer.name for answer in Word.search_by_tag_query(self.tag, self.quiz.lecture_id).filter(Word.id != self.answer_id).all()]
         answers = answers[:4]
         answers.append(self.answer.meaning if target['replace'] == 'name' else self.answer.name)

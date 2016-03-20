@@ -6,6 +6,7 @@ from models.contents.lecture_content import LectureContent
 from models.lectures.lecture import Lecture
 from models.quizzes.question import Question
 from models.quizzes.quiz import Quiz
+from models.quizzes.quiz_attempt import QuizAttempt, QuestionAnswered
 from models.users.decorators import requires_access_level
 from models.quizzes.forms import CreateQuizForm
 from common.forms import SearchForm
@@ -76,6 +77,7 @@ def quiz(quiz_id):
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def do_quiz(quiz_id):
     quiz = Quiz.query.get(quiz_id)
+    QuizAttempt(g.user.id, quiz.id).save_to_db()
     return render_template('quizzes/view.html', quiz=quiz)
 
 
@@ -111,4 +113,38 @@ def check_question():
     if request_json is None:
         return jsonify({"message": "The request was invalid."}), 400
     question = Question.query.get(request_json['question_id'])
-    return jsonify({"value": question.correct_answer(request_json['meaning'] == "name") == request_json['answer']})
+    try:
+        correct = question.correct_answer(request_json['meaning'] == "name") == request_json['answer']
+        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == question.quiz.id).first()
+        question_answered = QuestionAnswered(correct=correct)
+        question_answered.question = question
+        quiz_attempt.questions_answered.append(question_answered)
+        question_answered.save_to_db()
+        return jsonify({"value": correct})
+    except KeyError:
+        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == question.quiz.id).first()
+        question_answered = QuestionAnswered(correct=False)
+        question_answered.question = question
+        quiz_attempt.questions_answered.append(question_answered)
+        question_answered.save_to_db()
+        return jsonify({"value": False})
+
+
+@bp.route('/question/skip', methods=['POST'])
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def skip_question():
+    request_json = request.get_json(force=True, silent=True)
+    if request_json is None:
+        return jsonify({"message": "The request was invalid."}), 400
+    question = Question.query.get(request_json['question_id'])
+    return jsonify({"value": True})
+
+
+@bp.route('/quizzes/<string:quiz_id>/finish', methods=['GET'])
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def finish_quiz(quiz_id):
+    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == quiz_id).first()
+    return_values = quiz_attempt.json()
+    g.user.gold += return_values['gold_earned']
+    quiz_attempt.remove_from_db()
+    return jsonify(return_values), 200

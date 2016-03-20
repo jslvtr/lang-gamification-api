@@ -1,5 +1,6 @@
 from unittest import TestCase
 from app import get_db, db
+from models.lectures.lecture import Lecture
 from models.modules.module import Module
 from models.users.user import User
 from models.words.word import Word
@@ -28,10 +29,12 @@ class TestWordIntegration(TestCase):
         user = User.register("findbyid@testcourse.com", "123")
         module = Module("findbyid_test", user)
         module.save_to_db()
+        lecture = Lecture(name="test", module=module, description="this is a test lecture")
+        lecture.save_to_db()
         word = Word(name="testfindidtestcoursexyz",
                     meaning="prueba",
                     difficulty=3,
-                    module=module)
+                    lecture=lecture)
         word.save_to_db()
 
         # Find by id
@@ -40,10 +43,12 @@ class TestWordIntegration(TestCase):
     def test_delete(self):
         user = User.register("testdelete@testcourse.com", "123")
         module = Module("testdelete_test", user)
+        lecture = Lecture(name="test", module=module, description="this is a test lecture")
+        lecture.save_to_db()
         word = Word(name="testdeletetestcoursexyz",
                     meaning="prueba",
                     difficulty=3,
-                    module=module)
+                    lecture=lecture)
 
         word.save_to_db()
         user.save_to_db()
@@ -55,13 +60,15 @@ class TestWordIntegration(TestCase):
     def test_save_to_db_with_tags(self):
         user = User.register("testdelete@testcourse.com", "123")
         module = Module("testdelete_test", user)
+        lecture = Lecture(name="test", module=module, description="this is a test lecture")
+        lecture.save_to_db()
         tags = [Tag(s) for s in ["test", "tag", "another"]]
         for tag in tags:
             tag.save_to_db()
         word = Word(name="testtagstestcoursexyz",
                     meaning="prueba",
                     difficulty=3,
-                    module=module,
+                    lecture=lecture,
                     tags=tags)
 
         word.save_to_db()
@@ -75,6 +82,8 @@ class TestWordIntegration(TestCase):
     def test_filter_words_in_module_with_tag(self):
         user = User.register("testfilterbytag@testcourse.com", "123")
         module = Module("testfilterbytag_test", user)
+        lecture = Lecture(name="test", module=module, description="this is a test lecture")
+        lecture.save_to_db()
         tag_name = "testtagnameintegration"
         tags = [Tag(tag_name)]
         for tag in tags:
@@ -82,31 +91,33 @@ class TestWordIntegration(TestCase):
         word = Word(name="testtagstestcoursexyz",
                     meaning="prueba",
                     difficulty=3,
-                    module=module,
+                    lecture=lecture,
                     tags=tags)
         word2 = Word(name="testtags2testcoursexyz",
                      meaning="prueba",
                      difficulty=3,
-                     module=module)
+                     lecture=lecture)
 
         word.save_to_db()
         word2.save_to_db()
 
         words_from_db = Word.search_by_tag_or_name(search_term=tag_name,
-                                                   module_id=module.id)
+                                                   lecture_id=lecture.id)
         self.assertEqual(len(words_from_db), 1)
 
     def test_filter_words_in_module_by_name(self):
         user = User.register("testfilterbyname@testcourse.com", "123")
         module = Module("testfilterbyname_test", user)
+        lecture = Lecture(name="test", module=module, description="this is a test lecture")
+        lecture.save_to_db()
         word_name = "testfilterbynametestcoursexyz"
         word = Word(name=word_name,
                     meaning="prueba",
                     difficulty=3,
-                    module=module)
+                    lecture=lecture)
 
         word.save_to_db()
 
         words_from_db = Word.search_by_tag_or_name(search_term=word_name,
-                                                   module_id=module.id)
+                                                   lecture_id=lecture.id)
         self.assertEqual(len(words_from_db), 1)

@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import make_response, g, url_for, request, redirect
+from flask import g, url_for, request, redirect
 
 __author__ = 'jslvtr'
 
@@ -11,7 +11,7 @@ def requires_access_level(access_level):
             if g.user is None:
                 return redirect(url_for('users.login', next=request.path))
             elif not g.user.allowed(access_level):
-                return redirect(url_for('users.profile', message="You do not have access to that page. Sorry!"))
-            return make_response(f(*args, **kwargs))
+                return redirect(url_for('users.profile', message="You do not have access to that page. Sorry!", next=request.path))
+            return f(*args, **kwargs)
         return decorated_function
     return decorator

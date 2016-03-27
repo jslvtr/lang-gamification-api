@@ -1,10 +1,12 @@
 {% macro render_lecture(lecture, reorder=False, completed=False) %}
-    <a href="{{ url_for('lectures.lecture', lecture_id=lecture.id) }}" id="{{ lecture.id }}" class="list-group-item {{ 'list-group-item-success' if completed else '' }}">
+    <a href="{{ url_for('lectures.lecture', lecture_id=lecture.id) }}" id="{{ lecture.id }}"
+       class="list-group-item {{ 'list-group-item-success' if completed else '' }}">
         <h4 class="list-group-item-heading">
             {% if reorder %}
                 <span class="glyphicon glyphicon-move" aria-hidden="true"></span>
             {% endif %}
-            {{ lecture.name }} {% if completed %}<span id="small-text" class="label label-success">completed</span>{% endif %}
+            {{ lecture.name }} {% if completed %}
+            <span id="small-text" class="label label-success">completed</span>{% endif %}
         </h4>
         <p class="list-group-item-text">{{ lecture.description }}</p>
     </a>
@@ -12,16 +14,23 @@
 
 {% macro render_lecture_content(lecture) %}
     <div id="lectureContent">
-    {% if lecture.content %}
-        {% if lecture.content.type == 'html' %}
-            {{ lecture.content.text | safe }}
-        {% elif lecture.content.type == 'video' %}
-            <p>This lecture is a video, but we don't support video yet!</p>
+        {% if lecture.content %}
+            {% if lecture.content.type == 'html' %}
+                {{ lecture.content.text | safe }}
+            {% elif lecture.content.type == 'video' %}
+                <p>This lecture is a video, but we don't support video yet!</p>
+            {% else %}
+                <p>Lecture content not supported</p>
+            {% endif %}
         {% else %}
-            <p>Lecture content not supported</p>
+            <p>This lecture has no content yet!</p>
         {% endif %}
-    {% else %}
-        <p>This lecture has no content yet!</p>
-    {% endif %}
     </div>
+{% endmacro %}
+
+{% macro render_quiz_in_lecture(quiz, index) %}
+    <a class="list-group-item" href="{{ url_for("quizzes.do_quiz", quiz_id=quiz.id) }}">
+        <span class="badge">{{ quiz.questions | length }} questions</span>
+        Take Quiz {{ index }}: <strong>{{ quiz.name }}</strong>
+    </a>
 {% endmacro %}

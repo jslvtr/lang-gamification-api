@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from "lectures/macros.html" import render_lecture_content %}
+{% from "lectures/macros.html" import render_lecture_content, render_quiz_in_lecture %}
 {% block content %}
     <div>
         <div class="container">
@@ -7,14 +7,34 @@
             <article>
                 {{ render_lecture_content(lecture) }}
             </article>
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
 
-            <div class="panel panel-default margin-top">
-            <div class="panel-heading">Actions</div>
-            <div class="panel-body">
-                <a href="{{ url_for('lectures.complete', lecture_id=lecture.id) }}" class="btn btn-success"><span
-                        class="glyphicon glyphicon-arrow-right"></span> Complete lecture</a>
+
+                    {% if lecture.quizzes.all() | length > 0 %}
+                        <div class="panel panel-default margin-top">
+                            <div class="panel-heading">Quizzes</div>
+                            <div class="panel-body">
+                                <div class="list-group">
+                                    {% for quiz in lecture.quizzes %}
+                                        {{ render_quiz_in_lecture(quiz, loop.index) }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-lg-4 col-md-4 col-xm-12 col-xs-12">
+
+                    <div class="panel panel-default margin-top">
+                        <div class="panel-heading">Actions</div>
+                        <div class="panel-body">
+                            <a href="{{ url_for('lectures.complete', lecture_id=lecture.id) }}" class="btn btn-success"><span
+                                    class="glyphicon glyphicon-arrow-right"></span> Complete lecture</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
         </div>
     </div>
 {% endblock %}

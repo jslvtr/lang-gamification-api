@@ -12,6 +12,7 @@ from models.quizzes.forms import CreateQuizForm
 from common.forms import SearchForm
 import models.words.errors as WordErrors
 import models.users.constants as UserConstants
+from models.users.user import User
 from models.words.word import Word
 
 logging.basicConfig(level=logging.INFO)
@@ -79,6 +80,17 @@ def do_quiz(quiz_id):
     quiz = Quiz.query.get(quiz_id)
     QuizAttempt(g.user.id, quiz.id).save_to_db()
     return render_template('quizzes/view.html', quiz=quiz)
+
+
+@bp.route('/<string:quiz_id>/challenge/<string:user_id>')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def do_challenge(quiz_id, user_id):
+    quiz = Quiz.query.get(quiz_id)
+    challenged_user = User.query.get(user_id)
+    # Challenge(g.user, challenged_user, quiz).save_to_db()
+    # QuizAttempt(g.user.id, quiz.id).save_to_db()
+    # QuizAttempt(challenged_user, quiz.id).save_to_db()
+    return render_template('quizzes/challenge.html', quiz=quiz, challenged_user=challenged_user)
 
 
 @bp.route('/<string:quiz_id>/question', methods=['POST'])

@@ -7,13 +7,12 @@
 
 {% block content %}
     <script type="application/javascript">
-    var skip_url = '{{ url_for("quizzes.skip_question") }}';
-    var finish_url = '{{ url_for("quizzes.finish_quiz", quiz_id=quiz.id) }}';
+        var skip_url = '{{ url_for("quizzes.skip_question") }}';
+        var finish_url = '{{ url_for("quizzes.finish_quiz", quiz_id=quiz.id) }}';
     </script>
     <div class="container">
-    <div class="row"><div class="col-lg-8">
         <div class="quiz">
-            <h1>Challenge</h1>
+            <h1>Quiz</h1>
             <div class="question">
             </div>
             <a id="quitButton">Quit</a>
@@ -22,34 +21,34 @@
             </button>
 
             <button class="btn btn-default" id="skipButton" onclick="
-        skipQuestion(true);">Skip</button>
-            <a href="{{ url_for('users.profile') }}" class="btn btn-success" id="finishButton" style="display: none;">Finish</a>
+        skipQuestion(true);">Skip
+            </button>
+            <a href="{{ url_for('lectures.study_lecture', lecture_id=quiz.lecture.id) }}" class="btn btn-success" id="finishButton" style="display: none;">Finish</a>
         </div>
-        </div></div>
-    </div>
 
-    <script type="application/javascript">
-        function quizQuestionGenerator() {
-            var questions = [];
-            {% for question in quiz.questions %}
-                {% set question_data = question.gen %}
-                questions.push({
-                    id: "{{ question.id }}",
-                    meaning: "{{ question_data.replace }}",
-                    title: "{{question_data.title}}",
-                    answers: [
-                        {% for answer in question_data.answers %} '{{ answer }}'{{ ',' if not loop.last }} {% endfor %}]
-                });
-            {% endfor %}
+        <script type="application/javascript">
+            function quizQuestionGenerator() {
+                var questions = [];
+                {% for question in quiz.questions %}
+                    {% set question_data = question.gen %}
+                    questions.push({
+                        id: "{{ question.id }}",
+                        meaning: "{{ question_data.replace }}",
+                        title: "{{question_data.title}}",
+                        answers: [
+                            {% for answer in question_data.answers %} '{{ answer }}'{{ ',' if not loop.last }} {% endfor %}]
+                    });
+                {% endfor %}
 
-            var index = 0;
-            return {
-                next: function () {
-                    return index < questions.length ?
-                    {value: questions[index++], done: false} :
-                    {done: true, value: undefined}
+                var index = 0;
+                return {
+                    next: function () {
+                        return index < questions.length ?
+                        {value: questions[index++], done: false} :
+                        {done: true, value: undefined}
+                    }
                 }
             }
-        }
-    </script>
+        </script>
+    </div>
 {% endblock %}

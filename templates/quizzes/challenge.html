@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block dependencies %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
+    <script src="{{ url_for('static', filename='js/quizzes.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <script type="application/javascript">
+    var skip_url = '{{ url_for("quizzes.skip_question") }}';
+    var finish_url = '{{ url_for("quizzes.finish_quiz", quiz_id=quiz.id) }}';
+    </script>
+    <div class="container">
+    <div class="row"><div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+        <div class="quiz challenge">
+            <h1>Challenge</h1>
+            <div class="question">
+            </div>
+            <a id="quitButton">Quit</a>
+            <button class="btn btn-success" id="continueButton"
+                    onclick="checkSelectedAnswer('{{ url_for('quizzes.check_question') }}');">Check
+            </button>
+
+            <button class="btn btn-default" id="skipButton" onclick="
+        skipQuestion(true);">Skip</button>
+            <a href="{{ url_for('users.profile') }}" class="btn btn-success" id="finishButton" style="display: none;">Finish</a>
+        </div>
+        </div>
+    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"></div></div>
+    </div>
+
+    <script type="application/javascript">
+        function quizQuestionGenerator() {
+            var questions = [];
+            {% for question in quiz.questions %}
+                {% set question_data = question.gen %}
+                questions.push({
+                    id: "{{ question.id }}",
+                    meaning: "{{ question_data.replace }}",
+                    title: "{{question_data.title}}",
+                    answers: [
+                        {% for answer in question_data.answers %} '{{ answer }}'{{ ',' if not loop.last }} {% endfor %}]
+                });
+            {% endfor %}
+
+            var index = 0;
+            return {
+                next: function () {
+                    return index < questions.length ?
+                    {value: questions[index++], done: false} :
+                    {done: true, value: undefined}
+                }
+            }
+        }
+    </script>
+{% endblock %}

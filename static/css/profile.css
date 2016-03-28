@@ -25,20 +25,23 @@
 .profile .panel-background .list-group-item {
     background-color: #3498DB;
     color: #ffffff;
+    z-index: 2;
 }
 
 .profile .list-group-item {
     border: none;
 }
 
-.profile .panel-background .list-group-item:nth-child(odd) {
+.profile .panel-background .list-group-item:nth-child(4n + 1) {
     background-color: #3293d3;
     border-bottom: none;
     color: #ffffff;
+    z-index: 2;
 }
 
 .profile .panel-background .list-group-item:hover {
     background-color: #2f8bc8;
+    cursor: pointer;
 }
 
 .profile .panel-background .list-group-item.pending-friend {
@@ -130,4 +133,61 @@
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
+}
+
+.profile .list-group-item .pointer {
+    position: absolute;
+    bottom: 0;
+    font-size: 65%;
+    left: 25px;
+}
+
+.profile .panel-background .white {
+    background-color: #ffffff;
+    border-left: 1px solid #3498DB;
+    border-right: 1px solid #3498DB;
+    z-index: 1;
+}
+
+.profile .panel-background .list-group-item.white:hover {
+    background-color: #ffffff;
+    cursor: inherit;
+}
+
+.profile .panel-background .show {
+    animation: expand 0.4s ease-out;
+}
+
+@keyframes expand {
+    0% {
+        margin-top: -2.8em;
+    }
+    100% {
+        margin-top: 0;
+    }
+}
+
+.profile .panel-background .retract {
+    margin-top: -2.8em;
+    animation: retract 0.4s ease-in;
+}
+
+.profile .panel-background .retracted {
+    margin-top: -2.8em;
+}
+
+@keyframes retract {
+    0% {
+        margin-top: 0;
+    }
+    100% {
+        margin-top: -2.8em;
+    }
+}
+
+.profile .panel-background .list-group-item.white a {
+    padding: 2px 10px;
+    border-radius: 15px;
+    margin-right: 5px;
+    margin-left: 5px;
 }

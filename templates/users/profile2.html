@@ -2,6 +2,7 @@
 {% from "users/macros.html" import render_experience_panel, render_friends_list, render_profile_lecture_list %}
 {% block dependencies %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
 {% endblock %}
 {% block content %}
     <div class="profile">

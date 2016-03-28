@@ -30,12 +30,19 @@
     <div class="panel panel-default">
         <div class="panel-heading">Friends</div>
         {% if user.friends.count() == 0 %}
-            <div class="panel-body">You're all by yourself! Why not add some friends?</div>
+            <div class="panel-body panel-background">You're all by yourself! Why not add some friends?</div>
         {% else %}
             <div class="list-group panel-background">
                 {% for friend in user.friends %}
-                    <a class="list-group-item"
-                       href="{{ url_for('users.view', user_id=friend.id) }}">{{ friend.email }}</a>
+                    <div class="list-group-item"
+                         onclick="showFriendControls(this)">
+                        {{ friend.email }}
+                    </div>
+                    <div class="list-group-item white retracted">
+                    <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-default btn-sm"><span class="fa fa-eye"></span> View</a>
+                    <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-default btn-sm"><span class="fa fa-gamepad"></span> Challenge</a>
+                    <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-danger btn-sm" disabled="disabled"><span class="fa fa-ban"></span> Unfriend</a>
+                    </div>
                 {% endfor %}
                 {% for pending_friendship in user.pending_friendships() %}
                     <a class="list-group-item pending-friend"

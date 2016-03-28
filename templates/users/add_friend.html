@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% from 'forms/macros.html' import render_large_field %}
+{% block content %}
+    <div>
+        <div class="container">
+            <h2 class="page-header margin-bottom">Add a friend</h2>
+            <p class="email-help">Use the field below to enter your friend's e-mail.</p>
+            <form method="POST">
+                {{ form.csrf_token }}
+                {{ render_large_field(form.email, class='email-search', placeholder='E-mail') }}
+                <div class="form-group">
+                    <div>
+                        <button type="submit" class="btn btn-success">Add</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

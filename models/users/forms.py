@@ -19,3 +19,7 @@ class RegisterForm(Form):
     ])
     accept_tos = BooleanField('I accept the Terms and Conditions.', [DataRequired()])
     # recaptcha = RecaptchaField()
+
+
+class AddFriendForm(Form):
+    email = StringField('Email', [DataRequired(), Email(message="This is not a valid e-mail format.")])

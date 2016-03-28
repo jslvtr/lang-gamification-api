@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
+{% from 'utils.html' import render_messages %}
+
 {% block content %}
+    {{ render_messages(background=True) }}
 <div class="jumbotron background">
     <div class="center-vertical">
         <h1>Grow your economy by learning a language</h1>

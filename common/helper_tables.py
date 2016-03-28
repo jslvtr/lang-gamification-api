@@ -5,6 +5,11 @@ students = db.Table('studying',
                     db.Column('module_id', db.Integer, db.ForeignKey('module.id'))
                     )
 
+friends = db.Table('friends',
+                   db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                   db.Column('friend_id', db.Integer, db.ForeignKey('user.id'))
+                   )
+
 active_to_modules = db.Table('cities_modules',
                              db.Column('active_module_id', db.Integer, db.ForeignKey('active_module.id')),
                              db.Column('module_id', db.Integer, db.ForeignKey('module.id'))
@@ -26,6 +31,6 @@ completed_lectures = db.Table('completed_lectures',
                               )
 
 attempt_questions = db.Table('attempt_questions',
-                              db.Column('quiz_attempt_id', db.Integer, db.ForeignKey('quiz_attempt.id')),
-                              db.Column('question_id', db.Integer, db.ForeignKey('question.id'))
-                              )
+                             db.Column('quiz_attempt_id', db.Integer, db.ForeignKey('quiz_attempt.id')),
+                             db.Column('question_id', db.Integer, db.ForeignKey('question.id'))
+                             )

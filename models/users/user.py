@@ -7,7 +7,7 @@ import models.users.constants as UserConstants
 import common.helper_tables as HelperTables
 from app import db
 from models.active_modules.activemodule import ActiveModule
-from models.lectures.lecture import Lecture
+from models.users.friend_request import FriendRequest
 
 __author__ = 'jslvtr'
 
@@ -20,6 +20,9 @@ class User(db.Model):
     gold = db.Column(db.Integer)
     access = db.Column(db.Integer)
     gamified = db.Column(db.Boolean)
+    friends = db.relationship('User', secondary=HelperTables.friends,
+                              primaryjoin=HelperTables.friends.c.user_id == id,
+                              secondaryjoin=HelperTables.friends.c.friend_id == id, lazy='dynamic')
 
     def __init__(self, email, password, access=UserConstants.USER_TYPES['USER'], gamified=True):
         self.email = email
@@ -112,3 +115,6 @@ class User(db.Model):
                             module=module)
         active_module.save_to_db()
         session['active_module'] = active_module.id
+
+    def pending_friendships(self):
+        return FriendRequest.pending_requests_for_user(self)

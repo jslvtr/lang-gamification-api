@@ -20,3 +20,7 @@ class InvalidEmailException(UserError):
 
 class UserAlreadyExistsException(UserError):
     pass
+
+
+class FriendAddingError(UserError):
+    pass

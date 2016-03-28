@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% from 'utils.html' import render_messages %}
+{% block content %}
+    <div>
+        <div class="container">
+            {{ render_messages() }}
+            <h2 class="page-header margin-bottom">{{ user.email }}'s info</h2>
+
+        </div>
+    </div>
+{% endblock %}

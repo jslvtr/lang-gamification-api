@@ -1,7 +1,12 @@
+{% macro render_module_experience_progress_bar(active_module, color) %}
+    {{ render_progress_bar(active_module.starting_experience_for_current_level(), active_module.experience, active_module.next_level_experience(), color) }}
+{% endmacro %}
+
 {% macro render_progress_bar(start, current, end, color) %}
     <div class="progress" style="height: 2em;">
-        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{ current }}" aria-valuemin="{{ start }}" aria-valuemax="{{ end }}"
-             style="width: {{ (current / end * 100) | int }}%; min-width: 2em; background-color: {{ color }};">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{ current }}"
+             aria-valuemin="{{ start }}" aria-valuemax="{{ end }}"
+             style="width: {{ (current / end * 100) | int }}%; min-width: 1em; background-color: {{ color }};">
             <span class="sr-only">{{ (current / end * 100) | int }}% Complete</span>
         </div>
     </div>
@@ -19,4 +24,68 @@
             </span>
         {% endif %}
     {% endif %}
+{% endmacro %}
+
+{% macro render_friends_list(user) %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Friends</div>
+        {% if user.friends.count() == 0 %}
+            <div class="panel-body">You're all by yourself! Why not add some friends?</div>
+        {% else %}
+            <div class="list-group panel-background">
+                {% for friend in user.friends %}
+                    <a class="list-group-item"
+                       href="{{ url_for('users.view', user_id=friend.id) }}">{{ friend.email }}</a>
+                {% endfor %}
+                {% for pending_friendship in user.pending_friendships() %}
+                    <a class="list-group-item pending-friend"
+                       href="{{ url_for('users.confirm_friend_request', friend_request_id=pending_friendship.id) }}">
+                        <span class="badge">Click to confirm</span>
+                        {{ pending_friendship.user.email }}
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="panel-footer"><a class="btn btn-success btn-sm" href="{{ url_for('users.add_friend_form') }}"><span
+                class="glyphicon glyphicon-plus"></span> Add friend</a></div>
+    </div>
+{% endmacro %}
+
+{% macro render_experience_panel(active_module) %}
+    <div class="panel panel-default panel-experience">
+        <div class="panel-heading">Performance</div>
+        {% if active_module.experience != 0 %}
+            <div class="panel-body panel-background">Get started to earn some experience!</div>
+        {% else %}
+            <div class="panel-body panel-background">
+                {{ render_module_experience_progress_bar(active_module, '#00B27C') }}
+                <p>Currently at level <strong>{{ active_module.level }}</strong>!</p>
+                <p>Earn <strong>{{ active_module.next_level_experience() - active_module.experience }}
+                    experience</strong> to get to the next level.</p>
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro render_profile_lecture_list(module, completed_lectures) %}
+    <div class="panel panel-default panel-lectures">
+        <div class="panel-heading">Lectures</div>
+        {% if module.lectures.count() == 0 %}
+            <div class="panel-body">There aren't any lectures yet.</div>
+        {% else %}
+            <div class="panel-body">Below are the lectures in this module.</div>
+            <div class="list-group">
+                {% for lecture in module.lectures %}
+                    {% set completed = lecture in completed_lectures %}
+                    <a class="list-group-item {{ ' complete' if completed else ' incomplete' }}"
+                       href="{{ url_for('lectures.study_lecture', lecture_id=lecture.id) }}">
+                        <span class="badge">
+                            <span class="glyphicon glyphicon-{{ 'ok' if completed else 'play' }}"></span>
+                        </span>
+                        <span><strong>Lecture {{ loop.index }}</strong>: {{ lecture.name }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 {% endmacro %}

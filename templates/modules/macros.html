@@ -15,42 +15,13 @@
     {% endif %}
 {% endmacro %}
 
-{% macro render_section(lecture, gamified=True) %}
+{% macro render_section(lecture) %}
     {% if lecture %}
-        {{ render_next_lecture_title(gamified) }}
-        {{ render_section_display(lecture, gamified) }}
-    {% else %}
-        <h3 class="margin-top margin-bottom text-center">There's no next lecture available in this module!</h3>
-    {% endif %}
-{% endmacro %}
-
-{% macro render_section_display(lecture, gamified=True) %}
-    {% if gamified %}
-        {{ render_gamified_section(lecture) }}
-    {% else %}
+        <h3 class="margin-bottom">Next lecture</h3>
         {{ render_lecture(lecture) }}
+    {% else %}
+        <h3 class="margin-bottom text-center">There's no next lecture available in this module!</h3>
     {% endif %}
-{% endmacro %}
-
-{% macro render_gamified_section(investment) %}
-    <div class="row gray-background investment">
-        <div class="col-xs-3 col-md-2 col-lg-2"><img class="profession-image"
-                                                     src="{{ url_for('static', filename='images/professions/sample.jpeg') }}"/>
-        </div>
-        <div class="col-xs-9 col-md-10 col-lg-10">
-            <div class="row">
-                <span class="profession">INHABITANT PROFESSION</span><span class="cost">COST: <span
-                    class="dialog-amount">4 dialog</span></span>
-            </div>
-            <div class="row">
-                <span class="generates">Generates <span class="gold-amount">4 gold</span> per hour</span>
-            </div>
-            <div class="train-button row">
-                <a class="train-button"
-                   href="{{ url_for('lectures.study_lecture', lecture_id=investment.id) }}">train</a>
-            </div>
-        </div>
-    </div>
 {% endmacro %}
 
 {% macro render_lecture(lecture) %}
@@ -77,12 +48,4 @@
             </div>
         </div>
     </div>
-{% endmacro %}
-
-{% macro render_next_lecture_title(gamified=True) %}
-    {% if gamified %}
-        <h3 class="margin-bottom margin-top">Next suggested investment</h3>
-    {% else %}
-        <h3 class="margin-bottom margin-top">Next lecture</h3>
-    {% endif %}
 {% endmacro %}

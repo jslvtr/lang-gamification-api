@@ -1,0 +1,133 @@
+.profile {
+    margin-top: 50px;
+}
+
+.profile .panel {
+    border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.panel-background {
+    background-color: #3498DB;
+    color: #ffffff;
+}
+
+.profile .panel-heading {
+    background-color: #3498DB;
+    border-bottom: none;
+    font-size: 30px;
+    color: #ffffff;
+    font-weight: 300;
+}
+
+.profile .panel-background .list-group-item {
+    background-color: #3498DB;
+    color: #ffffff;
+}
+
+.profile .list-group-item {
+    border: none;
+}
+
+.profile .panel-background .list-group-item:nth-child(odd) {
+    background-color: #3293d3;
+    border-bottom: none;
+    color: #ffffff;
+}
+
+.profile .panel-background .list-group-item:hover {
+    background-color: #2f8bc8;
+}
+
+.profile .panel-background .list-group-item.pending-friend {
+    background-color: #db7c5c;
+}
+
+.profile .panel-background .list-group-item.pending-friend:hover {
+    background-color: #be6b51;
+}
+
+.profile .panel-background .list-group-item.pending-friend .badge {
+    margin-top: 2px;
+    background-color: #be6b51;
+}
+
+.profile .panel-background .list-group-item.pending-friend:hover .badge {
+    background-color: #a95f48;
+}
+
+.profile .panel-footer {
+    background-color: #3498DB;
+}
+
+.profile .panel-lectures {
+    border: 1px solid #d5d5d5;
+}
+
+.profile .panel-lectures .panel-body {
+    padding: 15px 0 10px 30px;
+    font-size: 120%;
+}
+
+.profile .panel-lectures .list-group-item {
+    padding: 20px 30px 20px 30px;
+    margin: 5px 0;
+    font-size: 120%;
+}
+
+.profile .panel-lectures>.list-group:last-child .list-group-item:last-child {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+.profile .panel-lectures .complete {
+    background-color: #A6E4D1;
+}
+
+.profile .panel-lectures .complete:hover {
+    background-color: #7FD8BD;
+}
+
+.profile .panel-lectures .incomplete {
+    background-color: #B8DBF2;
+}
+
+.profile .panel-lectures .incomplete:hover {
+    background-color: #99CBED;
+}
+
+.profile .panel-lectures .list-group-item .badge {
+    background-color: transparent;
+    font-size: 150%;
+    margin-top: -5px;
+}
+
+.profile .panel-lectures .complete .badge {
+    color: #00B27C;
+}
+
+
+.profile .panel-lectures .incomplete .badge {
+    color: #3498DB;
+}
+
+
+.profile .panel-lectures .list-group-item .label {
+    padding: 3px 4px;
+    margin-bottom: 3px;
+}
+
+.profile .panel-experience .panel-body {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.profile .progress-bar {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}

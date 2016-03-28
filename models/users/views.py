@@ -1,15 +1,16 @@
 from flask import Blueprint, request, session, render_template, redirect, url_for, g
 import models.users.errors as UserErrors
 from models.active_modules.activemodule import ActiveModule
-from models.users.forms import LoginForm, RegisterForm
+from models.users.forms import LoginForm, RegisterForm, AddFriendForm
 import logging
+
+from models.users.friend_request import FriendRequest
 from models.users.user import User
 from models.users.decorators import requires_access_level
 import models.users.constants as UserConstants
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
-
 
 __author__ = 'jslvtr'
 
@@ -69,7 +70,8 @@ def register():
 def profile():
     active_module = g.user.get_current_active_module()
     if active_module:
-        return render_template('users/profile.html', active_module=active_module, next_lecture=active_module.next_uncompleted_lecture())
+        return render_template('users/profile2.html', active_module=active_module,
+                               completed_lectures=active_module.completed_lectures.all())
     else:
         return redirect(url_for('modules.public_modules'))
 
@@ -79,6 +81,63 @@ def profile():
 def logout():
     if 'user_id' in session.keys() and session['user_id']:
         session.pop('user_id')
-        return redirect(url_for('index', message="You have been logged out."))
+        return redirect(url_for('index', warn="You have been logged out."))
     else:
         return redirect(url_for('index'))
+
+
+@bp.route('/add', methods=['GET', 'POST'])
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def add_friend_form():
+    log.info("Called /add endpoint, creating form")
+    form = AddFriendForm(request.form)
+    log.info("Form created, validating...")
+    # make sure data are valid, but doesn't validate password is right
+    if form.validate_on_submit():
+        log.info("Form validated, attempting to add friend.")
+        try:
+            friend_request = FriendRequest(user=g.user,
+                                           new_friend=User.query.filter(User.email == form.email.data).first())
+            friend_request.notify_new_friend()
+            friend_request.save_to_db()
+            log.info("Put request through and notified friend.")
+        except UserErrors.UserError as e:
+            log.warn("User error with message '{}', redirecting to login".format(e.message))
+            return redirect(url_for('index', message=e.message))
+        log.info("Added friend, redirecting to profile.")
+        return redirect(url_for('.profile', message="Added user {} as friend.".format(form.email.data)))
+    log.info("Form not valid or this is GET request, presenting users/add_friend.html template")
+    return render_template('users/add_friend.html', form=form)
+
+
+@bp.route('/confirm/<string:friend_request_id>')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def confirm_friend_request(friend_request_id):
+    friend_request = FriendRequest.query.get(friend_request_id)
+    new_friend = friend_request.user
+    if friend_request:
+        if friend_request.new_friend.id == g.user.id:
+            if friend_request.new_friend not in friend_request.user.friends:
+                friend_request.user.friends.append(friend_request.new_friend)
+                friend_request.new_friend.friends.append(friend_request.user)
+                friend_request.user.save_to_db()
+                friend_request.new_friend.save_to_db()
+                friend_request.remove_from_db()
+                return redirect(url_for('.view', user_id=new_friend.id,
+                                        message="You have added {} to your friends.".format(friend_request.user.email)))
+            friend_request.remove_from_db()
+            return redirect(url_for('.view', user_id=new_friend.id,
+                                    message="{} is already your friend!".format(friend_request.user.email)))
+        friend_request.remove_from_db()
+        return redirect(url_for('.profile',
+                                warn="You are not part of this friend request!".format(friend_request.user.email)))
+    return redirect(url_for('.profile', warn="Page not found, redirected you to your profile."))
+
+
+@bp.route('/view/<string:user_id>')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def view(user_id):
+    user = User.query.get(user_id)
+    if user:
+        return render_template('users/view.html', user=user)
+    return redirect(url_for('.profile'))

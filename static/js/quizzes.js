@@ -187,6 +187,9 @@ function finishQuiz() {
             $("#continueButton").css({display: "none"});
             $("#skipButton").css({display: "none"});
             var finishButton = $("#finishButton");
+            var userGoldSpan = $("#userGold");
+            var currentUserGold = parseInt(userGoldSpan.html(), 10);
+            userGoldSpan.html(currentUserGold + result.gold_earned);
             finishButton.css({left: "calc(50% - " + ((finishButton.width()/2) + 10) + "px)", display: "block"})
         },
         error: function () {

@@ -2,6 +2,7 @@ from sqlalchemy import and_
 
 from app import db
 import models.lectures.constants as LectureConstants
+from models.quizzes.question import Question
 from models.searchable import SearchableModel
 import common.helper_tables as HelperTables
 
@@ -71,3 +72,10 @@ class Lecture(db.Model, SearchableModel):
 
     def reorder(self, new_position):
         Lecture.change_order(self.id, self.module_id, new_position)
+
+    def get_all_questions_in_quizzes(self):
+        questions = []
+        for quiz in self.quizzes:
+            questions.extend(quiz.questions)
+
+        return questions

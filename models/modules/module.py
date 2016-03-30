@@ -1,10 +1,6 @@
 import datetime
 
-from sqlalchemy import and_
-
 import models.modules.constants as CourseConstants
-import models.modules.errors as CourseErrors
-from models.lectures.lecture import Lecture
 from models.modules.errors import NotOwnerException
 import common.helper_tables as HelperTables
 from app import db

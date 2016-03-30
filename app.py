@@ -56,12 +56,14 @@ from models.modules.views import bp as moduleViews
 from models.words.views import bp as wordViews
 from models.lectures.views import bp as lectureViews
 from models.quizzes.views import bp as quizViews
+from models.quizzes.challenge_views import bp as challengeViews
 
 app.register_blueprint(userViews)
 app.register_blueprint(moduleViews)
 app.register_blueprint(wordViews)
 app.register_blueprint(lectureViews)
 app.register_blueprint(quizViews)
+app.register_blueprint(challengeViews)
 
 # Have to import these at the bottom so SQLAlchamy sees them and can create the tables associated with the models.
 from models.users.user import User
@@ -72,6 +74,7 @@ from models.words.tag import Tag
 from models.lectures.lecture import Lecture
 from models.quizzes.quiz import Quiz
 from models.quizzes.question import Question
+from models.quizzes.challenge import Challenge, ChallengeAttempt
 
 if __name__ == '__main__':
     run_simple('localhost', 4995, app)

@@ -2,6 +2,7 @@ import logging
 
 from flask import Blueprint, redirect, url_for, request, g, render_template, jsonify
 
+from app import db
 from models.contents.lecture_content import LectureContent
 from models.lectures.lecture import Lecture
 from models.quizzes.question import Question
@@ -78,19 +79,17 @@ def quiz(quiz_id):
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def do_quiz(quiz_id):
     quiz = Quiz.query.get(quiz_id)
+    complete_quiz_attempts(quiz_id)
     QuizAttempt(g.user.id, quiz.id).save_to_db()
     return render_template('quizzes/view.html', quiz=quiz)
 
 
-@bp.route('/<string:quiz_id>/challenge/<string:user_id>')
-@requires_access_level(UserConstants.USER_TYPES['USER'])
-def do_challenge(quiz_id, user_id):
-    quiz = Quiz.query.get(quiz_id)
-    challenged_user = User.query.get(user_id)
-    # Challenge(g.user, challenged_user, quiz).save_to_db()
-    # QuizAttempt(g.user.id, quiz.id).save_to_db()
-    # QuizAttempt(challenged_user, quiz.id).save_to_db()
-    return render_template('quizzes/challenge.html', quiz=quiz, challenged_user=challenged_user)
+def complete_quiz_attempts(quiz_id):
+    attempts = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == quiz_id, QuizAttempt.completed == False).all()
+    for attempt in attempts:
+        attempt.complete = True
+        db.session.add(attempt)
+    db.session.commit()
 
 
 @bp.route('/<string:quiz_id>/question', methods=['POST'])
@@ -127,7 +126,7 @@ def check_question():
     question = Question.query.get(request_json['question_id'])
     try:
         correct = question.correct_answer(request_json['meaning'] == "name") == request_json['answer']
-        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == question.quiz.id).first()
+        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == question.quiz.id, QuizAttempt.completed == False).first()
         question_answered = QuestionAnswered(correct=correct)
         question_answered.question = question
         quiz_attempt.questions_answered.append(question_answered)
@@ -149,14 +148,20 @@ def skip_question():
     if request_json is None:
         return jsonify({"message": "The request was invalid."}), 400
     question = Question.query.get(request_json['question_id'])
+    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == question.quiz.id).first()
+    question_answered = QuestionAnswered(correct=False)
+    question_answered.question = question
+    quiz_attempt.questions_answered.append(question_answered)
+    question_answered.save_to_db()
     return jsonify({"value": True})
 
 
 @bp.route('/quizzes/<string:quiz_id>/finish', methods=['GET'])
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def finish_quiz(quiz_id):
-    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == quiz_id).first()
+    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == quiz_id, QuizAttempt.completed == False).first()
     return_values = quiz_attempt.json()
     g.user.gold += return_values['gold_earned']
-    quiz_attempt.remove_from_db()
+    quiz_attempt.completed = True
+    quiz_attempt.save_to_db()
     return jsonify(return_values), 200

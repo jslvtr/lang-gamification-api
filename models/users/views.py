@@ -140,4 +140,4 @@ def view(user_id):
     user = User.query.get(user_id)
     if user:
         return render_template('users/view.html', user=user)
-    return redirect(url_for('.profile'))
+    return redirect(url_for('.profile', warn="The user you tried to view does not exist."))

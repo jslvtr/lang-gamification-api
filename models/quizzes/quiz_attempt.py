@@ -22,6 +22,7 @@ class QuizAttempt(db.Model):
     __tablename__ = QuizConstants.ATTEMPTS_TABLE_NAME
 
     id = db.Column(db.Integer, primary_key=True)
+    completed = db.Column(db.Boolean)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User')
@@ -34,6 +35,7 @@ class QuizAttempt(db.Model):
     def __init__(self, user_id, quiz_id):
         self.user_id = user_id
         self.quiz_id = quiz_id
+        self.completed = False
 
     def save_to_db(self):
         db.session.add(self)

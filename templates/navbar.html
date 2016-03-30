@@ -20,7 +20,7 @@
                     {% endif %}
                     <li><a href="{{ url_for('users.profile') }}">Keep learning</a></li>
                     <li><a href="#">Challenge</a></li>
-                    <li><a href="{{ url_for('users.profile') }}"><i class="fa fa-circle fa-lg" style="color: #FFD409"></i> {{ g.user.gold }} Gold</a></li>
+                    <li><a href="{{ url_for('users.profile') }}"><i class="fa fa-circle fa-lg" style="color: #FFD409"></i> <span id="userGold">{{ g.user.gold }}</span> Gold</a></li>
                     <li><a href="{{ url_for('users.logout') }}">Log out</a></li>
                 </ul>
             </div>

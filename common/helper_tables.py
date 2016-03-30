@@ -34,3 +34,8 @@ attempt_questions = db.Table('attempt_questions',
                              db.Column('quiz_attempt_id', db.Integer, db.ForeignKey('quiz_attempt.id')),
                              db.Column('question_id', db.Integer, db.ForeignKey('question.id'))
                              )
+
+challenges_questions = db.Table('challenges_questions',
+                             db.Column('challenge_id', db.Integer, db.ForeignKey('challenge.id')),
+                             db.Column('question_id', db.Integer, db.ForeignKey('question.id'))
+                             )

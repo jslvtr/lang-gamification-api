@@ -53,3 +53,13 @@ class ActiveModule(db.Model):
     def next_uncompleted_lecture(self):
         lecture = Lecture.query.filter(and_(Lecture.module_id == self.module.id, ~Lecture.completed_cities.contains(ActiveModule.query.get(self.id)))).first()
         return lecture
+
+    @classmethod
+    def get_by_user_id(cls, module_id, user_id):
+        return cls.query.filter(cls.user_id == user_id, cls.module_id == module_id).first()
+
+    def get_all_questions_in_completed_lectures(self):
+        questions = []
+        for lecture in self.completed_lectures:
+            questions.extend(lecture.get_all_questions_in_quizzes())
+        return questions

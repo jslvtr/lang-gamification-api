@@ -1,5 +1,5 @@
 {% if g.user %}
-
+    {% set notifications = g.user.unread_notifications.count() %}
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
@@ -10,7 +10,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url_for('index') }}">Build to Learn</a>
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    Build to Learn
+                </a>
             </div>
 
             <div class="collapse navbar-collapse" id="navbar">
@@ -19,8 +21,8 @@
                         <li><a href="{{ url_for('modules.dashboard') }}">Create Module</a></li>
                     {% endif %}
                     <li><a href="{{ url_for('users.profile') }}">Keep learning</a></li>
-                    <li><a href="#">Challenge</a></li>
-                    <li><a href="{{ url_for('users.profile') }}"><i class="fa fa-circle fa-lg" style="color: #FFD409"></i> <span id="userGold">{{ g.user.gold }}</span> Gold</a></li>
+                    <li><a href="{{ url_for('users.notifications') }}" id="notificationMenu">{% if notifications > 0 %}<span id="notifications">{{ notifications }}</span>{% endif %}Notifications</a></li>
+                    <li><a href="{{ url_for('users.profile') }}"> <i class="fa fa-circle fa-lg" style="color: #FFD409"></i> <span id="userGold">{{ g.user.gold }}</span> Gold</a></li>
                     <li><a href="{{ url_for('users.logout') }}">Log out</a></li>
                 </ul>
             </div>
@@ -48,6 +50,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{{ url_for('users.register') }}">Sign up</a></li>
+                    <li><a href="{{ url_for('users.login') }}">Log in</a></li>
                 </ul>
             </div>
         </div>

@@ -51,6 +51,11 @@ def before_request():
         g.user = User.query.get(session['user_id'])
 
 
+@app.route('/t')
+def test():
+    return render_template('test.html', user=g.user)
+
+
 from models.users.views import bp as userViews
 from models.modules.views import bp as moduleViews
 from models.words.views import bp as wordViews

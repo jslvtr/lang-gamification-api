@@ -1,22 +1,34 @@
+import datetime
 import random
 from app import db
 import models.quizzes.constants as QuizConstants
 import common.helper_tables as HelperTables
+import models.quizzes.errors as QuizErrors
 
 
-def create_challenge(challenger, challengee, module):
+def create_challenge(challenger, challengee, wager, module):
+
+    if challenger.gold < wager:
+        raise QuizErrors.NotEnoughGoldForWagerException("You don't have enough gold for this wager (max: {})".format(challenger.gold))
+    if challengee.gold < wager:
+        raise QuizErrors.NotEnoughGoldForWagerException("{} doesn't have enough gold for this wager (max: {})".format(challengee.email, challenger.gold))
+
     questions = get_all_matching_questions(challenger, challengee, module.id)
     ten_questions = set()
     while len(ten_questions) < min(len(questions), 10):
         ten_questions.add(random.choice(list(questions)))
 
-    challenge = Challenge(challenger, challengee, list(ten_questions))
+    challenge = Challenge(challenger, challengee, wager, list(ten_questions), module)
     challenger_attempt = ChallengeAttempt(challenger, challenge)
     challengee_attempt = ChallengeAttempt(challengee, challenge)
+
+    challenge.accept_wager(challenger)
 
     db.session.add(challenge)
     db.session.add(challenger_attempt)
     db.session.add(challengee_attempt)
+    db.session.add(challenger)
+    db.session.add(challengee)
     db.session.commit()
 
     return challenge
@@ -40,16 +52,136 @@ class Challenge(db.Model):
     challengee_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     challengee = db.relationship('User', foreign_keys=[challengee_id])
 
+    module_id = db.Column(db.Integer, db.ForeignKey('module.id'))
+    module = db.relationship('Module')
+
+    wager = db.Column(db.Integer, default=5)
+
+    winner_id = db.Column(db.Integer, default=None)
+    created_date = db.Column(db.DateTime)
+
     questions = db.relationship('Question', secondary=HelperTables.challenges_questions)
 
-    def __init__(self, challenger_attempt, challengee_attempt, questions):
-        self.challenger_attempt = challenger_attempt
-        self.challengee_attempt = challengee_attempt
+    def __init__(self, challenger, challengee, wager, questions, module):
+        self.challenger = challenger
+        self.challengee = challengee
+        self.wager = wager
         self.questions = questions
+        self.module = module
+        self.created_date = datetime.datetime.utcnow()
 
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+    def declare_winner(self, user_id):
+        self.winner_id = user_id
+        self.conclude_challenge()
+
+    def conclude_challenge(self):
+        if self.winner_id == -1:
+            self.return_wager_to_players()
+        else:
+            if self.winner_id == self.challenger.id:
+                self.pay_wager(winner=self.challenger,
+                               loser=self.challengee)
+            else:
+                self.pay_wager(winner=self.challengee,
+                               loser=self.challenger)
+
+    def return_wager_to_players(self):
+
+        def draw_against(opponent):
+            return QuizConstants.CHALLENGE_DRAW_GOLD_REASON.format(opponent.email,
+                                                                   self.wager)
+
+        self.challengee.increase_gold(self.wager,
+                                      reason=draw_against(self.challenger))
+        self.challenger.increase_gold(self.wager,
+                                      reason=draw_against(self.challengee))
+
+        db.session.add(self.challenger)
+        db.session.add(self.challengee)
+        db.session.commit()
+
+    def pay_wager(self, winner, loser):
+        winner.increase_gold(self.wager * 2,
+                             QuizConstants.CHALLENGE_WON_GOLD_REASON.format(loser.email,
+                                                                            self.wager * 2))
+
+    def calculate_winner_attempt(self):
+        challenger_attempt = ChallengeAttempt.find(self.id, self.challenger_id, completed=True)
+        challengee_attempt = ChallengeAttempt.find(self.id, self.challengee_id, completed=True)
+
+        if challengee_attempt and challenger_attempt:
+
+            challenger_correct_questions = challenger_attempt.correct_questions.count()
+            challengee_correct_questions = challengee_attempt.correct_questions.count()
+
+            if challenger_correct_questions > challengee_correct_questions:
+                self.declare_winner(self.challenger.id)
+                return {
+                    "challenge": True,
+                    "win": False,
+                    "icon": "thumbs-down",
+                    "message": "You lost :(",
+                    "submessage": "You really should practice more..."
+                }
+            elif challengee_correct_questions > challenger_correct_questions:
+                self.declare_winner(self.challengee.id)
+                return {
+                    "challenge": True,
+                    "win": True,
+                    "gold_earned": self.wager * 2,
+                    "icon": "trophy",
+                    "message": "You won!",
+                    "submessage": "You've clearly got this. You win {} gold.".format(self.wager)
+                }
+            else:
+                self.declare_winner(-1)
+                raise QuizErrors.DrawChallengeException("This challenge was a draw!")
+        else:
+            raise QuizErrors.IncompleteChallengeException("Only one player has completed this challenge.")
+
+    def no_winner_json(self):
+        return {
+            "challenge": True,
+            "icon": "thumbs-up",
+            "message": "Your friend has been notified!",
+            "submessage": "We will notify you once they have responded to your challenge."
+        }
+
+    def draw_json(self):
+        return {
+            "challenge": True,
+            "draw": True,
+            "wager": self.wager,
+            "icon": "star",
+            "message": "You completed the challenge!",
+            "submessage": "It's a draw! We've returned your wager."
+        }
+
+    @staticmethod
+    def remove_old_challenges(keep):
+        old_challenges = Challenge.query.filter(Challenge.id < keep,
+                                                Challenge.winner_id == None).all()
+        challenge_attempts = filter(lambda x: x, [ChallengeAttempt.find(c.id, c.challenger.id) for c in old_challenges])
+        old_unattempted_challenges = [challenge_attempt.challenge for challenge_attempt in challenge_attempts if not challenge_attempt.completed]
+        for old_challenge in old_unattempted_challenges:
+            db.session.delete(old_challenge)
+        db.session.commit()
+
+    def notify_challengee(self):
+        self.challengee.add_notification("You were challenged by {} for {} gold!".format(
+            self.challenger.email,
+            self.wager
+        ), "challenge", self.id)
+
+    def accept_wager(self, user):
+        if user.id == self.challenger_id:
+            user.decrease_gold(self.wager, "You waged {} gold against {}.".format(self.wager, self.challengee.email))
+        elif user.id == self.challengee_id:
+            user.decrease_gold(self.wager, "You waged {} gold against {}.".format(self.wager, self.challenger.email))
 
 
 class ChallengeAttempt(db.Model):
@@ -81,13 +213,15 @@ class ChallengeAttempt(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def json(self):
-        score = self.questions_answered.filter_by(correct=True).count()
-        return {
-            "score": score,
-            "num_questions": len(self.challenge.questions),
-            "gold_earned": score * 2
-        }
+    @classmethod
+    def find(cls, challenge_id, user_id, completed=False):
+        return ChallengeAttempt.query.filter(ChallengeAttempt.user_id == user_id,
+                                             ChallengeAttempt.challenge_id == challenge_id,
+                                             ChallengeAttempt.completed == completed).first()
+
+    @property
+    def correct_questions(self):
+        return self.questions_answered.filter_by(correct=True)
 
 
 class ChallengeQuestionAnswered(db.Model):

@@ -1,23 +1,43 @@
+{% macro render_warn(message, margin=True) %}
+    <div class="alert alert-warning alert-dismissable{{ ' margin-top' if margin }}" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        {{ request.args.get('warn') }}
+    </div>
+{% endmacro %}
+
+{% macro render_message(message, margin=True) %}
+    <div class="alert alert-success alert-dismissable{{ ' margin-top' if margin }}" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>{{ request.args.get('message') }}
+    </div>
+{% endmacro %}
+
+{% macro render_messages_no_style() %}
+    {% if request.args.get('message') %}
+        {{ render_message(request.args.get('message'), False) }}
+    {% endif %}
+    {% if request.args.get('warn') %}
+        {{ render_warn(request.args.get('warn'), False) }}
+    {% endif %}
+{% endmacro %}
+
 {% macro render_messages(background=False) %}
     {% if request.args.get('message') %}
         <div class="row{{ ' background' if background else '' }}">
             <div class="col-lg-offset-3 col-lg-6 col-md-offset-6 col-md-6 col-sm-12 col-xs-12">
-                <div class="alert alert-success alert-dismissable margin-top" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    {{ request.args.get('message') }}
-                </div>
+                {{ render_message(request.args.get('message')) }}
             </div>
         </div>
     {% endif %}
     {% if request.args.get('warn') %}
         <div class="row{{ ' background' if background else '' }}">
             <div class="col-lg-offset-3 col-lg-6 col-md-offset-6 col-md-6 col-sm-12 col-xs-12">
-                <div class="alert alert-warning alert-dismissable margin-top" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    {{ request.args.get('warn') }}
-                </div>
+                {{ render_warn(request.args.get('warn')) }}
             </div>
         </div>
     {% endif %}

@@ -1,32 +1,45 @@
 {% extends 'base.html' %}
 
+{% from 'quizzes/macros.html' import render_challenger, render_playing_for %}
+
 {% block dependencies %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/challenge.css') }}">
     <script src="{{ url_for('static', filename='js/quizzes.js') }}"></script>
 {% endblock %}
 
 {% block content %}
     <script type="application/javascript">
-    var skip_url = '{{ url_for("challenges.skip_question", challenge_id=challenge.id) }}';
-    var finish_url = '{{ url_for("challenges.finish_challenge", challenge_id=challenge.id) }}';
+        var skip_url = '{{ url_for("challenges.skip_question", challenge_id=challenge.id) }}';
+        var finish_url = '{{ url_for("challenges.finish_challenge", challenge_id=challenge.id) }}';
     </script>
     <div class="container">
-    <div class="row"><div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-        <div class="quiz challenge">
-            <h1>Challenge</h1>
-            <div class="question">
-            </div>
-            <a id="quitButton">Quit</a>
-            <button class="btn btn-success" id="continueButton"
-                    onclick="checkSelectedAnswer('{{ url_for('challenges.check_question', challenge_id=challenge.id) }}');">Check
-            </button>
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                <div class="quiz challenge">
+                    <h1>Challenge</h1>
+                    <div class="question">
+                    </div>
+                    <a id="quitButton">Quit</a>
+                    <button class="btn btn-success" id="continueButton"
+                            onclick="checkSelectedAnswer('{{ url_for('challenges.check_question', challenge_id=challenge.id) }}');">
+                        Check
+                    </button>
 
-            <button class="btn btn-default" id="skipButton" onclick="
-        skipQuestion(true);">Skip</button>
-            <a href="{{ url_for('users.profile') }}" class="btn btn-success" id="finishButton" style="display: none;">Finish</a>
+                    <button class="btn btn-default" id="skipButton" onclick="
+        skipQuestion(true);">Skip
+                    </button>
+                    <a href="{{ url_for('users.profile') }}" class="btn btn-success" id="finishButton"
+                       style="display: none;">Finish</a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                {{ render_challenger(challenged_user, challenge.module) }}
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                {{ render_playing_for(challenge.wager) }}
+            </div>
         </div>
-        </div>
-    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"></div></div>
     </div>
 
     <script type="application/javascript">

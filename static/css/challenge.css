@@ -1,0 +1,49 @@
+.challenger-panel {
+    margin: 30px 0 0 0;
+}
+
+.challenger-panel .panel {
+    background-color: #3498DB;
+    color: #ffffff;
+    border: 1px solid #2f8bc8;
+    border-radius: 10px;
+}
+
+.challenger-panel .panel-heading {
+    background-color: #2f8bc8;
+    border-bottom: 1px solid #2f8bc8;
+    font-size: 200%;
+    color: #ffffff;
+    font-weight: 300;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.challenger-panel .panel-body {
+    font-size: 110%;
+}
+
+.white-border {
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+}
+
+.playing-for {
+    border-radius: 10px;
+    box-shadow: 0 0 15px #d8d022;
+    background-color: #3498DB;
+    font-size: 150%;
+    color: #ffffff;
+    font-weight: 300;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.playing-for i {
+    color: #FFD409;
+}
+
+.icon {
+
+}

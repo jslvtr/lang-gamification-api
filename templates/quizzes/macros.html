@@ -1,0 +1,29 @@
+{% macro render_challenger(user, module) %}
+    <div class="challenger-panel">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Playing against
+            </div>
+            <div class="panel-body">
+                <div class="media">
+                    <div class="media-left">
+                        <img class="media-object white-border" src="http://imgash.com/img.png?name={{ user.email }}"
+                             alt="Opponent profile picture">
+                    </div>
+                    <div class="media-body">
+                        <p><span class="glyphicon glyphicon-user"></span> {{ user.email }}</p>
+                        <p><span class="glyphicon glyphicon-stats"></span>
+                            Level {{ user._get_active_module(module.id).level }}</p>
+                        <p><span class="glyphicon glyphicon-fire"></span> Won {{ user.challenges_won(module.id) }} challenges</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_playing_for(amount) %}
+    <div class="playing-for">
+        Playing for <i class="fa fa-circle"></i> {{ amount }} gold.
+    </div>
+{% endmacro %}

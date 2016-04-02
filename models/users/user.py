@@ -7,9 +7,11 @@ import models.users.constants as UserConstants
 import common.helper_tables as HelperTables
 from app import db
 from models.active_modules.activemodule import ActiveModule
+from models.quizzes.challenge import Challenge
 from models.quizzes.question import Question
 from models.quizzes.quiz import Quiz
 from models.users.friend_request import FriendRequest
+from models.users.notification import Notification
 
 __author__ = 'jslvtr'
 
@@ -31,7 +33,7 @@ class User(db.Model):
         self.password = password
         self.access = access
         self.gamified = gamified
-        self.gold = 0
+        self.gold = 10
 
     def __repr__(self):
         return "<User {}>".format(self.email)
@@ -127,3 +129,35 @@ class User(db.Model):
 
     def get_questions_in_active_module(self, module_id):
         return self._get_active_module(module_id).get_all_questions_in_completed_lectures()
+
+    def challenges_won(self, module_id):
+        return Challenge.query.filter(Challenge.winner_id == self.id, Challenge.module_id == module_id).count()
+
+    def increase_gold(self, amount, reason):
+        self.gold += amount
+        self.add_notification(reason, "gold", None)
+
+    def decrease_gold(self, amount, reason):
+        self.gold -= amount
+        if self.gold < 0:
+            self.gold = 0
+        self.add_notification(reason, "gold", None)
+
+    def add_notification(self, message, type, data):
+        Notification(message, type, data, self).save_to_db()
+
+    @property
+    def unread_notifications(self):
+        return self.notifications.filter(Notification.read == False)
+
+    def read_notifications(self):
+        for notification in self.unread_notifications:
+            notification.read = True
+            db.session.add(notification)
+        db.session.commit()
+
+    def delete_notification(self, notification_id):
+        notification = Notification.query.filter(Notification.user_id == self.id, Notification.id == notification_id).first()
+        if notification is None:
+            raise UserErrors.NotNotificationOwnerException("Error deleting notification.")
+        notification.remove_from_db()

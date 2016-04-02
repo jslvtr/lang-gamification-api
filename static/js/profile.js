@@ -1,4 +1,4 @@
-function showFriendControls(target) {
+function showControls(target) {
     var controls = $(".list-group-item.white.show");
     for (var i = 0; i < controls.length; i++){
         if (!$(controls[i]).hasClass('retracted')) {

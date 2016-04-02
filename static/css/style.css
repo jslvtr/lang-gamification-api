@@ -250,3 +250,34 @@ p.help {
 .email-help {
     font-size: 120%;
 }
+
+.navbar-brand img {
+    max-width: 180px;
+    border: 2px solid #ffffff;
+    padding: 3px 5px;
+    border-radius: 5px;
+    margin-top: -18px;
+}
+
+.navbar-brand img:hover {
+    background-color: #328fcf;
+}
+
+#notificationMenu {
+    position: relative;
+}
+
+#notifications {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background-color: #ce2e30;
+    color: #ffffff;
+    padding: 0 4px;
+    border-radius: 5px;
+    font-size: 75%;
+}
+
+#notificationMenu:hover #notifications {
+    background-color: #b3282a;
+}

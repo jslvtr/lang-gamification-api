@@ -29,19 +29,22 @@
 {% macro render_friends_list(user) %}
     <div class="panel panel-default">
         <div class="panel-heading">Friends</div>
-        {% if user.friends.count() == 0 %}
+        {% if user.friends.count() == 0 and user.pending_friendships() | length == 0 %}
             <div class="panel-body panel-background">You're all by yourself! Why not add some friends?</div>
         {% else %}
             <div class="list-group panel-background">
                 {% for friend in user.friends %}
                     <div class="list-group-item"
-                         onclick="showFriendControls(this)">
+                         onclick="showControls(this)">
                         {{ friend.email }}
                     </div>
                     <div class="list-group-item white retracted">
-                    <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-default btn-sm"><span class="fa fa-eye"></span> View</a>
-                    <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-default btn-sm"><span class="fa fa-gamepad"></span> Challenge</a>
-                    <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-danger btn-sm" disabled="disabled"><span class="fa fa-ban"></span> Unfriend</a>
+                        <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-default btn-sm"><span
+                                class="fa fa-eye"></span> View</a>
+                        <a href="{{ url_for('challenges.do_challenge', user_id=friend.id) }}" class="btn btn-default btn-sm"><span
+                                class="fa fa-gamepad"></span> Challenge</a>
+                        <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-danger btn-sm"
+                           disabled="disabled"><span class="fa fa-ban"></span> Unfriend</a>
                     </div>
                 {% endfor %}
                 {% for pending_friendship in user.pending_friendships() %}
@@ -94,5 +97,47 @@
                 {% endfor %}
             </div>
         {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro notification_age_string(notification) %}
+    {% set age = notification.age %}
+    {% if age['days'] > 0 %}
+        {{ age['days'] }} days ago
+    {% elif age['hours'] > 0 %}
+        {{ age['hours'] }} hours ago
+    {% elif age['minutes'] > 0 %}
+        {{ age['minutes'] }} minutes ago
+    {% else %}
+        {{ age['seconds'] }} seconds ago
+    {% endif %}
+{% endmacro %}
+
+{% macro render_notifications_list(notifications) %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Notifications</div>
+        {% if notifications.count() == 0 %}
+            <div class="panel-body panel-background">No new notifications.</div>
+        {% else %}
+            <div class="list-group panel-background">
+                {% for notification in notifications %}
+                    <div class="list-group-item notification-{{ notification.type }}"
+                         onclick="showControls(this)">
+                        {{ notification.name }} <span class="badge">{{ notification_age_string(notification) }}</span>
+                    </div>
+                    <div class="list-group-item white retracted">
+                        {% if notification.type == "challenge" %}
+                            <a href="{{ url_for('challenges.respond_challenge', challenge_id=notification.data) }}"
+                               class="btn btn-default btn-sm"><span class="fa fa-gamepad"></span> Respond to
+                                challenge</a>
+                        {% endif %}
+                        <a href="{{ url_for('users.delete_notification', notification_id=notification.id) }}" class="btn btn-danger btn-sm"><span
+                                class="fa fa-ban"></span> Delete</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="panel-footer"><a class="btn btn-danger btn-sm" href="#"><span
+                class="glyphicon glyphicon-fire"></span> Challenge a friend</a></div>
     </div>
 {% endmacro %}

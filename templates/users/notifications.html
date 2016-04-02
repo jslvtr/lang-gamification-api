@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% from "users/macros.html" import render_notifications_list %}
+{% from 'utils.html' import render_messages_no_style %}
+{% block dependencies %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}
+{% block content %}
+    <div class="profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-4 col-md-push-8 col-lg-4 col-lg-push-8">
+                    {{ render_messages_no_style() }}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-8 col-md-pull-4 col-lg-8 col-lg-pull-4">
+                    {{ render_notifications_list(notifications) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

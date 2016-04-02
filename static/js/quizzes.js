@@ -187,10 +187,8 @@ function finishQuiz() {
             $("#continueButton").css({display: "none"});
             $("#skipButton").css({display: "none"});
             var finishButton = $("#finishButton");
-            var userGoldSpan = $("#userGold");
-            var currentUserGold = parseInt(userGoldSpan.html(), 10);
-            userGoldSpan.html(currentUserGold + result.gold_earned);
-            finishButton.css({left: "calc(50% - " + ((finishButton.width()/2) + 10) + "px)", display: "block"})
+            changeUserGold(result);
+            finishButton.css({left: "calc(50% - " + ((finishButton.width() / 2) + 10) + "px)", display: "block"})
         },
         error: function () {
             console.log("Error!");
@@ -199,7 +197,22 @@ function finishQuiz() {
 }
 
 function scoreDivHTML(scores) {
-    return '<div class="score"><h2>Well done!</h2>' +
-        '<p>You scored <span class="score-total">' + scores.score + '</span> out of ' + scores.num_questions + '!</p>' +
-        '<p>You have earned <i class="fa fa-circle fa-lg" style="color: #FFD409"></i> <span class="gold">' + scores.gold_earned + '</span> gold</p></div>';
+    if (scores['challenge'] === undefined) {
+        return '<div class="score"><h2>Well done!</h2>' +
+            '<p>You scored <span class="score-total">' + scores.score + '</span> out of ' + scores.num_questions + '!</p>' +
+            '<p>You have earned <i class="fa fa-circle fa-lg" style="color: #FFD409"></i> <span class="gold">' + scores.gold_earned + '</span> gold</p></div>';
+    } else {
+            return '<div class="score"><span class="icon fa fa-2x fa-' + scores.icon + '"></span><h2>' + scores.message + '</h2>' +
+                '<p>' + scores.submessage + '</p></div>';
+    }
+}
+
+function changeUserGold(scores) {
+    var userGoldSpan = $("#userGold");
+    var currentUserGold = parseInt(userGoldSpan.html(), 10);
+    if (scores.win == true) {
+        userGoldSpan.html(currentUserGold + scores.gold_earned);
+    } else if (scores.draw == true) {
+        userGoldSpan.html(currentUserGold + scores.wager);
+    }
 }

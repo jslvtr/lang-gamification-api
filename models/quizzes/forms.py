@@ -13,3 +13,7 @@ class CreateQuizForm(Form):
                         Length(min=4,
                                max=80,
                                message="The lecture topic must be between 4 and 80 characters long.")])
+
+
+class ChallengeForm(Form):
+    wager = StringField('Wager', [DataRequired(), Regexp(r"[0-9]+", message="The wager may only contain numbers")])

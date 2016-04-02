@@ -1,10 +1,10 @@
 from flask import Blueprint, request, session, render_template, redirect, url_for, g
 import models.users.errors as UserErrors
-from models.active_modules.activemodule import ActiveModule
 from models.users.forms import LoginForm, RegisterForm, AddFriendForm
 import logging
 
 from models.users.friend_request import FriendRequest
+from models.users.notification import Notification
 from models.users.user import User
 from models.users.decorators import requires_access_level
 import models.users.constants as UserConstants
@@ -123,10 +123,10 @@ def confirm_friend_request(friend_request_id):
                 friend_request.user.save_to_db()
                 friend_request.new_friend.save_to_db()
                 friend_request.remove_from_db()
-                return redirect(url_for('.view', user_id=new_friend.id,
+                return redirect(url_for('.profile',
                                         message="You have added {} to your friends.".format(friend_request.user.email)))
             friend_request.remove_from_db()
-            return redirect(url_for('.view', user_id=new_friend.id,
+            return redirect(url_for('.profile',
                                     message="{} is already your friend!".format(friend_request.user.email)))
         friend_request.remove_from_db()
         return redirect(url_for('.profile',
@@ -141,3 +141,22 @@ def view(user_id):
     if user:
         return render_template('users/view.html', user=user)
     return redirect(url_for('.profile', warn="The user you tried to view does not exist."))
+
+
+@bp.route('/notifications')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def notifications():
+    g.user.read_notifications()
+    return render_template('users/notifications.html',
+                           notifications=g.user.notifications.order_by(Notification.id.desc()))
+
+
+@bp.route('/notifications/delete/<int:notification_id>')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def delete_notification(notification_id):
+    try:
+        g.user.delete_notification(notification_id)
+    except UserErrors.NotNotificationOwnerException as e:
+        return redirect(url_for('.notifications', warn=e.message))
+    return redirect(url_for('.notifications', message="Notification deleted."))
+

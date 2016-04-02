@@ -24,3 +24,7 @@ class UserAlreadyExistsException(UserError):
 
 class FriendAddingError(UserError):
     pass
+
+
+class NotNotificationOwnerException(UserError):
+    pass

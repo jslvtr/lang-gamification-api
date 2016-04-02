@@ -10,6 +10,7 @@ from models.users.decorators import requires_access_level
 from models.lectures.forms import CreateLectureForm
 from common.forms import SearchForm
 import models.words.errors as WordErrors
+import models.active_modules.errors as ActiveModuleErrors
 import models.users.constants as UserConstants
 from models.words.tag import Tag
 
@@ -105,7 +106,20 @@ def study_lecture(lecture_id):
 @bp.route('/complete/<string:lecture_id>')
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def complete(lecture_id):
-    g.user.get_current_active_module().complete_lecture(lecture_id)
+    try:
+        lecture = Lecture.query.get(lecture_id)
+        g.user.get_current_active_module().complete_lecture(lecture_id)
+        g.user.increase_gold(10, "You completed the lecture {}! (10 gold)".format(lecture.name))
+        experience = lecture.order * 10
+        active_module = g.user.get_current_active_module()
+        active_module.increase_experience(experience,
+                                          "You completed the lecture {}! ({} experience in {})".format(
+                                              lecture.name,
+                                              experience,
+                                              active_module.module.name
+                                          ))
+    except ActiveModuleErrors.LectureAlreadyCompletedException as e:
+        pass
     return redirect(url_for('users.profile'))
 
 

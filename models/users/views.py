@@ -160,3 +160,9 @@ def delete_notification(notification_id):
         return redirect(url_for('.notifications', warn=e.message))
     return redirect(url_for('.notifications', message="Notification deleted."))
 
+
+@bp.route('/notifications/clear-all')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def clear_all():
+    g.user.delete_notifications_except_challenges()
+    return redirect(url_for('.notifications', message="Cleared all notifications."))

@@ -41,7 +41,8 @@
                     <div class="list-group-item white retracted">
                         <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-default btn-sm"><span
                                 class="fa fa-eye"></span> View</a>
-                        <a href="{{ url_for('challenges.do_challenge', user_id=friend.id) }}" class="btn btn-default btn-sm"><span
+                        <a href="{{ url_for('challenges.do_challenge', user_id=friend.id) }}"
+                           class="btn btn-default btn-sm"><span
                                 class="fa fa-gamepad"></span> Challenge</a>
                         <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-danger btn-sm"
                            disabled="disabled"><span class="fa fa-ban"></span> Unfriend</a>
@@ -64,16 +65,12 @@
 {% macro render_experience_panel(active_module) %}
     <div class="panel panel-default panel-experience">
         <div class="panel-heading">Performance</div>
-        {% if active_module.experience != 0 %}
-            <div class="panel-body panel-background">Get started to earn some experience!</div>
-        {% else %}
-            <div class="panel-body panel-background">
-                {{ render_module_experience_progress_bar(active_module, '#00B27C') }}
-                <p>Currently at level <strong>{{ active_module.level }}</strong>!</p>
-                <p>Earn <strong>{{ active_module.next_level_experience() - active_module.experience }}
-                    experience</strong> to get to the next level.</p>
-            </div>
-        {% endif %}
+        <div class="panel-body panel-background">
+            {{ render_module_experience_progress_bar(active_module, '#00B27C') }}
+            <p>Currently at level <strong>{{ active_module.level }}</strong>!</p>
+            <p>Earn <strong>{{ active_module.next_level_experience() - active_module.experience }}
+                experience</strong> to get to the next level.</p>
+        </div>
     </div>
 {% endmacro %}
 
@@ -114,7 +111,9 @@
 {% endmacro %}
 
 {% macro render_notifications_list(notifications) %}
-    <div class="panel panel-default">
+    <div class="panel panel-default panel-notifications">
+        <a id="clearAll" href="{{ url_for('users.clear_all') }}" class="btn btn-info btn-sm"><span
+                class="glyphicon glyphicon-trash"></span> Clear all</a>
         <div class="panel-heading">Notifications</div>
         {% if notifications.count() == 0 %}
             <div class="panel-body panel-background">No new notifications.</div>
@@ -131,7 +130,8 @@
                                class="btn btn-default btn-sm"><span class="fa fa-gamepad"></span> Respond to
                                 challenge</a>
                         {% endif %}
-                        <a href="{{ url_for('users.delete_notification', notification_id=notification.id) }}" class="btn btn-danger btn-sm"><span
+                        <a href="{{ url_for('users.delete_notification', notification_id=notification.id) }}"
+                           class="btn btn-danger btn-sm"><span
                                 class="fa fa-ban"></span> Delete</a>
                     </div>
                 {% endfor %}

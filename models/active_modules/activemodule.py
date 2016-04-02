@@ -2,6 +2,7 @@ from sqlalchemy import and_
 
 from app import db
 import models.active_modules.constants as ActiveModuleConstants
+import models.active_modules.errors as ActiveModuleErrors
 import common.helper_tables as HelperTables
 from models.lectures.lecture import Lecture
 
@@ -47,6 +48,9 @@ class ActiveModule(db.Model):
         db.session.commit()
 
     def complete_lecture(self, lecture_id):
+        lecture = Lecture.query.get(lecture_id)
+        if lecture in self.completed_lectures:
+            raise ActiveModuleErrors.LectureAlreadyCompletedException("You have already completed this lecture!")
         self.completed_lectures.append(Lecture.query.get(lecture_id))
         self.save_to_db()
 
@@ -63,3 +67,12 @@ class ActiveModule(db.Model):
         for lecture in self.completed_lectures:
             questions.extend(lecture.get_all_questions_in_quizzes())
         return questions
+
+    def increase_experience(self, amount, reason):
+        if amount >= self.experience_required_to_level_up():
+            self.experience = amount - self.experience_required_to_level_up()
+            self.level += 1
+            self.owner.add_notification("Level up! " + reason, "experience", None)
+        else:
+            self.experience += amount
+            self.owner.add_notification(reason, "experience", None)

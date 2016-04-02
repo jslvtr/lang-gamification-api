@@ -191,3 +191,13 @@
     margin-right: 5px;
     margin-left: 5px;
 }
+
+.panel-notifications {
+    position: relative;
+}
+
+.panel-notifications #clearAll {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}

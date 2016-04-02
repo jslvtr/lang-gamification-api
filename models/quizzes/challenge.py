@@ -4,6 +4,7 @@ from app import db
 import models.quizzes.constants as QuizConstants
 import common.helper_tables as HelperTables
 import models.quizzes.errors as QuizErrors
+from models.active_modules.activemodule import ActiveModule
 
 
 def create_challenge(challenger, challengee, wager, module):
@@ -11,7 +12,7 @@ def create_challenge(challenger, challengee, wager, module):
     if challenger.gold < wager:
         raise QuizErrors.NotEnoughGoldForWagerException("You don't have enough gold for this wager (max: {})".format(challenger.gold))
     if challengee.gold < wager:
-        raise QuizErrors.NotEnoughGoldForWagerException("{} doesn't have enough gold for this wager (max: {})".format(challengee.email, challenger.gold))
+        raise QuizErrors.NotEnoughGoldForWagerException("{} doesn't have enough gold for this wager (max: {})".format(challengee.email, challengee.gold))
 
     questions = get_all_matching_questions(challenger, challengee, module.id)
     ten_questions = set()
@@ -28,7 +29,6 @@ def create_challenge(challenger, challengee, wager, module):
     db.session.add(challenger_attempt)
     db.session.add(challengee_attempt)
     db.session.add(challenger)
-    db.session.add(challengee)
     db.session.commit()
 
     return challenge
@@ -79,13 +79,30 @@ class Challenge(db.Model):
         self.conclude_challenge()
 
     def conclude_challenge(self):
+        experience = 15
         if self.winner_id == -1:
             self.return_wager_to_players()
         else:
             if self.winner_id == self.challenger.id:
+                active_module = ActiveModule.query.filter(ActiveModule.module_id == self.module_id,
+                                                          ActiveModule.user_id == self.challenger.id).first()
+                active_module.increase_experience(experience,
+                                                  "You won a challenge against {} ({} experience in {})".format(
+                                                      self.challengee.email,
+                                                      experience,
+                                                      self.module.name
+                                                  ))
                 self.pay_wager(winner=self.challenger,
                                loser=self.challengee)
             else:
+                active_module = ActiveModule.query.filter(ActiveModule.module_id == self.module_id,
+                                                          ActiveModule.user_id == self.challengee.id).first()
+                active_module.increase_experience(experience,
+                                                  "You won a challenge against {} ({} experience in {})".format(
+                                                      self.challenger.email,
+                                                      experience,
+                                                      self.module.name
+                                                  ))
                 self.pay_wager(winner=self.challengee,
                                loser=self.challenger)
 
@@ -178,10 +195,10 @@ class Challenge(db.Model):
         ), "challenge", self.id)
 
     def accept_wager(self, user):
-        if user.id == self.challenger_id:
-            user.decrease_gold(self.wager, "You waged {} gold against {}.".format(self.wager, self.challengee.email))
-        elif user.id == self.challengee_id:
-            user.decrease_gold(self.wager, "You waged {} gold against {}.".format(self.wager, self.challenger.email))
+        if user.id == self.challenger.id:
+            self.challenger.decrease_gold(self.wager, "You waged {} gold against {}.".format(self.wager, self.challengee.email))
+        elif user.id == self.challengee.id:
+            self.challengee.decrease_gold(self.wager, "You waged {} gold against {}.".format(self.wager, self.challenger.email))
 
 
 class ChallengeAttempt(db.Model):

@@ -13,7 +13,6 @@ from models.quizzes.forms import CreateQuizForm
 from common.forms import SearchForm
 import models.words.errors as WordErrors
 import models.users.constants as UserConstants
-from models.users.user import User
 from models.words.word import Word
 
 logging.basicConfig(level=logging.INFO)
@@ -85,7 +84,8 @@ def do_quiz(quiz_id):
 
 
 def complete_quiz_attempts(quiz_id):
-    attempts = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == quiz_id, QuizAttempt.completed == False).all()
+    attempts = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == quiz_id,
+                                        QuizAttempt.completed == False).all()
     for attempt in attempts:
         attempt.complete = True
         db.session.add(attempt)
@@ -104,7 +104,8 @@ def add_question(quiz_id):
         return jsonify({"message": "The request was invalid."}), 400
     question = Question(request_json['tag'], Word.query.filter(Word.name == request_json['answer']).first(), quiz)
     question.save_to_db()
-    return jsonify({"message": "Question added successfully.", "question_url": url_for('quizzes.question', question_id=question.id)}), 201
+    return jsonify({"message": "Question added successfully.",
+                    "question_url": url_for('quizzes.question', question_id=question.id)}), 201
 
 
 @bp.route('/question/<string:question_id>')
@@ -126,14 +127,17 @@ def check_question():
     question = Question.query.get(request_json['question_id'])
     try:
         correct = question.correct_answer(request_json['meaning'] == "name") == request_json['answer']
-        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == question.quiz.id, QuizAttempt.completed == False).first()
+        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id,
+                                                QuizAttempt.quiz_id == question.quiz.id,
+                                                QuizAttempt.completed == False).first()
         question_answered = QuestionAnswered(correct=correct)
         question_answered.question = question
         quiz_attempt.questions_answered.append(question_answered)
         question_answered.save_to_db()
         return jsonify({"value": correct})
     except KeyError:
-        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == question.quiz.id).first()
+        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id,
+                                                QuizAttempt.quiz_id == question.quiz.id).first()
         question_answered = QuestionAnswered(correct=False)
         question_answered.question = question
         quiz_attempt.questions_answered.append(question_answered)
@@ -148,7 +152,8 @@ def skip_question():
     if request_json is None:
         return jsonify({"message": "The request was invalid."}), 400
     question = Question.query.get(request_json['question_id'])
-    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == question.quiz.id).first()
+    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id,
+                                            QuizAttempt.quiz_id == question.quiz.id).first()
     question_answered = QuestionAnswered(correct=False)
     question_answered.question = question
     quiz_attempt.questions_answered.append(question_answered)
@@ -159,9 +164,20 @@ def skip_question():
 @bp.route('/quizzes/<string:quiz_id>/finish', methods=['GET'])
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def finish_quiz(quiz_id):
-    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == quiz_id, QuizAttempt.completed == False).first()
+    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == quiz_id,
+                                            QuizAttempt.completed == False).first()
     return_values = quiz_attempt.json()
     g.user.gold += return_values['gold_earned']
     quiz_attempt.completed = True
+    quiz = quiz_attempt.quiz
+    experience = quiz.lecture.order * 3
+    active_module = g.user.get_current_active_module()
+    active_module.increase_experience(experience,
+                                      "You completed the quiz {} in lecture {}! ({} experience in {})".format(
+                                          quiz.name,
+                                          quiz.lecture.name,
+                                          experience,
+                                          active_module.module.name
+                                      ))
     quiz_attempt.save_to_db()
     return jsonify(return_values), 200

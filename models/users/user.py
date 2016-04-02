@@ -161,3 +161,11 @@ class User(db.Model):
         if notification is None:
             raise UserErrors.NotNotificationOwnerException("Error deleting notification.")
         notification.remove_from_db()
+
+    def delete_notifications_except_challenges(self):
+        notifications = Notification.query.filter(Notification.user_id == self.id,
+                                                  Notification.read == True,
+                                                  Notification.type != "challenge")
+        for notification in notifications:
+            db.session.delete(notification)
+        db.session.commit()

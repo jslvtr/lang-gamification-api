@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% from "lectures/macros.html" import render_locked_lecture %}
+{% block content %}
+    <div>
+        <div class="container">
+            <h1 class="page-header margin-bottom">Lecture {{ lecture.name }}</h1>
+            <article>
+                {{ render_locked_lecture(lecture) }}
+            </article>
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+
+
+                    {% if lecture.quizzes.all() | length > 0 %}
+                        <div class="panel panel-default margin-top">
+                            <div class="panel-heading">Quizzes</div>
+                            <div class="panel-body">
+                                <p>There are {{ lecture.quizzes.all() | length }} quizzes in this lecture.</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-lg-4 col-md-4 col-xm-12 col-xs-12">
+
+                    <div class="panel panel-default margin-top">
+                        <div class="panel-heading">Actions</div>
+                        <div class="panel-body">
+                            <a href="{{ url_for('lectures.unlock', lecture_id=lecture.id) }}" class="btn btn-danger"><span
+                                    class="glyphicon glyphicon-lock"></span> Unlock for {{ lecture.cost }} gold</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

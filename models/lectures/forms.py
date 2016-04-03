@@ -15,6 +15,9 @@ class CreateLectureForm(Form):
                                message="The lecture topic must be between 4 and 80 characters long.")])
     description = StringField('Description',
                               validators=[DataRequired(), Length(min=10, max=140)])
+    cost = StringField('Cost', [DataRequired(),
+                                Regexp(r"[0-9]+",
+                                       message="The cost may only contain numbers")])
     order = SelectField(label='Position',
                         validators=[],
                         coerce=int,

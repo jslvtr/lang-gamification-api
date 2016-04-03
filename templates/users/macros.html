@@ -74,7 +74,7 @@
     </div>
 {% endmacro %}
 
-{% macro render_profile_lecture_list(module, completed_lectures) %}
+{% macro render_profile_lecture_list(module, completed_lectures, unlocked_lectures) %}
     <div class="panel panel-default panel-lectures">
         <div class="panel-heading">Lectures</div>
         {% if module.lectures.count() == 0 %}
@@ -84,10 +84,18 @@
             <div class="list-group">
                 {% for lecture in module.lectures %}
                     {% set completed = lecture in completed_lectures %}
-                    <a class="list-group-item {{ ' complete' if completed else ' incomplete' }}"
-                       href="{{ url_for('lectures.study_lecture', lecture_id=lecture.id) }}">
+                    {% set unlocked = lecture in unlocked_lectures %}
+                    {% set css_class = 'complete' if complete else 'incomplete' %}
+                    {% set css_class = css_class + ' unlocked' if unlocked else css_class + ' locked' %}
+
+                    <a class="list-group-item {{ css_class }}"
+                       href="{{ url_for('lectures.study_lecture', lecture_id=lecture.id) if unlocked else url_for('lectures.view_unlock', lecture_id=lecture.id) }}">
                         <span class="badge">
-                            <span class="glyphicon glyphicon-{{ 'ok' if completed else 'play' }}"></span>
+                            {% if unlocked %}
+                                <span class="glyphicon glyphicon-{{ 'ok' if completed else 'play' }}"></span>
+                            {% else %}
+                                <span class="glyphicon glyphicon-lock"></span>
+                            {% endif %}
                         </span>
                         <span><strong>Lecture {{ loop.index }}</strong>: {{ lecture.name }}</span>
                     </a>

@@ -22,15 +22,17 @@ class Lecture(db.Model, SearchableModel):
 
     tags = db.relationship('Tag', secondary=HelperTables.lectures_tags,
                            backref=db.backref('lectures', lazy='dynamic'), lazy='dynamic')
+    cost = db.Column(db.Integer)
 
     quizzes = db.relationship("Quiz", back_populates="lecture", lazy='dynamic')
 
-    def __init__(self, name, module, description, order=None, tags=None):
+    def __init__(self, name, module, description, order=None, tags=None, cost=0):
         self.name = name
         self.order = order or len(module.lectures.all()) + 1
         self.description = description
         self.module = module
         self.tags = tags or []
+        self.cost = cost
 
     def __repr__(self):
         return "<Lecture ID:{}, ORDER:{}, MODULE_ID:{}>".format(self.id, self.order, self.module_id)

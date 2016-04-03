@@ -43,7 +43,8 @@ def new(module_id):
                     module=module,
                     description=form.description.data,
                     order=form.order.data if form.order.data > 0 else None,
-                    tags=tags).save_to_db()
+                    tags=tags,
+                    cost=int(form.cost.data)).save_to_db()
             log.info("Lecture created.")
         except WordErrors.WordError as e:
             log.warn("Word error with message '{}', redirecting to teach".format(e.message))
@@ -100,7 +101,10 @@ def lecture(lecture_id):
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def study_lecture(lecture_id):
     lecture = Lecture.query.get(lecture_id)
-    return render_template('lectures/view.html', lecture=lecture)
+    if lecture in g.user.get_current_active_module().bought_lectures:
+        return render_template('lectures/view.html', lecture=lecture)
+    else:
+        return redirect(url_for('.view_unlock', lecture_id=lecture_id, warn="You have not unlocked this lecture yet!"))
 
 
 @bp.route('/complete/<string:lecture_id>')
@@ -120,6 +124,8 @@ def complete(lecture_id):
                                           ))
     except ActiveModuleErrors.LectureAlreadyCompletedException as e:
         pass
+    except ActiveModuleErrors.LectureNotOwnedException as ex:
+        return redirect(url_for('.view_unlock', lecture_id=lecture_id, warn=ex.message))
     return redirect(url_for('users.profile'))
 
 
@@ -141,3 +147,21 @@ def add_text_content(lecture_id):
             LectureContent(lecture, type="html", text=content).save_to_db()
         return jsonify({"message": "Content saved successfully"}), 201
     return render_template('lectures/content/text.html', lecture=lecture, module=module)
+
+
+@bp.route('/unlock/<int:lecture_id>')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def unlock(lecture_id):
+    try:
+        g.user.get_current_active_module().buy_lecture(lecture_id)
+        return redirect(url_for('.study_lecture', lecture_id=lecture_id, message="Lecture unlocked!"))
+    except ActiveModuleErrors.ActiveModuleError as e:
+        return redirect(url_for('users.profile', warn=e.message))
+    except:
+        return redirect(url_for('users.profile', warn="An unknown error occurred. Sorry!"))
+
+
+@bp.route('/unlock/view/<int:lecture_id>')
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def view_unlock(lecture_id):
+    return render_template('lectures/unlock.html', lecture=Lecture.query.get(lecture_id))

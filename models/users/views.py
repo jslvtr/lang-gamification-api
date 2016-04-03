@@ -71,7 +71,8 @@ def profile():
     active_module = g.user.get_current_active_module()
     if active_module:
         return render_template('users/profile2.html', active_module=active_module,
-                               completed_lectures=active_module.completed_lectures.all())
+                               completed_lectures=active_module.completed_lectures.all(),
+                               unlocked_lectures=active_module.bought_lectures.all())
     else:
         return redirect(url_for('modules.public_modules'))
 

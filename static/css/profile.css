@@ -103,6 +103,15 @@
     background-color: #99CBED;
 }
 
+.profile .panel-lectures .locked.incomplete {
+    background-color: #df6c5b;
+    color: #ffffff;
+}
+
+.profile .panel-lectures .locked.incomplete:hover {
+    background-color: #bc4544;
+}
+
 .profile .panel-lectures .list-group-item .badge {
     background-color: transparent;
     font-size: 150%;
@@ -116,6 +125,10 @@
 
 .profile .panel-lectures .incomplete .badge {
     color: #3498DB;
+}
+
+.profile .panel-lectures .locked.incomplete .badge {
+    color: #a42427;
 }
 
 

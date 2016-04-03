@@ -5,3 +5,11 @@ class ActiveModuleError(Exception):
 
 class LectureAlreadyCompletedException(ActiveModuleError):
     pass
+
+
+class InsufficientGoldForLectureUnlock(ActiveModuleError):
+    pass
+
+
+class LectureNotOwnedException(ActiveModuleError):
+    pass

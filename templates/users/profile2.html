@@ -11,7 +11,7 @@
             {{ render_messages() }}
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                    {{ render_profile_lecture_list(active_module.module, completed_lectures) }}
+                    {{ render_profile_lecture_list(active_module.module, completed_lectures, unlocked_lectures) }}
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                     {{ render_experience_panel(active_module) }}

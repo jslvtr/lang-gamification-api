@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block breadcrumbs %}
+    <div class="container margin-top">
+        <ol class="breadcrumb margin-bottom">
+            <li><a href="{{ url_for('modules.dashboard') }}">Your Modules</a></li>
+            <li><a href="{{ url_for('modules.module', id=lecture.module.id) }}">Module <strong>{{ lecture.module.name }}</strong></a></li>
+            <li><a href="{{ url_for('lectures.lecture_list', module_id=lecture.module.id) }}">Lectures</a></li>
+            <li><a href="{{ url_for('lectures.lecture', lecture_id=lecture.id) }}">Lecture <strong>{{ lecture.name }}</strong></a></li>
+            <li class="active"><strong>Conversations</strong></li>
+        </ol>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1 class="page-header">Conversation list for '{{ lecture.name }}'</h1>
+        <div class="list-group">
+            {% for conversation in conversations %}
+                <a href="#" class="list-group-item">
+                    <h4 class="list-group-item-heading">Conversation with answer '{{ conversation.answer.name }}'</h4>
+                    <p class="list-group-item-text">This conversation has {{ conversation.utterances | length }} utterances.</p>
+                </a>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('conversations.new', lecture_id=lecture.id) }}" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> Add conversation
+        </a>
+    </div>
+{% endblock %}

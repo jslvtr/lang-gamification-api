@@ -128,20 +128,40 @@
         {% else %}
             <div class="list-group panel-background">
                 {% for notification in notifications %}
-                    <div class="list-group-item notification-{{ notification.type }}"
-                         onclick="showControls(this)">
-                        {{ notification.name }} <span class="badge">{{ notification_age_string(notification) }}</span>
+                    <div class="list-group-item notification-{{ notification.type }}">
+                        <a href="{{ url_for('users.delete_notification', notification_id=notification.id) }}"><span
+                                class="fa fa-trash"></span></a> {{ notification.name }} <span class="badge">{{ notification_age_string(notification) }}</span>
                     </div>
-                    <div class="list-group-item white retracted">
-                        {% if notification.type == "challenge" %}
+
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="panel-footer"></div>
+    </div>
+{% endmacro %}
+
+{% macro render_pending_challenges(notifications) %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Challenges</div>
+        {% if notifications.count() == 0 %}
+            <div class="panel-body panel-background">No new notifications.</div>
+        {% else %}
+            <div class="list-group panel-background">
+                {% for notification in notifications %}
+                        <div class="list-group-item notification-{{ notification.type }}"
+                             onclick="showControls(this)">
+                            {{ notification.name }} <span
+                                class="badge">{{ notification_age_string(notification) }}</span>
+                        </div>
+                        <div class="list-group-item white retracted">
+
                             <a href="{{ url_for('challenges.respond_challenge', challenge_id=notification.data) }}"
                                class="btn btn-default btn-sm"><span class="fa fa-gamepad"></span> Respond to
                                 challenge</a>
-                        {% endif %}
-                        <a href="{{ url_for('users.delete_notification', notification_id=notification.id) }}"
-                           class="btn btn-danger btn-sm"><span
-                                class="fa fa-ban"></span> Delete</a>
-                    </div>
+                            <a href="{{ url_for('users.delete_notification', notification_id=notification.id) }}"
+                               class="btn btn-danger btn-sm"><span
+                                    class="fa fa-trash"></span> Delete</a>
+                        </div>
                 {% endfor %}
             </div>
         {% endif %}

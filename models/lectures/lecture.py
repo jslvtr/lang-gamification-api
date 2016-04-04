@@ -25,6 +25,7 @@ class Lecture(db.Model, SearchableModel):
     cost = db.Column(db.Integer)
 
     quizzes = db.relationship("Quiz", back_populates="lecture", lazy='dynamic')
+    conversations = db.relationship("Conversation", lazy='dynamic')
 
     def __init__(self, name, module, description, order=None, tags=None, cost=0):
         self.name = name

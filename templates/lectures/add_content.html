@@ -38,15 +38,21 @@
             </div>
         </div>
         <div class="panel panel-default">
-            <div class="panel-heading">Quizzes</div>
+            <div class="panel-heading">Support</div>
             <div class="panel-body">
-                <p>You have added {{ lecture.quizzes.all() | length }} quizzes in this lecture.</p>
+                <p>You have added {{ lecture.quizzes.all() | length }} quizzes and {{ lecture.conversations.all() | length }} conversations to this lecture.</p>
 
                 <a href="{{ url_for('quizzes.quiz_list', lecture_id=lecture.id) }}" class="btn btn-default">
                     <span class="glyphicon glyphicon-th-list"></span> View quizzes
                 </a>
                 <a href="{{ url_for('quizzes.new', lecture_id=lecture.id) }}" class="btn btn-success">
                     <span class="glyphicon glyphicon-plus"></span> Add quiz
+                </a>
+                <a href="{{ url_for('conversations.conversation_list', lecture_id=lecture.id) }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-message"></span> View conversations
+                </a>
+                <a href="{{ url_for('conversations.new', lecture_id=lecture.id) }}" class="btn btn-success">
+                    <span class="glyphicon glyphicon-plus"></span> Add conversation
                 </a>
             </div>
         </div>

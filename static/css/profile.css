@@ -214,3 +214,22 @@
     top: 10px;
     right: 10px;
 }
+
+.profile .panel-notifications .list-group-item {
+    background-color: #3498DB;
+    color: #ffffff;
+    z-index: 2;
+    cursor: inherit;
+}
+
+.profile .panel-notifications .list-group-item:nth-child(4n + 1) {
+    background-color: #3293d3;
+    border-bottom: none;
+    color: #ffffff;
+    z-index: 2;
+    cursor: inherit;
+}
+
+.profile .panel-footer {
+    border-top: none;
+}

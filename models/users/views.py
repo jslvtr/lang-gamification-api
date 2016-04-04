@@ -148,8 +148,10 @@ def view(user_id):
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def notifications():
     g.user.read_notifications()
+    ordered_notifications = g.user.notifications.order_by(Notification.id.desc())
     return render_template('users/notifications.html',
-                           notifications=g.user.notifications.order_by(Notification.id.desc()))
+                           notifications=ordered_notifications.filter(Notification.type != "challenge"),
+                           challenges=ordered_notifications.filter(Notification.type == "challenge"))
 
 
 @bp.route('/notifications/delete/<int:notification_id>')

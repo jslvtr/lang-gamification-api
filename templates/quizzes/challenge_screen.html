@@ -1,16 +1,22 @@
 {% extends 'base.html' %}
 {% from 'forms/macros.html' import render_large_field %}
 {% from 'utils.html' import render_messages %}
+{% block dependencies %}
+    <script src="{{ url_for('static', filename='js/challenge.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/challenge.css') }}">
+{% endblock %}
 {% block content %}
     <div>
         <div class="container">
             {{ render_messages() }}
-            <h2 class="page-header margin-bottom">Challenge {{ challenged_user.email }}</h2>
+            <h2 class="page-header margin-bottom">Challenging {{ challenged_user.email }}</h2>
             <p class="email-help">If you win, you'll take home double the wager. If you lose... you'll never see it
                 again.</p>
+            <p class="email-help"><i class="green fa fa-smile-o"></i> You could win <i class="fa fa-circle" style="color: #FFD409"></i> <span id="winAmount">10</span></p>
+            <p class="email-help"><i class="red fa fa-frown-o"></i> You could lose <i class="fa fa-circle" style="color: #FFD409"></i> <span id="loseAmount">5</span></p>
             <form method="POST">
                 {{ form.csrf_token }}
-                {{ render_large_field(form.wager, class='email-search', value='5', placeholder='5') }}
+                {{ render_large_field(form.wager, class='email-search', value='5', placeholder='5', onkeyup='calculatePossibleChallengeOutcomes()') }}
                 <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-fire"></span> Challenge
                 </button>
             </form>

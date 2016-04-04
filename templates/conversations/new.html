@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block dependencies %}
+    <script src="{{ url_for('static', filename='js/conversations.js') }}"></script>
+{% endblock %}
+{% block breadcrumbs %}
+    <div class="container margin-top">
+        <ol class="breadcrumb margin-bottom">
+            <li><a href="{{ url_for('modules.dashboard') }}">Your Modules</a></li>
+            <li><a href="{{ url_for('modules.module', id=lecture.module.id) }}">Module
+                <strong>{{ lecture.module.name }}</strong></a></li>
+            <li><a href="{{ url_for('lectures.lecture_list', module_id=lecture.module.id) }}">Lectures</a></li>
+            <li><a href="{{ url_for('lectures.lecture', lecture_id=lecture.id) }}">Lecture
+                <strong>{{ lecture.name }}</strong></a></li>
+            <li><a href="{{ url_for('conversations.conversation_list', lecture_id=lecture.id) }}">Conversations</a></li>
+            <li class="active"><strong>Conversation</strong></li>
+        </ol>
+    </div>
+{% endblock %}
+{% block content %}
+    <script type="application/javascript">
+        var answer_url = '{{ url_for('words.get_word_by_tag', lecture_id=lecture.id, tag_name='{}') | safe }}';
+    var tag_names = {{ tag_names | safe }};
+    var newConversation = '{{ conversation == None }}' == 'True' ? true : false;
+    </script>
+    <div class="container">
+        <h1 class="page-header margin-top">Utterances for this conversation</h1>
+        <p>Add utterances using the controls below.</p>
+        <p>Each conversation must have one tag from the lecture to which it belongs.</p>
+        <p>Then you can add the utterances for each speaker, as well as the missing utterance.</p>
+        <p>Finally, select the answer, which will get populated from the Words in the current lecture that have the
+            tag.</p>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                {% if conversation %}
+                    <p>Selected tag: <strong><span id="tagName">{{ conversation.tag }}</span></strong>.</p>
+                {% else %}
+                    <label for="tagName">Tag:</label> <select id="tagName" class="form-control"></select>
+                {% endif %}
+                <div id="questions">
+                    {% if conversation %}
+                        {% if conversation.utterances | length > 0 %}
+                            {% for utterance in conversation.utterances %}
+                                <a href="#" class="list-group-item">
+                                    <h4 class="list-group-item-heading">Speaker {{ ((loop.index-1) % 2) + 1 }}</h4>
+                                    <p class="list-group-item-text utterance">{{ utterance.name }}</p>
+                                </a>
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div id="answer">
+                    {% if conversation %}
+                        <p>Selected answer: <strong><span
+                                id="selectedAnswer">{{ conversation.answer.name }}</span></strong>.</p>
+                    {% else %}
+                        <label for="answerSelect">Answer:</label> <select id="answerSelect" class="form-control"></select>
+                    {% endif %}
+                </div>
+                <div id="addUtterance">
+                    {% if conversation.utterances | length == 0 %}
+                        No questions yet! Add the first one with the button below.
+                    {% endif %}
+                </div>
+            </div>
+        {% if not conversation %}
+            <div class="panel-footer">
+                <button class="btn btn-sm btn-default"
+                        onclick="addUtterance()">
+                    <span class="glyphicon glyphicon-message"></span> Add utterance
+                </button>
+                <button class="btn btn-sm btn-success"
+                        onclick="saveConversation('{{ url_for('conversations.new', lecture_id=lecture.id) }}')">
+                    <span class="glyphicon glyphicon-plus"></span> Save conversation
+                </button>
+            </div>
+        {% endif %}
+        </div>
+
+
+    </div>
+{% endblock %}

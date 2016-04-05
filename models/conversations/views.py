@@ -33,11 +33,12 @@ def new(lecture_id, conversation_id):
         request_json = request.get_json(force=True, silent=True)
         if request_json is None:
             return jsonify({"message": "The request was invalid."}), 400
-        conversation = Conversation(request_json['tag'], Word.query.filter(Word.name == request_json['answer']).first(), lecture,)
+        conversation = Conversation(request_json['tag'], lecture,)
         conversation.save_to_db()
-        utterances = [Utterance(request_json['utterances'][i],
+        utterances = [Utterance(request_json['utterances'][i]['name'],
                                 i,
-                                conversation) for i in range(len(request_json['utterances']))]
+                                conversation,
+                                request_json['utterances'][i]['hide']) for i in range(len(request_json['utterances']))]
         for utterance in utterances:
             db.session.add(utterance)
         db.session.commit()
@@ -58,3 +59,10 @@ def conversation_list(lecture_id):
                            lecture=lecture,
                            conversations=conversations,
                            is_owner=is_owner)
+
+
+@bp.route('/study/<int:conversation_id>', methods=['GET'])
+@requires_access_level(UserConstants.USER_TYPES['USER'])
+def do_conversation(conversation_id):
+    conversation = Conversation.query.get(conversation_id)
+    return render_template('conversations/view.html', conversation=conversation)

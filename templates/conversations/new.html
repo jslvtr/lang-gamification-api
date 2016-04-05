@@ -20,7 +20,7 @@
     <script type="application/javascript">
         var answer_url = '{{ url_for('words.get_word_by_tag', lecture_id=lecture.id, tag_name='{}') | safe }}';
     var tag_names = {{ tag_names | safe }};
-    var newConversation = '{{ conversation == None }}' == 'True' ? true : false;
+    var newConversation = '{{ conversation == None }}' == 'True';
     </script>
     <div class="container">
         <h1 class="page-header margin-top">Utterances for this conversation</h1>
@@ -67,7 +67,7 @@
             <div class="panel-footer">
                 <button class="btn btn-sm btn-default"
                         onclick="addUtterance()">
-                    <span class="glyphicon glyphicon-message"></span> Add utterance
+                    <span class="glyphicon glyphicon-comment"></span> Add utterance
                 </button>
                 <button class="btn btn-sm btn-success"
                         onclick="saveConversation('{{ url_for('conversations.new', lecture_id=lecture.id) }}')">

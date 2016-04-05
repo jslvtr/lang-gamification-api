@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% from 'conversations/macros.html' import render_conversation %}
+{% block dependencies %}
+    <script src="{{ url_for('static', filename='js/conversations.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/conversation.css') }}">
+{% endblock %}
+{% block content %}
+    <script type="application/javascript">
+        var newConversation = false;
+    </script>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                {{ render_conversation(conversation) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

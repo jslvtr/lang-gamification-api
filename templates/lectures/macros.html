@@ -35,6 +35,12 @@
     </a>
 {% endmacro %}
 
+{% macro render_conversation_in_lecture(conversation, index) %}
+    <a class="list-group-item" href="{{ url_for("conversations.do_conversation", conversation_id=conversation.id) }}">
+        Look at conversation {{ index }}
+    </a>
+{% endmacro %}
+
 {% macro render_locked_lecture(lecture) %}
     <p>This lecture is locked, for now!</p>
 {% endmacro %}

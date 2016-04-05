@@ -1,0 +1,28 @@
+{% macro render_utterance(conversation, utterance, visible=False) %}
+    {% set speaker_number = utterance.order % 2 %}
+    {% set speaker = conversation.player_one if speaker_number == 0 else conversation.player_two %}
+    <div class="utterance utterance-{{ 'one' if speaker_number == 0 else 'two' }} {{ 'visible' if visible else 'invisible' }}">
+        <div class="speaker-name">
+            {{ speaker }}
+        </div>
+        {% set content = utterance.name if not utterance.hide else "What should go here? (click to reveal)" %}
+        <div class="utterance-content {{ 'fill-in' if utterance.hide else '' }}">
+            {{ content }}
+        </div>
+        <div class="utterance-content" style="display: none">
+            {{ utterance.name }}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_conversation(conversation) %}
+    <div class="conversation">
+        <button class="btn btn-success" id="nextUtterance" onclick="nextUtterance()"><span
+                class="glyphicon glyphicon-comment"></span> Next phrase
+        </button>
+        <span id="endMessage" style="display: none">End of conversation.</span>
+        {% for utterance in conversation.utterances %}
+            {{ render_utterance(conversation, utterance, True if loop.index == 1 else False) }}
+        {% endfor %}
+    </div>
+{% endmacro %}

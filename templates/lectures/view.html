@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from "lectures/macros.html" import render_lecture_content, render_quiz_in_lecture %}
+{% from "lectures/macros.html" import render_lecture_content, render_quiz_in_lecture, render_conversation_in_lecture %}
 {% block content %}
     <div>
         <div class="container">
@@ -11,13 +11,25 @@
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
 
 
-                    {% if lecture.quizzes.all() | length > 0 %}
+                    {% if lecture.quizzes.count() > 0 %}
                         <div class="panel panel-default margin-top">
-                            <div class="panel-heading">Quizzes</div>
+                            <div class="panel-heading">Vocabulary</div>
                             <div class="panel-body">
                                 <div class="list-group">
                                     {% for quiz in lecture.quizzes %}
                                         {{ render_quiz_in_lecture(quiz, loop.index) }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% if lecture.conversations.count() > 0 %}
+                        <div class="panel panel-default margin-top">
+                            <div class="panel-heading">Conversations</div>
+                            <div class="panel-body">
+                                <div class="list-group">
+                                    {% for conversation in lecture.conversations %}
+                                        {{ render_conversation_in_lecture(conversation, loop.index) }}
                                     {% endfor %}
                                 </div>
                             </div>

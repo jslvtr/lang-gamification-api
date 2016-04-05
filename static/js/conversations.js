@@ -1,17 +1,20 @@
-$(document).ready(function() {
+$(document).ready(function () {
     if (newConversation) {
         $("#tagName").html(createOptionsFromArray(tag_names));
-        getWordsForSelectedTag("#tagName", "#answerSelect", answer_url);
-        $("#tagName").on('change', function () {
-            getWordsForSelectedTag("#tagName", "#answerSelect", answer_url);
-        });
+    } else {
+        $(".fill-in").on('click', function(e) {
+            var target = $(e.target);
+            target.removeClass('fill-in');
+            target.css('display', 'none');
+            target.next('.utterance-content').css('display', 'block');
+        })
     }
 });
 
 function addUtterance() {
     var addUtteranceElement = $("#addUtterance");
     addUtteranceElement.html(createUtteranceHTML());
-    $("#create-button").on('click', function() {
+    $("#create-button").on('click', function () {
         addQuestionToPanelAsCreated($(".utterance").length, $("#utteranceField").val());
     });
     addUtteranceElement.html();
@@ -20,7 +23,7 @@ function addUtterance() {
 function createUtteranceHTML() {
     return '<div class="question-form">' +
         '<div class="form-group"><label for="utteranceField">Utterance: </label> <input type="text" id="utteranceField" class="form-control"></div>' +
-            '<btn class="btn btn-info" id="create-button">Add</btn>' +
+        '<btn class="btn btn-info" id="create-button">Add</btn>' +
         '</div>'
 }
 
@@ -39,34 +42,19 @@ function option(val) {
     return '<option value="' + val + '">' + val + '</option>';
 }
 
-function getWordsForSelectedTag(tag_id, answer_id, url) {
-    var selectedTag = $(tag_id).val();
-    $.ajax({
-        url: url.replace(encodeURIComponent("{}"), selectedTag),
-        type: 'GET',
-        success: function (result) {
-            var answers = result['answers'];
-            $(answer_id).html(createOptionsFromArray(answers));
-            if (answers.length == 0) {
-                $(answer_id).prop('disabled', true);
-            } else {
-                $(answer_id).removeAttr('disabled');
-            }
-        }
-    })
-}
-
 function saveConversation(submit_url) {
     var utterance_contents = $(".utterance");
-    utterance_contents = $.map(utterance_contents, function(a) {
-        return a.textContent;
+    utterance_contents = $.map(utterance_contents, function (a) {
+        return {
+            name: $(a).children("p").html(),
+            hide: $(a).children(":checked").length == 0
+        };
     });
     $.ajax({
         url: submit_url,
         type: 'POST',
         data: JSON.stringify({
             "tag": $('#tagName').val(),
-            "answer": $('#answerSelect').val(),
             "utterances": utterance_contents
         }),
         dataType: "json",
@@ -91,8 +79,20 @@ function addQuestionToPanelAsCreated(number_questions, utterance) {
 }
 
 function questionListItem(number_questions, utterance) {
-    return '<a href="#" class="list-group-item">' +
+    return '<a href="#" class="list-group-item utterance">' +
         '<h4 class="list-group-item-heading">Speaker ' + ((number_questions % 2) + 1) + '</h4>' +
-        '<p class="list-group-item-text utterance">' + utterance + '</p>' +
+        '<p class="list-group-item-text">' + utterance + '</p>' +
+        '<label for="hideInConversation">Hide in conversation: </label><input type="checkbox" id="hideInConversation">' +
         '</a>'
+}
+
+function nextUtterance() {
+    var firstHiddenUtterance = $(".invisible")[0];
+    if (firstHiddenUtterance !== undefined) {
+        $(firstHiddenUtterance).removeClass('invisible');
+        $(firstHiddenUtterance).addClass('visible')
+    } else {
+        $("#nextUtterance").prop('disabled', true);
+        $("#endMessage").css('display', 'inline');
+    }
 }

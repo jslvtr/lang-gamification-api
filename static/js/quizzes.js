@@ -198,9 +198,14 @@ function finishQuiz() {
 
 function scoreDivHTML(scores) {
     if (scores['challenge'] === undefined) {
-        return '<div class="score"><h2>Well done!</h2>' +
-            '<p>You scored <span class="score-total">' + scores.score + '</span> out of ' + scores.num_questions + '!</p>' +
-            '<p>You have earned <i class="fa fa-circle fa-lg" style="color: #FFD409"></i> <span class="gold">' + scores.gold_earned + '</span> gold</p></div>';
+        if (scores.score > 0) {
+            return '<div class="score"><h2>Well done!</h2>' +
+                '<p>You scored <span class="score-total">' + scores.score + '</span> out of ' + scores.num_questions + '!</p>' +
+                '<p>You have earned <i class="fa fa-trophy" style="color: #FFD409"></i> <span class="gold">' + scores.gold_earned + '</span>!</p></div>';
+        } else {
+            return '<div class="score"><h2>That\'s alright!</h2>' +
+                '<p>You didn\'t get any in this quiz. With some revision, I\'m sure you\'ll do it!</p>';
+        }
     } else {
             return '<div class="score"><span class="icon fa fa-2x fa-' + scores.icon + '"></span><h2>' + scores.message + '</h2>' +
                 '<p>' + scores.submessage + '</p></div>';

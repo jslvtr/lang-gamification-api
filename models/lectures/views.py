@@ -149,18 +149,6 @@ def add_text_content(lecture_id):
     return render_template('lectures/content/text.html', lecture=lecture, module=module)
 
 
-@bp.route('/unlock/<int:lecture_id>')
-@requires_access_level(UserConstants.USER_TYPES['USER'])
-def unlock(lecture_id):
-    try:
-        g.user.get_current_active_module().buy_lecture(lecture_id)
-        return redirect(url_for('.study_lecture', lecture_id=lecture_id, message="Lecture unlocked!"))
-    except ActiveModuleErrors.ActiveModuleError as e:
-        return redirect(url_for('users.profile', warn=e.message))
-    except:
-        return redirect(url_for('users.profile', warn="An unknown error occurred. Sorry!"))
-
-
 @bp.route('/unlock/view/<int:lecture_id>')
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def view_unlock(lecture_id):

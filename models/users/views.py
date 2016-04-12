@@ -98,7 +98,7 @@ def add_friend_form():
         log.info("Form validated, attempting to add friend.")
         try:
             friend_request = FriendRequest(user=g.user,
-                                           new_friend=User.query.filter(User.email == form.email.data).first())
+                                           new_friend=User.query.filter(User.email == form.email.data.lower()).first())
             friend_request.notify_new_friend()
             friend_request.save_to_db()
             log.info("Put request through and notified friend.")
@@ -115,7 +115,6 @@ def add_friend_form():
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def confirm_friend_request(friend_request_id):
     friend_request = FriendRequest.query.get(friend_request_id)
-    new_friend = friend_request.user
     if friend_request:
         if friend_request.new_friend.id == g.user.id:
             if friend_request.new_friend not in friend_request.user.friends:

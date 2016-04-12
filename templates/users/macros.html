@@ -33,10 +33,10 @@
             <div class="panel-body panel-background">You're all by yourself! Why not add some friends?</div>
         {% else %}
             <div class="list-group panel-background">
-                {% for friend in user.friends %}
+                {% for friend in user.friends_ordered_by_trophies %}
                     <div class="list-group-item"
                          onclick="showControls(this)">
-                        {{ friend.email }}
+                        {{ friend.email }} <span class="badge"><i class="fa fa-trophy" style="color: #FFD409"></i> {{ friend.gold }}</span>
                     </div>
                     <div class="list-group-item white retracted">
                         <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-default btn-sm"><span
@@ -44,8 +44,6 @@
                         <a href="{{ url_for('challenges.do_challenge', user_id=friend.id) }}"
                            class="btn btn-default btn-sm"><span
                                 class="fa fa-gamepad"></span> Challenge</a>
-                        <a href="{{ url_for('users.view', user_id=friend.id) }}" class="btn btn-danger btn-sm"
-                           disabled="disabled"><span class="fa fa-ban"></span> Unfriend</a>
                     </div>
                 {% endfor %}
                 {% for pending_friendship in user.pending_friendships() %}
@@ -85,7 +83,7 @@
                 {% for lecture in module.lectures %}
                     {% set completed = lecture in completed_lectures %}
                     {% set unlocked = lecture in unlocked_lectures %}
-                    {% set css_class = 'complete' if complete else 'incomplete' %}
+                    {% set css_class = 'complete' if completed else 'incomplete' %}
                     {% set css_class = css_class + ' unlocked' if unlocked else css_class + ' locked' %}
 
                     <a class="list-group-item {{ css_class }}"

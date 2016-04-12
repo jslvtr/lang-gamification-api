@@ -15,6 +15,8 @@ def create_challenge(challenger, challengee, wager, module):
         raise QuizErrors.NotEnoughGoldForWagerException("{} doesn't have enough gold for this wager (max: {})".format(challengee.email, challengee.gold))
 
     questions = get_all_matching_questions(challenger, challengee, module.id)
+    if len(questions) < 3:
+        raise QuizErrors.NotEnoughQuestionsException("You and your opponent have not completed enough of the module to challenge each other!")
     ten_questions = set()
     while len(ten_questions) < min(len(questions), 10):
         ten_questions.add(random.choice(list(questions)))
@@ -196,9 +198,9 @@ class Challenge(db.Model):
 
     def accept_wager(self, user):
         if user.id == self.challenger.id:
-            self.challenger.decrease_gold(self.wager, "You waged {} gold against {}.".format(self.wager, self.challengee.email))
+            self.challenger.decrease_gold(self.wager, "You waged {} trophies against {}.".format(self.wager, self.challengee.email))
         elif user.id == self.challengee.id:
-            self.challengee.decrease_gold(self.wager, "You waged {} gold against {}.".format(self.wager, self.challenger.email))
+            self.challengee.decrease_gold(self.wager, "You waged {} trophies against {}.".format(self.wager, self.challenger.email))
 
 
 class ChallengeAttempt(db.Model):

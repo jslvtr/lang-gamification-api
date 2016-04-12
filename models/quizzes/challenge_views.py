@@ -28,7 +28,7 @@ def do_challenge(user_id):
             challenge = create_challenge(g.user, challenged_user, int(form.wager.data),
                                          g.user.get_current_active_module().module)
             Challenge.remove_old_challenges(keep=challenge.id)
-        except QuizErrors.NotEnoughGoldForWagerException as e:
+        except QuizErrors.QuizError as e:
             return redirect(url_for('.do_challenge', user_id=user_id, warn=e.message))
         return render_template('quizzes/challenge.html', challenge=challenge, challenged_user=challenged_user)
     return render_template('quizzes/challenge_screen.html', challenged_user=challenged_user, form=form)

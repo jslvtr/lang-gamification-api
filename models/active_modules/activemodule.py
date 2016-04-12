@@ -21,7 +21,6 @@ class ActiveModule(db.Model):
     module_id = db.Column(db.Integer, db.ForeignKey('module.id'))
     module = db.relationship('Module', secondary=HelperTables.active_to_modules, uselist=False)
     completed_lectures = db.relationship('Lecture', secondary=HelperTables.completed_lectures, lazy='dynamic')
-    bought_lectures = db.relationship('Lecture', secondary=HelperTables.bought_lectures, lazy='dynamic')
 
     def __init__(self, name, user_owner, module, experience=0, level=1):
         self.name = name
@@ -81,16 +80,6 @@ class ActiveModule(db.Model):
             self.owner.add_notification(reason, "experience", None)
         self.save_to_db()
 
-    def buy_lecture(self, lecture_id):
-        lecture = Lecture.query.get(lecture_id)
-        if self.owner.gold < lecture.cost:
-            raise ActiveModuleErrors.InsufficientGoldForLectureUnlock("You do not have enough gold to unlock this lecture!")
-        else:
-            if lecture.cost > 0:
-                self.owner.decrease_gold(lecture.cost, "You bought the lecture '{}' in module '{}' ({} gold).".format(
-                    lecture.name,
-                    self.module.name,
-                    lecture.cost
-                ))
-            self.bought_lectures.append(lecture)
-            self.save_to_db()
+    @property
+    def bought_lectures(self):
+        return Lecture.query.filter(Lecture.module_id == self.module_id, Lecture.cost < self.owner.gold)

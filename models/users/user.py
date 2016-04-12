@@ -33,7 +33,7 @@ class User(db.Model):
         self.password = password
         self.access = access
         self.gamified = gamified
-        self.gold = 10
+        self.gold = 0
 
     def __repr__(self):
         return "<User {}>".format(self.email)
@@ -50,13 +50,14 @@ class User(db.Model):
 
     @staticmethod
     def login(email, password):
-        user = User._check_login(email, password)
+        user = User._check_login(email.lower(), password)
         if user:
             return user
         raise UserErrors.IncorrectPasswordException("Your password or e-mail were incorrect.")
 
     @staticmethod
     def register(email, password):
+        email = email.lower()
         if not Utils.email_is_valid(email):
             raise UserErrors.InvalidEmailException("The e-mail you used to register was invalid.")
         if User.query.filter_by(email=email).first() is not None:
@@ -169,3 +170,7 @@ class User(db.Model):
         for notification in notifications:
             db.session.delete(notification)
         db.session.commit()
+
+    @property
+    def friends_ordered_by_trophies(self):
+        return self.friends.order_by(User.gold.desc())

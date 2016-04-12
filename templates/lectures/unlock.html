@@ -25,8 +25,7 @@
                     <div class="panel panel-default margin-top">
                         <div class="panel-heading">Actions</div>
                         <div class="panel-body">
-                            <a href="{{ url_for('lectures.unlock', lecture_id=lecture.id) }}" class="btn btn-danger"><span
-                                    class="glyphicon glyphicon-lock"></span> Unlock with {{ lecture.cost }} gold</a>
+                            <button disabled="disabled" class="btn btn-danger"><span class="glyphicon glyphicon-lock"></span> Unlocks when you reach <i class="fa fa-trophy"></i> {{ lecture.cost }}.</button>
                         </div>
                     </div>
                 </div>

@@ -17,3 +17,7 @@ class NotParticipantException(QuizError):
 
 class NotEnoughGoldForWagerException(QuizError):
     pass
+
+
+class NotEnoughQuestionsException(QuizError):
+    pass

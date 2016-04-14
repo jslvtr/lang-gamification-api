@@ -59,7 +59,7 @@ class User(db.Model):
         raise UserErrors.IncorrectPasswordException("Your password or e-mail were incorrect.")
 
     @staticmethod
-    def register(email, password, confirm_email):
+    def register(email, password, confirm_email=False):
         email = email.lower()
         if not Utils.email_is_valid(email):
             raise UserErrors.InvalidEmailException("The e-mail you used to register was invalid.")

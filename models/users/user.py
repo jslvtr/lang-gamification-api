@@ -10,6 +10,7 @@ from models.active_modules.activemodule import ActiveModule
 from models.quizzes.challenge import Challenge
 from models.quizzes.question import Question
 from models.quizzes.quiz import Quiz
+from models.users.email_confirmation import EmailConfirmation
 from models.users.friend_request import FriendRequest
 from models.users.notification import Notification
 
@@ -52,7 +53,9 @@ class User(db.Model):
     def login(email, password):
         user = User._check_login(email.lower(), password)
         if user:
-            return user
+            if EmailConfirmation.query.filter(EmailConfirmation.user_id == user.id).first().confirmed:
+                return user
+            raise UserErrors.UserNotConfirmedException("The e-mail for this user has not been confirmed.")
         raise UserErrors.IncorrectPasswordException("Your password or e-mail were incorrect.")
 
     @staticmethod
@@ -66,6 +69,9 @@ class User(db.Model):
         user = User(email=email,
                     password=Utils.hash_password(password),
                     gamified=User.query.filter().count() % 2 == 0)
+        confirmation = EmailConfirmation(user)
+        confirmation.save_to_db()
+        confirmation.send()
 
         db.session.add(user)
         db.session.commit()

@@ -281,3 +281,7 @@ p.help {
 #notificationMenu:hover #notifications {
     background-color: #b3282a;
 }
+
+.confirm {
+    color: #ffffff;
+}

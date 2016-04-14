@@ -1,5 +1,6 @@
 from flask import Blueprint, request, session, render_template, redirect, url_for, g
 import models.users.errors as UserErrors
+from models.users.email_confirmation import EmailConfirmation
 from models.users.forms import LoginForm, RegisterForm, AddFriendForm
 import logging
 
@@ -54,13 +55,12 @@ def register():
         try:
             user = User.register(email=form.email.data,
                                  password=form.password.data)
-            session['user_id'] = user.id
             log.info("User logged in and e-mail in session.")
         except UserErrors.UserError as e:
             log.warn("User error with message '{}', redirecting to login".format(e.message))
             return redirect(url_for('index', message=e.message))
-        log.info("User logged in, redirecting to profile.")
-        return redirect(url_for('.profile'))
+        log.info("User logged in, redirecting to e-mail confirmation page.")
+        return redirect(url_for('.confirm_view'))
     log.info("Form not valid or this is GET request, presenting users/register.html template")
     return render_template('users/register.html', form=form, bg="#3498DB")
 
@@ -168,3 +168,16 @@ def delete_notification(notification_id):
 def clear_all():
     g.user.delete_notifications_except_challenges()
     return redirect(url_for('.notifications', message="Cleared all notifications."))
+
+
+@bp.route('/confirm')
+def confirm_view():
+    return render_template('users/confirm.html', bg="#3498DB")
+
+
+@bp.route('/confirm/<string:confirmation_id>')
+def confirm(confirmation_id):
+    confirmation = EmailConfirmation.query.filter(EmailConfirmation.uuid == confirmation_id).first()
+    confirmation.confirm()
+    confirmation.save_to_db()
+    return redirect(url_for('.login', message="Thank you for confirming your e-mail. You can log in now."))

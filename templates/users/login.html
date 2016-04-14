@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% from "forms/macros.html" import render_field %}
+{% from 'utils.html' import render_messages %}
 {% block content %}
     <div class="background">
         <div class="container">
+            {{ render_messages() }}
             <div class="form">
-                <h1 class="sign-up-title">Sign in</h1>
+                <h1 class="sign-up-title">Log in</h1>
 
                 <form method="POST" class="form-horizontal">
                     {{ form.csrf_token }}
@@ -12,7 +14,7 @@
                     {{ render_field(form.password, True, class="input text form-control") }}
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
-                            <button type="submit" class="btn btn-default">SIGN IN</button>
+                            <button type="submit" class="btn btn-default">LOG IN</button>
                         </div>
                     </div>
                     <div class="col-sm-offset-3 col-sm-9">

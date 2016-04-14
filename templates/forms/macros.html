@@ -29,7 +29,7 @@
         {% if field.errors %}
             {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
             {% if horizontal %}
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-offset-3 col-sm-9">
                     <div class="checkbox">
                         <label>
                             {{ field(**kwargs) }}
@@ -43,7 +43,7 @@
                 <li>{{ error|e }}</li>{% endfor %}</ul>
         {% else %}
             {% if horizontal %}
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-offset-3 col-sm-9">
                     <div class="checkbox">
                         <label>
                             {{ field(**kwargs) }} {{ field.label.text }}

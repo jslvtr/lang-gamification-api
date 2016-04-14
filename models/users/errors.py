@@ -18,6 +18,10 @@ class InvalidEmailException(UserError):
     pass
 
 
+class UserNotConfirmedException(UserError):
+    pass
+
+
 class UserAlreadyExistsException(UserError):
     pass
 

@@ -21,3 +21,6 @@ RECAPTCHA_USE_SSL = False
 RECAPTCHA_PUBLIC_KEY = 'noneyet'
 RECAPTCHA_PRIVATE_KEY = 'noneyet'
 RECAPTCHA_OPTIONS = {'theme': 'white'}
+
+MAILGUN_API_KEY = 'key-1f1fb4afbcec8c5fca169a0c940767cc'
+MAILGUN_DOMAIN = 'sandbox0fd1d065f521484b8af277034648e756.mailgun.org'

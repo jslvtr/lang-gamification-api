@@ -55,7 +55,7 @@ def register():
         try:
             user = User.register(email=form.email.data,
                                  password=form.password.data,
-                                 True)
+                                 confirm_email=True)
             log.info("User logged in and e-mail in session.")
         except UserErrors.UserError as e:
             log.warn("User error with message '{}', redirecting to login".format(e.message))

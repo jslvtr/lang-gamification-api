@@ -59,7 +59,7 @@ class User(db.Model):
         raise UserErrors.IncorrectPasswordException("Your password or e-mail were incorrect.")
 
     @staticmethod
-    def register(email, password):
+    def register(email, password, confirm_email):
         email = email.lower()
         if not Utils.email_is_valid(email):
             raise UserErrors.InvalidEmailException("The e-mail you used to register was invalid.")
@@ -70,8 +70,11 @@ class User(db.Model):
                     password=Utils.hash_password(password),
                     gamified=User.query.filter().count() % 2 == 0)
         confirmation = EmailConfirmation(user)
+        if not confirm_email:
+            confirmation.confirmed = True
         confirmation.save_to_db()
-        confirmation.send()
+        if confirm_email:
+            confirmation.send()
 
         db.session.add(user)
         db.session.commit()

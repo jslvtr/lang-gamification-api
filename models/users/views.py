@@ -54,7 +54,8 @@ def register():
         log.info("Form validated, attempting to log user in.")
         try:
             user = User.register(email=form.email.data,
-                                 password=form.password.data)
+                                 password=form.password.data,
+                                 True)
             log.info("User logged in and e-mail in session.")
         except UserErrors.UserError as e:
             log.warn("User error with message '{}', redirecting to login".format(e.message))
@@ -175,9 +176,8 @@ def confirm_view():
     return render_template('users/confirm.html', bg="#3498DB")
 
 
-@bp.route('/confirm/<string:confirmation_id>')
+@bp.route('/confirm_user/<string:confirmation_id>')
 def confirm(confirmation_id):
     confirmation = EmailConfirmation.query.filter(EmailConfirmation.uuid == confirmation_id).first()
     confirmation.confirm()
-    confirmation.save_to_db()
     return redirect(url_for('.login', message="Thank you for confirming your e-mail. You can log in now."))

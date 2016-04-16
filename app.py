@@ -41,6 +41,16 @@ def index():
     return render_template('home.html')
 
 
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+
+@app.route('/privacy')
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
+
 @app.before_request
 def before_request():
     """

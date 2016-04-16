@@ -13,6 +13,9 @@
                     {{ render_field(form.confirm, True, class="input text form-control") }}
                     {{ render_checkbox(form.accept_tos, True,
     help="Check this box to accept the terms and conditions.") }}
+                    <div class="col-sm-offset-3 col-sm-9">
+                            <p>Visit the <a href="{{ url_for('terms') }}">Terms</a> and <a href="{{ url_for('privacy_policy') }}">Privacy policy</a>.</p>
+                        </div>
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
                             <button type="submit" class="btn btn-default">SIGN UP</button>

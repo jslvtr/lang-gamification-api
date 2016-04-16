@@ -10,9 +10,9 @@ from models.active_modules.activemodule import ActiveModule
 def create_challenge(challenger, challengee, wager, module):
 
     if challenger.gold < wager:
-        raise QuizErrors.NotEnoughGoldForWagerException("You don't have enough gold for this wager (max: {})".format(challenger.gold))
+        raise QuizErrors.NotEnoughGoldForWagerException("You don't have enough trophies for this wager (max: {})".format(challenger.gold))
     if challengee.gold < wager:
-        raise QuizErrors.NotEnoughGoldForWagerException("{} doesn't have enough gold for this wager (max: {})".format(challengee.email, challengee.gold))
+        raise QuizErrors.NotEnoughGoldForWagerException("{} doesn't have enough trophies for this wager (max: {})".format(challengee.email, challengee.gold))
 
     questions = get_all_matching_questions(challenger, challengee, module.id)
     if len(questions) < 3:

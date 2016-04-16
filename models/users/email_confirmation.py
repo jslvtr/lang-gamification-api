@@ -37,10 +37,10 @@ class EmailConfirmation(db.Model):
         email_request = requests.post(
             "https://api.mailgun.net/v3/{}/messages".format(app.config.get('MAILGUN_DOMAIN')),
             auth=("api", app.config.get('MAILGUN_API_KEY')),
-            data={"from": "Jose at Build To Learn <mailgun@{}>".format(app.config.get('MAILGUN_DOMAIN')),
+            data={"from": "Jose at Apostamos.academy <mailgun@{}>".format(app.config.get('MAILGUN_DOMAIN')),
                   "to": [self.user.email],
                   "subject": "Please confirm your e-mail address",
-                  "text": "Thank you for registering for <>.\n\n"
+                  "text": "Thank you for registering for Apostamos.academy.\n\n"
                           "To finalise your registration, please confirm your e-mail address by "
                           "clicking the link below or pasting it into your browser:\n\n"
                           "{base_url}{confirmation_url}\n\n"

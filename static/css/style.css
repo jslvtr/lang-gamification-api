@@ -285,3 +285,7 @@ p.help {
 .confirm {
     color: #ffffff;
 }
+
+.navbar {
+    z-index: 100;
+}

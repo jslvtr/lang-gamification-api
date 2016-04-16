@@ -113,7 +113,7 @@ def complete(lecture_id):
     try:
         lecture = Lecture.query.get(lecture_id)
         g.user.get_current_active_module().complete_lecture(lecture_id)
-        g.user.increase_gold(10, "You completed the lecture {}! (10 gold)".format(lecture.name))
+        g.user.increase_gold(10, "Completed {}! (10 trophies)".format(lecture.name))
         experience = lecture.order * 10
         active_module = g.user.get_current_active_module()
         active_module.increase_experience(experience,

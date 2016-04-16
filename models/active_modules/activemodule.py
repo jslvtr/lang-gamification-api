@@ -82,4 +82,4 @@ class ActiveModule(db.Model):
 
     @property
     def bought_lectures(self):
-        return Lecture.query.filter(Lecture.module_id == self.module_id, Lecture.cost < self.owner.gold)
+        return Lecture.query.filter(Lecture.module_id == self.module_id, Lecture.cost <= self.owner.gold)

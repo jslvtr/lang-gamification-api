@@ -8,13 +8,13 @@ class LectureContent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(80))
     path = db.Column(db.String(140))
-    text = db.Column(db.Integer)
+    text = db.Column(db.String)
 
     lecture_id = db.Column(db.Integer, db.ForeignKey('lecture.id'))
     lecture = db.relationship('Lecture',
                               backref=db.backref('content', uselist=False))
 
-    def __init__(self, lecture, type, path="", text=""):
+    def __init__(self, lecture, type, path="", text=u""):
         self.lecture = lecture
         self.type = type
         self.path = path

@@ -5,9 +5,9 @@
     {{ render_messages(background=True) }}
 <div class="jumbotron background">
     <div class="center-vertical">
-        <h1>Grow your economy by learning a language</h1>
+        <h1>Learn, challenge, and bet with your friends!</h1>
         {% if g.user %}
-            <p><a class="btn btn-primary btn-lg" href="{{ url_for('users.profile') }}" role="button">KEEP EARNING</a></p>
+            <p><a class="btn btn-primary btn-lg" href="{{ url_for('users.profile') }}" role="button">KEEP LEARNING</a></p>
         {% else %}
             <p><a class="btn btn-primary btn-lg" href="{{ url_for('users.register') }}" role="button">GET STARTED</a></p>
         {% endif %}

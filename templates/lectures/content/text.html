@@ -4,6 +4,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/lectures/content/text_content.css') }}">
 {% endblock %}
 {% block content %}
+
+    <script type="application/javascript">
+        var lecture_id = {{ lecture.id }};
+    </script>
+
     <div class="container">
         <h1 class="page-header">{{ 'Adding' if not lecture.content else 'Editing' }} text content</h1>
         <div id="editable" data-editable data-name="main-content">

@@ -35,7 +35,7 @@ window.addEventListener('load', function () {
                 debugger;
                 xhr = new XMLHttpRequest();
                 xhr.addEventListener('readystatechange', onStateChange);
-                xhr.open('POST', '/lectures/1/text');
+                xhr.open('POST', '/lectures/' + lecture_id + '/text');
                 xhr.send(payload);
             });
         });

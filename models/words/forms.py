@@ -8,18 +8,14 @@ __author__ = 'josesalvatierra'
 class CreateWordForm(Form):
     name = StringField('Word',
                        [DataRequired(),
-                        Regexp(r"[a-zA-Z]{1,}",
-                               message="The word may only contain letters."),
                         Length(min=1,
                                max=80,
-                               message="The word must be between 4 and 80 characters long.")])
+                               message="The word must be between 1 and 80 characters long.")])
     meaning = StringField('Meaning',
                           [DataRequired(),
-                           Regexp(r"[a-zA-Z]{1,}",
-                                  message="The word may only contain letters."),
                            Length(min=1,
                                   max=80,
-                                  message="The word must be between 4 and 80 characters long.")])
+                                  message="The word must be between 1 and 80 characters long.")])
     difficulty = SelectField(label='Difficulty',
                              validators=[DataRequired()],
                              coerce=int,

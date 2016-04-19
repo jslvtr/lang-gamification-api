@@ -89,7 +89,7 @@ class Challenge(db.Model):
                 active_module = ActiveModule.query.filter(ActiveModule.module_id == self.module_id,
                                                           ActiveModule.user_id == self.challenger.id).first()
                 active_module.increase_experience(experience,
-                                                  "You won a challenge against {} ({} experience in {})".format(
+                                                  "Won against {} ({} experience in {})".format(
                                                       self.challengee.email,
                                                       experience,
                                                       self.module.name
@@ -100,7 +100,7 @@ class Challenge(db.Model):
                 active_module = ActiveModule.query.filter(ActiveModule.module_id == self.module_id,
                                                           ActiveModule.user_id == self.challengee.id).first()
                 active_module.increase_experience(experience,
-                                                  "You won a challenge against {} ({} experience in {})".format(
+                                                  "Won {} ({} experience in {})".format(
                                                       self.challenger.email,
                                                       experience,
                                                       self.module.name

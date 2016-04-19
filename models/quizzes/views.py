@@ -167,17 +167,22 @@ def finish_quiz(quiz_id):
     quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == quiz_id,
                                             QuizAttempt.completed == False).first()
     return_values = quiz_attempt.json()
-    g.user.gold += return_values['gold_earned']
     quiz_attempt.completed = True
     quiz = quiz_attempt.quiz
     experience = quiz.lecture.order * 3
     active_module = g.user.get_current_active_module()
     active_module.increase_experience(experience,
-                                      "You completed the quiz {} in lecture {}! ({} experience in {})".format(
+                                      "Quiz completed! ({} experience in {})".format(
                                           quiz.name,
                                           quiz.lecture.name,
                                           experience,
                                           active_module.module.name
                                       ))
+    g.user.increase_gold(return_values['gold_earned'],
+                         "Quiz completed! ({} trophies)".format(
+                             quiz.name,
+                             quiz.lecture.name,
+                             return_values['gold_earned']
+                         ))
     quiz_attempt.save_to_db()
     return jsonify(return_values), 200

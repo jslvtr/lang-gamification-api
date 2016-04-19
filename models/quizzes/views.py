@@ -173,15 +173,11 @@ def finish_quiz(quiz_id):
     active_module = g.user.get_current_active_module()
     active_module.increase_experience(experience,
                                       "Quiz completed! ({} experience in {})".format(
-                                          quiz.name,
-                                          quiz.lecture.name,
                                           experience,
                                           active_module.module.name
                                       ))
     g.user.increase_gold(return_values['gold_earned'],
                          "Quiz completed! ({} trophies)".format(
-                             quiz.name,
-                             quiz.lecture.name,
                              return_values['gold_earned']
                          ))
     quiz_attempt.save_to_db()

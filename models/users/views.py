@@ -81,8 +81,8 @@ def profile():
 @bp.route('/logout')
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def logout():
-    if 'user_id' in session.keys() and session['user_id']:
-        session.pop('user_id')
+    if session.get('user_id'):
+        session.clear()
         return redirect(url_for('index', warn="You have been logged out."))
     else:
         return redirect(url_for('index'))

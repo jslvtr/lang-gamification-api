@@ -26,7 +26,7 @@ class User(db.Model):
     access = db.Column(db.Integer)
     gamified = db.Column(db.Boolean)
     friends = db.relationship('User', secondary=HelperTables.friends,
-                              primaryjoin=HelperTables.friends.c.user_id == id,
+                              primaryjoin=HelperTables.friends.c.student_id == id,
                               secondaryjoin=HelperTables.friends.c.friend_id == id, lazy='dynamic')
 
     def __init__(self, email, password, access=UserConstants.USER_TYPES['USER'], gamified=True):
@@ -53,7 +53,7 @@ class User(db.Model):
     def login(email, password):
         user = User._check_login(email.lower(), password)
         if user:
-            if EmailConfirmation.query.filter(EmailConfirmation.user_id == user.id).first().confirmed:
+            if EmailConfirmation.query.filter(EmailConfirmation.student_id == user.id).first().confirmed:
                 return user
             raise UserErrors.UserNotConfirmedException("The e-mail for this user has not been confirmed.")
         raise UserErrors.IncorrectPasswordException("Your password or e-mail were incorrect.")
@@ -135,7 +135,7 @@ class User(db.Model):
         return FriendRequest.pending_requests_for_user(self)
 
     def _get_active_module(self, module_id):
-        return ActiveModule.get_by_user_id(module_id, self.id)
+        return ActiveModule.get_by_student_id(module_id, self.id)
 
     def get_questions_in_active_module(self, module_id):
         return self._get_active_module(module_id).get_all_questions_in_completed_lectures()
@@ -167,13 +167,13 @@ class User(db.Model):
         db.session.commit()
 
     def delete_notification(self, notification_id):
-        notification = Notification.query.filter(Notification.user_id == self.id, Notification.id == notification_id).first()
+        notification = Notification.query.filter(Notification.student_id == self.id, Notification.id == notification_id).first()
         if notification is None:
             raise UserErrors.NotNotificationOwnerException("Error deleting notification.")
         notification.remove_from_db()
 
     def delete_notifications_except_challenges(self):
-        notifications = Notification.query.filter(Notification.user_id == self.id,
+        notifications = Notification.query.filter(Notification.student_id == self.id,
                                                   Notification.read == True,
                                                   Notification.type != "challenge")
         for notification in notifications:

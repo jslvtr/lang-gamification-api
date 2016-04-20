@@ -15,7 +15,7 @@ class ActiveModule(db.Model):
     experience = db.Column(db.Integer, unique=False)
     level = db.Column(db.Integer, unique=False)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
     owner = db.relationship('User',
                             backref=db.backref('active_modules', lazy='dynamic'))
     module_id = db.Column(db.Integer, db.ForeignKey('module.id'))
@@ -61,8 +61,8 @@ class ActiveModule(db.Model):
         return lecture
 
     @classmethod
-    def get_by_user_id(cls, module_id, user_id):
-        return cls.query.filter(cls.user_id == user_id, cls.module_id == module_id).first()
+    def get_by_student_id(cls, module_id, student_id):
+        return cls.query.filter(cls.student_id == student_id, cls.module_id == module_id).first()
 
     def get_all_questions_in_completed_lectures(self):
         questions = []

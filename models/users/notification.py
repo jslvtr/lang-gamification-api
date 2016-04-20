@@ -16,7 +16,7 @@ class Notification(db.Model, SearchableModel):
 
     created_date = db.Column(db.DateTime)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
     user = db.relationship('User',
                            backref=db.backref('notifications', lazy='dynamic'))
 

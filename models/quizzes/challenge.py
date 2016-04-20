@@ -48,10 +48,10 @@ class Challenge(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    challenger_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    challenger_id = db.Column(db.Integer, db.ForeignKey('student.id'))
     challenger = db.relationship('User', foreign_keys=[challenger_id])
 
-    challengee_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    challengee_id = db.Column(db.Integer, db.ForeignKey('student.id'))
     challengee = db.relationship('User', foreign_keys=[challengee_id])
 
     module_id = db.Column(db.Integer, db.ForeignKey('module.id'))
@@ -76,8 +76,8 @@ class Challenge(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def declare_winner(self, user_id):
-        self.winner_id = user_id
+    def declare_winner(self, student_id):
+        self.winner_id = student_id
         self.conclude_challenge()
 
     def conclude_challenge(self):
@@ -87,7 +87,7 @@ class Challenge(db.Model):
         else:
             if self.winner_id == self.challenger.id:
                 active_module = ActiveModule.query.filter(ActiveModule.module_id == self.module_id,
-                                                          ActiveModule.user_id == self.challenger.id).first()
+                                                          ActiveModule.student_id == self.challenger.id).first()
                 active_module.increase_experience(experience,
                                                   "Won against {} ({} experience in {})".format(
                                                       self.challengee.email,
@@ -98,7 +98,7 @@ class Challenge(db.Model):
                                loser=self.challengee)
             else:
                 active_module = ActiveModule.query.filter(ActiveModule.module_id == self.module_id,
-                                                          ActiveModule.user_id == self.challengee.id).first()
+                                                          ActiveModule.student_id == self.challengee.id).first()
                 active_module.increase_experience(experience,
                                                   "Won {} ({} experience in {})".format(
                                                       self.challenger.email,
@@ -209,7 +209,7 @@ class ChallengeAttempt(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     completed = db.Column(db.Boolean)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
     user = db.relationship('User')
 
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'))
@@ -233,8 +233,8 @@ class ChallengeAttempt(db.Model):
         db.session.commit()
 
     @classmethod
-    def find(cls, challenge_id, user_id, completed=False):
-        return ChallengeAttempt.query.filter(ChallengeAttempt.user_id == user_id,
+    def find(cls, challenge_id, student_id, completed=False):
+        return ChallengeAttempt.query.filter(ChallengeAttempt.student_id == student_id,
                                              ChallengeAttempt.challenge_id == challenge_id,
                                              ChallengeAttempt.completed == completed).first()
 

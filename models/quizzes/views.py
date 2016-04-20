@@ -84,7 +84,7 @@ def do_quiz(quiz_id):
 
 
 def complete_quiz_attempts(quiz_id):
-    attempts = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == quiz_id,
+    attempts = QuizAttempt.query.filter(QuizAttempt.student_id == g.user.id, QuizAttempt.quiz_id == quiz_id,
                                         QuizAttempt.completed == False).all()
     for attempt in attempts:
         attempt.complete = True
@@ -127,7 +127,7 @@ def check_question():
     question = Question.query.get(request_json['question_id'])
     try:
         correct = question.correct_answer(request_json['meaning'] == "name") == request_json['answer']
-        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id,
+        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.student_id == g.user.id,
                                                 QuizAttempt.quiz_id == question.quiz.id,
                                                 QuizAttempt.completed == False).first()
         question_answered = QuestionAnswered(correct=correct)
@@ -136,7 +136,7 @@ def check_question():
         question_answered.save_to_db()
         return jsonify({"value": correct})
     except KeyError:
-        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id,
+        quiz_attempt = QuizAttempt.query.filter(QuizAttempt.student_id == g.user.id,
                                                 QuizAttempt.quiz_id == question.quiz.id).first()
         question_answered = QuestionAnswered(correct=False)
         question_answered.question = question
@@ -152,7 +152,7 @@ def skip_question():
     if request_json is None:
         return jsonify({"message": "The request was invalid."}), 400
     question = Question.query.get(request_json['question_id'])
-    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id,
+    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.student_id == g.user.id,
                                             QuizAttempt.quiz_id == question.quiz.id).first()
     question_answered = QuestionAnswered(correct=False)
     question_answered.question = question
@@ -164,7 +164,7 @@ def skip_question():
 @bp.route('/quizzes/<string:quiz_id>/finish', methods=['GET'])
 @requires_access_level(UserConstants.USER_TYPES['USER'])
 def finish_quiz(quiz_id):
-    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.user_id == g.user.id, QuizAttempt.quiz_id == quiz_id,
+    quiz_attempt = QuizAttempt.query.filter(QuizAttempt.student_id == g.user.id, QuizAttempt.quiz_id == quiz_id,
                                             QuizAttempt.completed == False).first()
     return_values = quiz_attempt.json()
     quiz_attempt.completed = True

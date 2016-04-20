@@ -16,7 +16,7 @@ class Module(db.Model, SearchableModel):
     created_date = db.Column(db.DateTime)
     public = db.Column(db.Boolean)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
     owner = db.relationship('User',
                             backref=db.backref('modules', lazy='dynamic'))
     students = db.relationship('User', secondary=HelperTables.students,

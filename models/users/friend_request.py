@@ -8,10 +8,10 @@ __author__ = 'jslvtr'
 class FriendRequest(db.Model):
     __tablename__ = UserConstants.FRIEND_REQUESTS_TABLE_NAME
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('{}.id'.format(UserConstants.TABLE_NAME)))
+    student_id = db.Column(db.Integer, db.ForeignKey('{}.id'.format(UserConstants.TABLE_NAME)))
     new_friend_id = db.Column(db.Integer, db.ForeignKey('{}.id'.format(UserConstants.TABLE_NAME)))
 
-    user = db.relationship('User', foreign_keys=[user_id])
+    user = db.relationship('User', foreign_keys=[student_id])
     new_friend = db.relationship('User', foreign_keys=[new_friend_id])
 
     def __init__(self, user, new_friend):

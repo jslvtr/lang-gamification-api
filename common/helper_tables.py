@@ -1,13 +1,13 @@
 from app import db
 
 students = db.Table('studying',
-                    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                    db.Column('student_id', db.Integer, db.ForeignKey('student.id')),
                     db.Column('module_id', db.Integer, db.ForeignKey('module.id'))
                     )
 
 friends = db.Table('friends',
-                   db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-                   db.Column('friend_id', db.Integer, db.ForeignKey('user.id'))
+                   db.Column('student_id', db.Integer, db.ForeignKey('student.id')),
+                   db.Column('friend_id', db.Integer, db.ForeignKey('student.id'))
                    )
 
 active_to_modules = db.Table('cities_modules',

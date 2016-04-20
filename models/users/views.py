@@ -117,6 +117,7 @@ def add_friend_form():
 def confirm_friend_request(friend_request_id):
     friend_request = FriendRequest.query.get(friend_request_id)
     if friend_request:
+        friend_email = friend_request.user.email
         if friend_request.new_friend.id == g.user.id:
             if friend_request.new_friend not in friend_request.user.friends:
                 friend_request.user.friends.append(friend_request.new_friend)
@@ -125,13 +126,13 @@ def confirm_friend_request(friend_request_id):
                 friend_request.new_friend.save_to_db()
                 friend_request.remove_from_db()
                 return redirect(url_for('.profile',
-                                        message="You have added {} to your friends.".format(friend_request.user.email)))
+                                        message="You have added {} to your friends.".format(friend_email)))
             friend_request.remove_from_db()
             return redirect(url_for('.profile',
-                                    message="{} is already your friend!".format(friend_request.user.email)))
+                                    message="{} is already your friend!".format(friend_email)))
         friend_request.remove_from_db()
         return redirect(url_for('.profile',
-                                warn="You are not part of this friend request!".format(friend_request.user.email)))
+                                warn="You are not part of this friend request!".format(friend_email)))
     return redirect(url_for('.profile', warn="Page not found, redirected you to your profile."))
 
 

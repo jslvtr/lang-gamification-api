@@ -24,7 +24,7 @@ class QuizAttempt(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     completed = db.Column(db.Boolean)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
     user = db.relationship('User')
 
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'))
@@ -32,8 +32,8 @@ class QuizAttempt(db.Model):
 
     questions_answered = db.relationship('QuestionAnswered', lazy='dynamic')
 
-    def __init__(self, user_id, quiz_id):
-        self.user_id = user_id
+    def __init__(self, student_id, quiz_id):
+        self.student_id = student_id
         self.quiz_id = quiz_id
         self.completed = False
 

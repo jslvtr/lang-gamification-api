@@ -117,7 +117,7 @@ def complete(lecture_id):
         experience = lecture.order * 10
         active_module = g.user.get_current_active_module()
         active_module.increase_experience(experience,
-                                          "You completed the lecture {}! ({} experience in {})".format(
+                                          "Completed {}! ({} experience in {})".format(
                                               lecture.name,
                                               experience,
                                               active_module.module.name

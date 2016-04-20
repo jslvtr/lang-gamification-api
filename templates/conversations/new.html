@@ -49,14 +49,6 @@
                         {% endif %}
                     {% endif %}
                 </div>
-                <div id="answer">
-                    {% if conversation %}
-                        <p>Selected answer: <strong><span
-                                id="selectedAnswer">{{ conversation.answer.name }}</span></strong>.</p>
-                    {% else %}
-                        <label for="answerSelect">Answer:</label> <select id="answerSelect" class="form-control"></select>
-                    {% endif %}
-                </div>
                 <div id="addUtterance">
                     {% if conversation.utterances | length == 0 %}
                         No questions yet! Add the first one with the button below.

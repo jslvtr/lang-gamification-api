@@ -47,7 +47,7 @@ function saveConversation(submit_url) {
     utterance_contents = $.map(utterance_contents, function (a) {
         return {
             name: $(a).children("p").html(),
-            hide: $(a).children(":checked").length == 0
+            hide: $(a).children(":checked").length == 1
         };
     });
     $.ajax({

@@ -22,7 +22,7 @@
                     {% endif %}
                     <li><a href="{{ url_for('users.profile') }}">Keep learning</a></li>
                     <li><a href="{{ url_for('users.notifications') }}" id="notificationMenu">{% if notifications > 0 %}<span id="notifications">{{ notifications }}</span>{% endif %}Notifications</a></li>
-                    <li><a href="#"> <i class="fa fa-trophy fa-lg" style="color: #FFD409"></i> <span id="userGold">{{ g.user.gold }}</span></a></li>
+                    <li><a href="#" id="userGoldLink"> <i class="fa fa-trophy fa-lg" style="color: #FFD409"></i> <span id="userGold">{{ g.user.gold }}</span></a></li>
                     <li><a href="{{ url_for('users.logout') }}">Log out</a></li>
                 </ul>
             </div>

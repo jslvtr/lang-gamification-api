@@ -289,3 +289,7 @@ p.help {
 .navbar {
     z-index: 100;
 }
+
+#userGold:hover {
+    color: #ebebeb !important;
+}

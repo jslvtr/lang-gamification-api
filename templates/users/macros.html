@@ -142,7 +142,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">Challenges</div>
         {% if notifications.count() == 0 %}
-            <div class="panel-body panel-background">No new notifications.</div>
+            <div class="panel-body panel-background">No pending challenge invitations.</div>
         {% else %}
             <div class="list-group panel-background">
                 {% for notification in notifications %}
@@ -163,7 +163,6 @@
                 {% endfor %}
             </div>
         {% endif %}
-        <div class="panel-footer"><a class="btn btn-danger btn-sm" href="#"><span
-                class="glyphicon glyphicon-fire"></span> Challenge a friend</a></div>
+        <div class="panel-footer"></div>
     </div>
 {% endmacro %}

@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-lg-push-8 col-md-push-8 col-xm-12 col-xs-12">
 
-                    <div class="panel panel-default margin-top">
+                    <div class="panel panel-default">
                         <div class="panel-heading">Actions</div>
                         <div class="panel-body">
                             <a href="{{ url_for('lectures.complete', lecture_id=lecture.id) }}" class="btn btn-success"><span
@@ -16,9 +16,14 @@
                     </div>
                 </div>
                 <div class="col-lg-8 col-md-8 col-lg-pull-4 col-md-pull-4 col-sm-12 col-xs-12">
-                    <article>
-                        {{ render_lecture_content(lecture) }}
-                    </article>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Content</div>
+                        <div class="panel-body">
+                            <article>
+                                {{ render_lecture_content(lecture) }}
+                            </article>
+                        </div>
+                    </div>
                 </div>
 
             </div>

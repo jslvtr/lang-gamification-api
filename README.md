@@ -1,9 +1,8 @@
 # README
 
-This application is a back-end API for a language learning project using Python.
-Mobile and desktop apps are coming soon!
+This application is a language learning project using Python.
 
-Development version available at: http://lang-gamification-api.herokuapp.com
+Available at: http://www.apostamos.academy
 
 # Install Instructions
 
@@ -137,22 +136,72 @@ sudo service nginx restart
 sudo start uwsgi_lang
 ```
 
-## Installing MongoDB (if wanting to run MongoDB locally alongside the application)
+## Installing PostgreSQL (if wanting to run PostgreSQL locally alongside the application)
 
-1. Create a `/etc/yum.repos.d/mongodb-org-3.0.repo` file.
-2. In this file, put the appropriate code:
+Install PostgreSQL from `yum`. Do not use the default version, as that is old. Instead, run the following command:
 
 ```
-[mongodb-org-3.0]
-name=MongoDB Repository
-baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.0/x86_64/
-gpgcheck=0
-enabled=1
+yum install http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
 ```
 
-3. Install MongoDB using the command `sudo yum install mongodb-org`.
-4. Run MongoDB by using the command `sudo service mongod start`.
-5. Make sure MongoDB runs on reboot by using `sudo chkconfig mongod on`.
+Then, run the following commands to install and update packages:
+
+```
+yum install postgresql94-server postgresql94-contrib postgresql-devel
+service postgresql-9.4 initdb
+chkconfig postgresql-9.4 on
+```
+
+Add the user who will be running the uWSGI process to the postgresql group (command will differ depending on Linux distribution):
+
+```
+sudo useradd -G postgres jose
+```
+
+Then create the appropriate user in PostgreSQL, giving it a password:
+
+```
+createuser -d -s -P jose
+```
+
+Then, modify the default PostgreSQL access mechanism to be password, as opposed to `ident`:
+
+```
+sudo vi /var/lib/pgsql/9.5/data/pg_hba.conf
+```
+
+And make sure the last few lines match the following:
+
+```
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     peer
+# IPv4 local connections:
+#host    all             all             127.0.0.1/32            password
+host    all         all         127.0.0.1/32         trust
+# IPv6 local connections:
+host    all             all             ::1/128                 trust
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+#local   replication     postgres                                peer
+#host    replication     postgres        127.0.0.1/32            ident
+#host    replication     postgres        ::1/128                 ident
+```
+
+The next step is to create the `lang` database to be used in the project.
+
+```
+psql lang
+```
+
+Modify the application's config file to contain the PostgreSQL URI.
+
+```
+vi /var/www/html/lang/config.py
+```
+
+Change the line `SQLALCHEMY_DATABASE_URI` to be equal to `postgresql://localhost/lang.
 
 ## Creating the uWSGI config file
 
@@ -165,11 +214,6 @@ start on runlevel [2345]
 stop on runlevel [06]
 respawn
 
-env MONGODB_USER=<>
-env MONGODB_DATABASE=<>
-env MONGODB_PASSWORD=<>
-env MONGODB_URL=<>
-env MONGODB_PORT=<>
 env UWSGI_ALIVE=/var/www/html/lang/venv/bin/uwsgi
 env LOGTO_ALIVE=/var/www/html/lang/log/emperor.log
 
@@ -252,11 +296,3 @@ sudo semodule -i nginx.pp
 ```
 sudo setenforce 1
 ```
-
-## MongoDB Replication
-
-If you have more than one server for the service and wish to activate MongoDB database replication, then follow the MongoDB documentation on deploying a replica set with authentication.
-
-http://docs.mongodb.org/manual/tutorial/deploy-replica-set-with-auth/
-
-You will also need to make the MongoDB instances accessible externally (so the other instances can connect), hence why authentication is important for security.
